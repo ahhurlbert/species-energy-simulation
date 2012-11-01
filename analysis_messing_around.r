@@ -21,3 +21,5 @@ sapply(slices,function(x) points(11 - rich.time2$region[rich.time2$time==x], ric
 
 all.dist <- dist.nodes(phylo.out)
 root.dist <- all.dist[length(phylo.out$tip.label)+1, ]
+
+#minor change here
