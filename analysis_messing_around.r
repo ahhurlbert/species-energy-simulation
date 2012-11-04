@@ -63,10 +63,15 @@ par(mfrow=c(2,3),oma=c(5,1,0,0),mar=c(2,5,2,2))
 #}
 dev.off()
 
-#Looking at detailed clade level patterns for example clades of different age
-clade.times = c(0,200,300,400,500,600)
+#Looking at detailed clade level patterns for 6 example clades of different age
+clade.slices = 6
+cl.buff = 20 #potential +/- variation (in time units) allowed in selecting clades of a specific age
+
+#clade.times = c(0,200,300,400,500,600)
+clade.times = round(seq(max.time/clade.slices, max.time,by=max.time/clade.slices),0)
+
 #In line below, replace stats2$time with all.populations$time.of.origin once that gets fixed
-clades = sapply(clade.times, function(x) {set.seed(1); sample(rootdist$clade.id[rootdist$RD> (x-10) & rootdist$RD < (x+10)],1)})
+clades = sapply(clade.times, function(x) {set.seed(1); sample(rootdist$clade.id[rootdist$RD> (x-cl.buff) & rootdist$RD < (x+cl.buff)],1)})
 clds = as.numeric(as.character(clades))
 
 pdf('clade_example_details.pdf',width=9,height=6)
