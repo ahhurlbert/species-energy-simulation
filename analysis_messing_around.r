@@ -75,7 +75,7 @@ clades = sapply(clade.times, function(x) {set.seed(1); sample(rootdist$clade.id[
 clds = as.numeric(as.character(clades))
 
 pdf('clade_example_details.pdf',width=9,height=6)
-par(mfrow=c(2,3),oma = c(5,1,4,0),mar=c(4,4,1,1))
+par(mfrow=c(2,3),oma = c(1,1,4,0),mar=c(4,4,1,1))
 for (i in clds) {
   cl.members = clade.members(i,phylo.out)
   cl.subset = subset(all.pops, spp.name %in% cl.members)
