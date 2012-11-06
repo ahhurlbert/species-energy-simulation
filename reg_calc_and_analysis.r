@@ -52,11 +52,12 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   names(sub.populations) = c('region','spp.name','time.of.origin','reg.env')
 
   #Calculate the time of origin of the focal clade within each region
+  overall.origin.time = sub.clade.phylo$origin.time;
   origin.by.region = aggregate(sub.populations$time.of.origin, by=list(sub.populations$region), min)
   names(origin.by.region) = c('region','clade.origin.time')
+  origin.by.region$clade.origin.time[origin.by.region$clade.origin.time < overall.origin.time] = overall.origin.time
   reg.time = data.frame(region = origin.by.region$region, 
                         time.in.region = max.time - origin.by.region$clade.origin.time)
-  overall.origin.time = min(sub.populations$time.of.origin)
   
   
   #MRD

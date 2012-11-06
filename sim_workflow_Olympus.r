@@ -16,8 +16,8 @@ library(caper,lib.loc="/pic/people/steg815/Rlibs");
 library(paleotree,lib.loc="/pic/people/steg815/Rlibs");
 library(plyr,lib.loc="/pic/people/steg815/Rlibs");
 
-source('reg_calc_and_analysis_20121101.r')
-source('senc_sim_fun_121101.r');
+source('reg_calc_and_analysis.r')
+source('senc_sim_fun.r');
 source('make.phylo.jimmy.fun.r');
 
 #(3) read in master simulation matrix with chosen parameter combinations
@@ -33,13 +33,13 @@ sim.start = date(); print(sim.start);
 sim.results = senc_sim_fun(sim.matrix=sim.matrix,sim=sim)
 sim.end = date(); print(sim.end);
     
-timeslices = round(seq(max(sim.results$time.richness$time)/num.of.time.slices,max(sim.results$time.richness$time),length=num.of.time.slices),digits=0);
+timeslices = as.integer(round(seq(max(sim.results$time.richness$time)/num.of.time.slices,max(sim.results$time.richness$time),length=num.of.time.slices),digits=0));
 max.time.actual = max(sim.results$time.richness$time);
 
 for (t in timeslices) {
 	sub.species = subset(sim.results$all.populations,time.of.sp.origin < t & time.of.sp.extinction > t);
 	tips.to.drop = as.character(sim.results$phylo.out$tip.label[which(is.element(sim.results$phylo.out$tip.label,as.character(sub.species$spp.name))==F)]);
-  sub.phylo = drop.tip(sim.results$phylo.out,tips.to.drop);
+  	sub.phylo = drop.tip(sim.results$phylo.out,tips.to.drop);
 	temp.root.time = max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1]); temp.root.time;
 	most.recent.spp = sub.phylo$tip.label[as.numeric(names(which.max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1])))]; most.recent.spp;
 	extinct.time.most.recent = unique(sim.results$all.populations$time.of.sp.extinction[sim.results$all.populations$spp.name==most.recent.spp]); extinct.time.most.recent;
@@ -61,17 +61,17 @@ for (t in timeslices) {
 
 			#sub.clade.phylo is a specific simulation clade pulled from the phylogeny that was sliced at timeslice t
 			tips.to.drop = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label,as.character(sub.populations$spp.name))==F)]);
-  		sub.clade.phylo = drop.tip(sub.phylo,tips.to.drop);
-			sub.clade.phylo$root.time = max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1]); sub.clade.phylo$root.time;
+  			sub.clade.phylo = drop.tip(sub.phylo,tips.to.drop);
+			sub.clade.phylo$root.time = max(dist.nodes(sub.clade.phylo)[1:Ntip(sub.clade.phylo),Ntip(sub.clade.phylo) + 1]); sub.clade.phylo$root.time;
 			sub.clade.phylo$origin.time = t - sub.clade.phylo$root.time; sub.clade.phylo$origin.time;
 
 			if (identical(sort(as.integer(unique(sub.populations$spp.name))) , sort(as.integer(sub.clade.phylo$tip.label)))==F ) {print(c(c,t,'Error: trimmed phylogeny does not contain the correct species')); break} else{}; 
 
-    	reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env')], sub.clade.phylo, as.numeric(max.time.actual));
+    			reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env')], sub.clade.phylo, t);
 
-    	corr.results = xregion.analysis(reg.summary)
+    			corr.results = xregion.analysis(reg.summary)
           
-  		output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results))
+  			output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results))
 			print(c(c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
 
  		} else{};
