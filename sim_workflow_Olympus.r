@@ -90,4 +90,4 @@ print(c(warnings(),sim.start,sim.end,analysis.end));
 ####################################################
 lat.grad.time.plot(sim.results, numslices = 10)
 clade.origin.corr.plot(output, sim.results$params.out)
-clade.exmpl.figs(sim.results, clade.slices=6, time.buffer=20)
+clade.exmpl.figs(sim.results, clade.slices=6, seed=0)
