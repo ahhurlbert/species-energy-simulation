@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-## jimmy change
-
 setwd('//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses')
-=======
+
 # This function takes simulation output and creates a plot of the latitudinal gradient in
 # species richness for a specified number of points throughout the time course of the simulation.
->>>>>>> 38bb798ca7259eddbfccbcbb2ca4c7924f392d74
 
 lat.grad.time.plot = function(sim.results, numslices) {
   all.pops = sim.results$all.populations
