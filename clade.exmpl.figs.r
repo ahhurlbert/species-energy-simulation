@@ -2,7 +2,7 @@
 # The 'time.buffer' is the potential +/- variation (in time units) allowed in selecting clades of a specific age
 
 
-clade.exmpl.figs = function(sim.results, clade.slices=6, time.buffer=20) {
+clade.exmpl.figs = function(sim.results, clade.slices=6, seed=1) {
   all.pops = sim.results$all.populations
   phylo.out = sim.results$phylo.out
   max.time = max(all.pops$time.of.origin)  
@@ -20,9 +20,10 @@ clade.exmpl.figs = function(sim.results, clade.slices=6, time.buffer=20) {
     
   clade.time.slices = round(seq(max.time/(clade.slices+1), max.time - max.time/(clade.slices+1),length.out=clade.slices),0)
 
-  #Choose a clade randomly from those that are closest to the specified clade time slice
-  clades = sapply(clade.time.slices, function(x) {set.seed(1); 
-                  sample(rootdist$clade.id[abs(rootdist$time.of.origin - x) == min(abs(rootdist$time.of.origin - x))],1)})
+  #Choose a clade randomly from those that are closest to the specified clade time slice,
+  #specifically those that are within 10 time units of the closest clade
+  clades = sapply(clade.time.slices, function(x) {set.seed(seed); 
+                  sample(rootdist$clade.id[abs(rootdist$time.of.origin - x) < (min(abs(rootdist$time.of.origin - x))+10)],1)})
   clds = as.numeric(as.character(clades))
 
   pdf(paste('clade_example_figs_sim',sim.params[1,1],'.pdf',sep=''),width=9,height=6)
@@ -30,7 +31,7 @@ clade.exmpl.figs = function(sim.results, clade.slices=6, time.buffer=20) {
   for (i in clds) {
     cl.members = clade.members(i,phylo.out)
     cl.subset = subset(all.pops, spp.name %in% cl.members)
-    cl.analysis = regional.calc(cl.subset[cl.subset<11,c('region','spp.name','time.of.origin')], phylo.out, max.time)
+    cl.analysis = regional.calc(cl.subset[cl.subset$region<11,c('region','spp.name','time.of.origin','reg.env')], phylo.out, max.time)
     attach(cl.analysis)
 
     if(length(unique(richness[!is.na(richness)])) > 2) {
@@ -81,15 +82,15 @@ clade.exmpl.figs = function(sim.results, clade.slices=6, time.buffer=20) {
       text(1,1,"NA")
     }
 
-    if (sim.params[8,1]==1 & sim.params[9,1]==1) {
+    if (sim.params$carry.cap=='on' & sim.params$energy.gradient=='on') {
       K.text = 'K gradient present'
-    } else if (sim.params[8,1]==1 & sim.params[9,1]==2) {
+    } else if (sim.params$carry.cap=='on' & sim.params$energy.gradient=='off') {
       K.text = 'K constant across regions'
-    } else if (sim.params[8,1]==2) {
+    } else if (sim.params$carry.cap=='off') {
       K.text = 'no K'
     }
-    mtext(paste('Sim',sim.params[1,1],', Origin =',sim.params[3,1],', w =',sim.params[4,1],', sigma =',sim.params[7,1],
-                ',disp = ',sim.params[6,1],', specn =',sim.params[5,1],',',K.text),outer=T,line=2)
+    mtext(paste('Sim',sim.params[1,1],', Origin =',sim.params[1,3],', w =',sim.params[1,4],', sigma =',sim.params[1,7],
+                ',disp = ',sim.params[1,6],', specn =',sim.params[1,5],',',K.text),outer=T,line=2)
     
     mtext(paste("CladeID =",i,"; Clade time of origin =", rootdist[rootdist$clade.id==i,'time.of.origin'],"; Clade richness =",length(cl.members)),3,outer=T,line=.3)
     detach(cl.analysis)
