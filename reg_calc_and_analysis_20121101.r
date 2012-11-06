@@ -44,10 +44,10 @@ regional.calc = function(sub.populations, phylo.out, max.time)
     stop("First argument must be a dataframe\n")
   } 
   if(class(sub.populations) == "data.frame" & ncol(sub.populations) != 4) {
-    stop("First argumument should have 3 cols: sites, species, time of origin, and reg.env\n")
+    stop("First argumument should have 4 cols: sites, species, time of origin, and reg.env\n")
   }
-  if(class(max.time) != "numeric") {
-    stop("max.time must be numeric\n")
+  if(class(max.time) != "integer") {
+    stop("max.time must be an integer\n")
   }
   names(sub.populations) = c('region','spp.name','time.of.origin','reg.env')
 
