@@ -5,7 +5,7 @@ lat.grad.time.plot = function(sim.results, numslices) {
   all.pops = sim.results$all.populations
   rich.time = sim.results$time.richness
   phylo.out = sim.results$phylo.out
-  sim.params = sim.results$end.params
+  sim.params = sim.results$params.out
   
   #Eliminate results from boundary bins (0, 11)
   rich.time2 = rich.time[!rich.time$region %in% c(0,11),]

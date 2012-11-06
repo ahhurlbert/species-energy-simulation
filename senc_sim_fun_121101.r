@@ -257,7 +257,8 @@ senc_sim_fun = function(sim.matrix,sim) {
 	write.csv(all.populations,paste("SENC_all.pops_sim",sim,".csv",sep=""),quote=F,row.names=F);
 	write.csv(time.richness,paste("SENC_time.rich_sim",sim,".csv",sep=""),quote=F,row.names=F);
 	write.tree(phylo.out,paste("SENC_phylo_sim",sim,".tre",sep=""));
-	end.params = c(sim,'completed',reg.of.origin,w,alpha,beta,sigma_E,carry.cap,energy.gradient,max.K,num.of.bins,max.time,max.richness); names(end.params) = colnames(sim.matrix);
+	end.params = data.frame(sim.id=sim,status='completed',reg.of.origin=reg.of.origin,w=w,alpha=alpha,beta=beta,sigma_E=sigma_E,carry.cap=carry.cap,
+                          energy.gradient=energy.gradient,max.K=max.K,num.of.bins=num.of.bins,max.time=max.time,max.richness=max.richness); 
 	write.csv(end.params,paste("SENC_params.out_sim",sim,".csv",sep=""),quote=F,row.names=F);
 
 	return(list(all.populations=all.populations,time.richness=time.richness,phylo.out=phylo.out,params.out=end.params));
