@@ -1,32 +1,44 @@
+<<<<<<< HEAD
 ## jimmy change
 
 setwd('//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses')
+=======
+# This function takes simulation output and creates a plot of the latitudinal gradient in
+# species richness for a specified number of points throughout the time course of the simulation.
+>>>>>>> 38bb798ca7259eddbfccbcbb2ca4c7924f392d74
 
-####################
-# Note: this code needs to be modified to take into account James' revised method of calculating clade origin times
+lat.grad.time.plot = function(sim.results, numslices) {
+  all.pops = sim.results$all.populations
+  rich.time = sim.results$time.richness
+  phylo.out = sim.results$phylo.out
+  sim.params = sim.results$end.params
+  
+  #Eliminate results from boundary bins (0, 11)
+  rich.time2 = rich.time[!rich.time$region %in% c(0,11),]
+  max.time = max(rich.time$time)
 
-require(ape)
-require(geiger)
-source('reg_calc_and_analysis_20121104.r') #added "integer" as acceptable class for max.time
+  slices = round(seq(max.time/numslices, max.time,by=max.time/numslices),0)
+  cols = rainbow(numslices+1)
 
-phylo.out = read.tree('SENC_phylo_sim316.tre')
-all.pops = read.csv('SENC_all.pops_sim316.csv',header=T)
-rich.time = read.csv('SENC_time.rich_sim316.csv',header=T)
-params = read.csv('SENC_params.out_sim316.csv',header=T)
-stats = read.csv('SENC_stats_sim316.csv',header=T)
+  pdf(paste('lat_grad_thru_time_sim',sim,'.pdf',sep=''),height=6,width=8)
+  par(mfrow=c(1,1),oma=c(0,0,2.5,0),mar=c(4,4,1,1))
+  plot(c(1,10),c(0,max(rich.time2$spp.rich)),type="n",xlab="Latitude",ylab="Species richness")
+  sapply(slices,function(x) points(11 - rich.time2$region[rich.time2$time==x], rich.time2$spp.rich[rich.time2$time==x],type='l',col=cols[which(slices==x)]))
+  legend('topright',legend=slices,lty='solid',col=cols[2:(numslices+1)])
+  if (sim.params[8,1]==1 & sim.params[9,1]==1) {
+    K.text = 'K gradient present'
+  } else if (sim.params[8,1]==1 & sim.params[9,1]==2) {
+    K.text = 'K constant across regions'
+  } else if (sim.params[8,1]==2) {
+    K.text = 'no K'
+  }
+  b.a = as.numeric(as.character(sim.params[6,1]))/as.numeric(as.character(sim.params[5,1]))
+  mtext(paste('Sim',sim.params[1,1],', Origin =',sim.params[3,1],', w =',sim.params[4,1],', sigma =',sim.params[7,1],
+              ',\ndisp = ',sim.params[6,1],', specn =',sim.params[5,1],',',K.text),outer=T)
+  dev.off()
+}
 
-rich.time2 = rich.time[!rich.time$region %in% c(0,11),]
-
-max.time = max(rich.time$time)
-numslices = 10
-slices = round(seq(max.time/numslices, max.time,by=max.time/numslices),0)
-cols = rainbow(numslices+1)
-
-par(mfrow=c(1,1))
-plot(c(1,10),c(0,max(rich.time2$spp.rich)),type="n",xlab="Latitude",ylab="Species richness")
-sapply(slices,function(x) points(11 - rich.time2$region[rich.time2$time==x], rich.time2$spp.rich[rich.time2$time==x],type='l',col=cols[which(slices==x)]))
-legend('topright',legend=slices,lty='solid',col=cols[2:(numslices+1)])
-
+sim,'completed',reg.of.origin,w,alpha,beta,sigma_E,carry.cap,energy.gradient,max.K,num.of.bins,max.time
 #Node origin times based on phylogeny at end of simulation
 all.dist <- dist.nodes(phylo.out)
 root.dist <- all.dist[length(phylo.out$tip.label)+1, ]
