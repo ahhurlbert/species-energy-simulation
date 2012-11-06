@@ -1,0 +1,14 @@
+# the following two lines take out formatting issues when using non-unix text editors
+# I use notepad to modify the files that do not have 'unix' in their name and then run these lines to get the correct unix format.
+
+cd SENC/ 
+
+tr '\r' '\n' < SENC_Olympus_Batch.txt > SENC_Olympus_Batch_unix.txt
+
+tr '\r' '\n' < SENC_Olympus_Execute.sh > SENC_Olympus_Execute_unix.sh
+
+# makes the .sh file executable
+chmod u+x SENC_Olympus_Execute_unix.sh
+
+# runs the executable
+./SENC_Olympus_Execute_unix.sh
