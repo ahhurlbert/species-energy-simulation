@@ -8,7 +8,7 @@ clade.origin.corr.plot = function(stats.output,sim.params) {
   timeslices = unique(stats.output$time)  
 
   #Plotting
-  pdf(paste('corrs_vs_cladeage_sim',stats$sim[1],'2.pdf',sep=''),height=6,width=9)
+  pdf(paste('corrs_vs_cladeage_sim',stats.output$sim[1],'2.pdf',sep=''),height=6,width=9)
   par(mfrow=c(2,3),oma=c(5,1,4,0),mar=c(2,5,2,2))
 
   for (t in timeslices) {
