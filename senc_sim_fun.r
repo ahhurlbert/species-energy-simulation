@@ -14,8 +14,6 @@ senc_sim_fun = function(sim.matrix,sim) {
 	max.time = sim.matrix$max.time[sim.matrix$sim.id == sim];
 	max.richness = sim.matrix$max.richness[sim.matrix$sim.id == sim];
 
-	max.time = 1000; # !!!! take out !!!!
-
 	extinct.pops.output.times = numeric();
 	print.times = seq(0,max.time,10);
 	tot.extinct.pops = 0;

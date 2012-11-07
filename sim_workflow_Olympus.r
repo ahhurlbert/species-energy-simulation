@@ -16,9 +16,12 @@ library(caper,lib.loc="/pic/people/steg815/Rlibs");
 library(paleotree,lib.loc="/pic/people/steg815/Rlibs");
 library(plyr,lib.loc="/pic/people/steg815/Rlibs");
 
-source('reg_calc_and_analysis.r')
+source('reg_calc_and_analysis.r');
 source('senc_sim_fun.r');
 source('make.phylo.jimmy.fun.r');
+source('lat.grad.time.plot.r');
+source('clade.origin.corr.plot.r');
+source('clade.exmpl.figs.r');
 
 #(3) read in master simulation matrix with chosen parameter combinations
 sim.matrix = as.data.frame(read.csv("SENC_Master_Simulation_Matrix.csv",header=T));
