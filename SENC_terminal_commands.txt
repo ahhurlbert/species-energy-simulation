@@ -1,14 +1,15 @@
-# the following two lines take out formatting issues when using non-unix text editors
+# lines starting with 'tr' take out formatting issues when using non-unix text editors
 # I use notepad to modify the files that do not have 'unix' in their name and then run these lines to get the correct unix format.
+
+## for multiple jobs per node
 
 cd SENC/ 
 
-tr '\r' '\n' < SENC_Olympus_Batch.txt > SENC_Olympus_Batch_unix.txt
+tr '\r' '\n' < SENC_Olympus_Batch_nodes.txt > SENC_Olympus_Batch_nodes_unix.txt
 
-tr '\r' '\n' < SENC_Olympus_Execute.sh > SENC_Olympus_Execute_unix.sh
+tr '\r' '\n' < SENC_Olympus_Execute_nodes.sh > SENC_Olympus_Execute_nodes_unix.sh
 
-# makes the .sh file executable
-chmod u+x SENC_Olympus_Execute_unix.sh
+chmod u+x SENC_Olympus_Execute_nodes_unix.sh
 
-# runs the executable
-./SENC_Olympus_Execute_unix.sh
+./SENC_Olympus_Execute_nodes_unix.sh
+

@@ -1,0 +1,14 @@
+#!/bin/csh
+
+#SBATCH -A jcstegen
+#SBATCH -t 48:0:0
+#SBATCH -n 1
+#SBATCH -p shared
+#SBATCH --share
+
+module load R/2.15.1
+
+srun -o sim.$1.out Rscript sim_workflow_Olympus.r $1
+
+srun rm temp.extinct.sim.$1*
+
