@@ -8,11 +8,12 @@ clade.origin.corr.plot = function(stats.output,sim.params) {
   timeslices = unique(stats.output$time)  
 
   #Plotting
-  pdf(paste('corrs_vs_cladeage_sim',stats.output$sim[1],'2.pdf',sep=''),height=6,width=9)
+  pdf(paste('corrs_vs_cladeage_sim',stats.output$sim[1],'.pdf',sep=''),height=6,width=9)
   par(mfrow=c(2,3),oma=c(5,1,4,0),mar=c(2,5,2,2))
 
   for (t in timeslices) {
     #t = max(stats.output$time)                 #comment this out if looping over multiple time slices
+    colnames(stats.output)[1] = 'sim.id'
     stats2x = subset(stats.output, time==t)
     attach(stats2x)
     spline.df = 4
@@ -69,15 +70,15 @@ clade.origin.corr.plot = function(stats.output,sim.params) {
     rect(-50,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
     mtext("Clade origin time",1,outer=T,line=2)
-    if (sim.params[8,1]==1 & sim.params[9,1]==1) {
+    if (sim.params[1,8]=='on' & sim.params[1,9]=='on') {
       K.text = 'K gradient present'
-    } else if (sim.params[8,1]==1 & sim.params[9,1]==2) {
+    } else if (sim.params[1,8]=='on' & sim.params[1,9]=='off') {
       K.text = 'K constant across regions'
-    } else if (sim.params[8,1]==2) {
+    } else if (sim.params[1,8]=='off') {
       K.text = 'no K'
     }
-    mtext(paste('Sim',sim.params[1,1],', Origin =',sim.params[3,1],', w =',sim.params[4,1],', sigma =',sim.params[7,1],
-                ',\ndisp = ',sim.params[6,1],', specn =',sim.params[5,1],',',K.text,', time =',t),outer=T)
+    mtext(paste('Sim',sim.params[1,1],', Origin =',sim.params[1,3],', w =',sim.params[1,4],', sigma =',sim.params[1,7],
+                ',\ndisp = ',sim.params[1,6],', specn =',sim.params[1,5],',',K.text,', time =',t),outer=T)
     
     detach(stats2x)
   }

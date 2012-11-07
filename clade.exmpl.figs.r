@@ -5,7 +5,7 @@
 clade.exmpl.figs = function(sim.results, clade.slices=6, seed=1) {
   all.pops = sim.results$all.populations
   phylo.out = sim.results$phylo.out
-  max.time = max(all.pops$time.of.origin)  
+  max.time = as.integer(max(all.pops$time.of.origin))
   sim.params = sim.results$params.out
 
   
@@ -31,12 +31,12 @@ clade.exmpl.figs = function(sim.results, clade.slices=6, seed=1) {
   for (i in clds) {
     cl.members = clade.members(i,phylo.out)
     cl.subset = subset(all.pops, spp.name %in% cl.members)
-    cl.analysis = regional.calc(cl.subset[cl.subset$region<11,c('region','spp.name','time.of.origin','reg.env')], phylo.out, max.time)
+    cl.analysis = regional.calc(cl.subset[c('region','spp.name','time.of.origin','reg.env')], phylo.out, max.time)
     attach(cl.analysis)
 
     if(length(unique(richness[!is.na(richness)])) > 2) {
-      plot(richness~region, xlab="Environment",ylab="Species Richness", cex=3, pch=16, col='darkblue', xlim=c(1,10))
-      legend("top",legend=paste('r =',round(cor(richness,region,use="complete.obs"),2)), bty='n')
+      plot(richness~reg.env, xlab="Environment",ylab="Species Richness", cex=3, pch=16, col='darkblue',xlim=range(sim.results$all.populations$reg.env))
+      legend("top",legend=paste('r =',round(cor(richness,reg.env,use="complete.obs"),2)), bty='n')
     } else {
       plot(1,1, xlab="Environment",ylab="Species Richness", type="n")
       text(1,1,"NA")
@@ -67,16 +67,16 @@ clade.exmpl.figs = function(sim.results, clade.slices=6, seed=1) {
     }
     
     if(length(unique(MRD[!is.na(MRD)])) > 2) {
-      plot(MRD~region, ylab = "MRD", xlab="Environment", cex=3, pch=18, col = 'orange', xlim=c(1,10))
-      legend("top",legend=paste('r =',round(cor(region,MRD,use="complete.obs"),2)), bty='n')
+      plot(MRD~reg.env, ylab = "MRD", xlab="Environment", cex=3, pch=18, col = 'orange',xlim=range(sim.results$all.populations$reg.env))
+      legend("top",legend=paste('r =',round(cor(reg.env,MRD,use="complete.obs"),2)), bty='n')
     } else {
       plot(1,1, xlab="Environment",ylab="MRD", type="n")
       text(1,1,"NA")
     }
     
     if(length(unique(MRD[!is.na(MRD)])) > 2) {
-      plot(PSV~region, ylab = "PSV", xlab="Environment", cex=3, pch=15, col = 'darkred', xlim=c(1,10))
-      legend("top",legend=paste('r =',round(cor(region,PSV,use="complete.obs"),2)), bty='n')
+      plot(PSV~reg.env, ylab = "PSV", xlab="Environment", cex=3, pch=15, col = 'darkred',xlim=range(sim.results$all.populations$reg.env))
+      legend("top",legend=paste('r =',round(cor(reg.env,PSV,use="complete.obs"),2)), bty='n')
     } else {
       plot(1,1, xlab="Environment",ylab="PSV", type="n")
       text(1,1,"NA")

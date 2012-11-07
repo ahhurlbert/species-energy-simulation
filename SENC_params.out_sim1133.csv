@@ -1,0 +1,2 @@
+sim.id,status,reg.of.origin,w,alpha,beta,sigma_E,carry.cap,energy.gradient,max.K,num.of.bins,max.time,max.richness
+1133,completed,tropical,11,1e-05,0.01,3,on,on,10000,11,500,3000
