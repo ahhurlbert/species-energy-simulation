@@ -29,7 +29,14 @@
       # Calcualte MRD-richness slope
       # Calculate PSV-richness slope
       # Calculate partial correlation btw environment-richness after accounting for MRD and PSV (?)
-  
+
+###################
+###################
+# NOTE: I HAVE TEMPORARILY COMMENTED OUT LINES INVOLVING overall.origin.time
+#
+# This still needs to be fixed and merged back into the output at the end
+
+
 regional.calc = function(sub.populations, phylo.out, max.time)
 {
   #Required libraries
@@ -49,23 +56,25 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   if(class(max.time) != "integer") {
     stop("max.time must be an integer\n")
   }
-  names(sub.populations) = c('region','spp.name','time.of.origin','reg.env')
+  
 
   #Calculate the time of origin of the focal clade within each region
-  overall.origin.time = sub.clade.phylo$origin.time;
+  #overall.origin.time = sub.clade.phylo$origin.time;
   origin.by.region = aggregate(sub.populations$time.of.origin, by=list(sub.populations$region), min)
   names(origin.by.region) = c('region','clade.origin.time')
-  origin.by.region$clade.origin.time[origin.by.region$clade.origin.time < overall.origin.time] = overall.origin.time
+  #origin.by.region$clade.origin.time[origin.by.region$clade.origin.time < overall.origin.time] = overall.origin.time
   reg.time = data.frame(region = origin.by.region$region, 
                         time.in.region = max.time - origin.by.region$clade.origin.time)
   
+  #I added this line to remove duplicate instances of same species due to repeated colonizations
+  sub.pops = unique(sub.populations[,c('region','spp.name','reg.env')])
   
   #MRD
   phylo.bl1 <- compute.brlen(phylo.out, 1)
   all.dist <- dist.nodes(phylo.bl1)
   root.dist <- all.dist[length(phylo.out$tip.label)+1, 1:length(phylo.out$tip.label)]
   tips.to.root <- data.frame(spp.name=phylo.out$tip.label,root.dist)
-  MRD.ini <- merge(sub.populations, tips.to.root, sort = FALSE)
+  MRD.ini <- merge(sub.pops, tips.to.root, sort = FALSE)
   MRD.ini <- MRD.ini[order(MRD.ini$region), ]
   MRD.table <- ddply(idata.frame(MRD.ini), "region", summarise, RD=sum(root.dist), richness=length(unique(spp.name)))
   MRD <- data.frame(region=MRD.table$region, richness=MRD.table$richness, MRD=MRD.table$RD/MRD.table$richness)
@@ -76,7 +85,7 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   Vmatrix = vcv(phylo.out, corr=F)
   psvs = matrix(NA, ncol=2)
   #Can only calculate where number of species in a region > 1
-  reg.S = data.frame(table(sub.populations$region))
+  reg.S = data.frame(table(sub.pops$region))
   regions = as.numeric(as.character(reg.S[reg.S$Freq > 1, 'Var1']))
   for (i in regions) {
     subset.sp = sub.populations[sub.populations$region==i, 'spp.name']
@@ -90,7 +99,7 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   names(PSVs) = c('region','PSV')
     
   MRD.PSV.out = merge(MRD2, PSVs, by = 'region',all=T)
-  MRD.PSV.out$clade.origin = rep(overall.origin.time, nrow(MRD.PSV.out))
+  #MRD.PSV.out$clade.origin = rep(overall.origin.time, nrow(MRD.PSV.out))
   MRD.PSV.out = unique(merge(MRD.PSV.out,sub.populations[,c('region','reg.env')],by='region'))
   return(MRD.PSV.out)
 }
