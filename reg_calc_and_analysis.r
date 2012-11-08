@@ -30,12 +30,6 @@
       # Calculate PSV-richness slope
       # Calculate partial correlation btw environment-richness after accounting for MRD and PSV (?)
 
-###################
-###################
-# NOTE: I HAVE TEMPORARILY COMMENTED OUT LINES INVOLVING overall.origin.time
-#
-# This still needs to be fixed and merged back into the output at the end
-
 
 regional.calc = function(sub.populations, phylo.out, max.time)
 {
@@ -59,10 +53,10 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   
 
   #Calculate the time of origin of the focal clade within each region
-  #overall.origin.time = sub.clade.phylo$origin.time;
+  overall.origin.time = phylo.out$origin.time;
   origin.by.region = aggregate(sub.populations$time.of.origin, by=list(sub.populations$region), min)
   names(origin.by.region) = c('region','clade.origin.time')
-  #origin.by.region$clade.origin.time[origin.by.region$clade.origin.time < overall.origin.time] = overall.origin.time
+  origin.by.region$clade.origin.time[origin.by.region$clade.origin.time < overall.origin.time] = overall.origin.time
   reg.time = data.frame(region = origin.by.region$region, 
                         time.in.region = max.time - origin.by.region$clade.origin.time)
   
@@ -99,7 +93,7 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   names(PSVs) = c('region','PSV')
     
   MRD.PSV.out = merge(MRD2, PSVs, by = 'region',all=T)
-  #MRD.PSV.out$clade.origin = rep(overall.origin.time, nrow(MRD.PSV.out))
+  MRD.PSV.out$clade.origin = rep(overall.origin.time, nrow(MRD.PSV.out))
   MRD.PSV.out = unique(merge(MRD.PSV.out,sub.populations[,c('region','reg.env')],by='region'))
   return(MRD.PSV.out)
 }
