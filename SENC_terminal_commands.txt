@@ -3,7 +3,7 @@
 
 ## for multiple jobs per node
 
-cd SENC/ 
+cd SENC.2nd.run/ 
 
 tr '\r' '\n' < SENC_Olympus_Batch_nodes.txt > SENC_Olympus_Batch_nodes_unix.txt
 
@@ -13,3 +13,57 @@ chmod u+x SENC_Olympus_Execute_nodes_unix.sh
 
 ./SENC_Olympus_Execute_nodes_unix.sh
 
+
+## for zipping files for easy transport
+
+cd SENC/ 
+
+
+zip slurm.archive.zip slurm*
+
+mv slurm.archive.zip ~/
+
+
+zip senc.params.zip SENC_params.out*
+
+mv senc.params.zip ~/
+
+
+zip senc.time.rich.zip SENC_time.rich*
+
+mv  senc.time.rich.zip ~/
+
+
+zip senc.stats.zip SENC_Stats*
+
+mv  senc.stats.zip ~/
+
+
+zip clade.example.figs.zip clade_example*
+
+mv  clade.example.figs.zip ~/
+
+
+zip lat.grad.figs.zip lat_grad_thru*
+
+mv  lat.grad.figs.zip ~/
+
+
+zip corrs.v.age.figs.zip corrs_vs_*
+
+mv  corrs.v.age.figs.zip ~/
+
+
+zip all.pops.zip SENC_all.pops*
+
+mv  all.pops.zip ~/
+
+
+zip sim.out.zip sim.*
+
+mv  sim.out.zip ~/
+
+
+zip senc.phylo.zip SENC_phylo*
+
+mv  senc.phylo.zip ~/
