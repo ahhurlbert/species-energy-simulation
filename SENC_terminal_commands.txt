@@ -13,6 +13,19 @@ chmod u+x SENC_Olympus_Execute_nodes_unix.sh
 
 ./SENC_Olympus_Execute_nodes_unix.sh
 
+## zipping output for specified simulations
+
+cd SENC.2nd.run/
+
+tr '\r' '\n' < SENC_Olympus_Batch_zipping.txt > SENC_Olympus_Batch_zipping_unix.txt
+
+tr '\r' '\n' < SENC_Olympus_zipping.sh > SENC_Olympus_zipping_unix.sh
+
+chmod u+x SENC_Olympus_zipping_unix.sh
+
+./SENC_Olympus_zipping_unix.sh
+
+
 
 ## for zipping files for easy transport
 

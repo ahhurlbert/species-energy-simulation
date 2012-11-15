@@ -1,0 +1,13 @@
+#!/bin/csh
+
+#SBATCH -A jcstegen
+#SBATCH -t 30
+#SBATCH -n 3
+#SBATCH -p shared
+#SBATCH --share
+
+srun -n 1 zip senc.out.$1.zip clade_example_figs_sim$1.pdf corrs_vs_cladeage_sim$1.pdf lat_grad_thru_time_sim$1.pdf SENC_all.pops_sim$1.csv SENC_params.out_sim$1.csv SENC_phylo_sim$1.tre SENC_Stats_sim$1.csv SENC_time.rich_sim$1.csv sim.$1.out 
+
+srun -n 1 mv senc.out.$1.zip ~/
+
+
