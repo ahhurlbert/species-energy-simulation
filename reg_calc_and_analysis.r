@@ -135,7 +135,8 @@ xregion.analysis = function(region.summary, min.num.data.points = 10) {
                            r.rich.ext = NA,   #corr betw richness and extinction rate
                            p.rich.ext = NA,
                            n.regions = n.regions,
-                           clade.origin.time = region.summary$clade.origin[1])
+                           clade.origin.time = region.summary$clade.origin[1],
+                           richness = region.summary$richness[1])
     
   if(nrow(unique(region.summary[!is.na(region.summary$time.in.region) & !is.na(region.summary$richness),c('time.in.region','richness')])) > min.num.data.pts) {
     r1 = cor.test(region.summary$time.in.region, region.summary$richness, method = "pearson")
