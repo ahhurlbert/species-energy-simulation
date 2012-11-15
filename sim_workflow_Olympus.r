@@ -70,14 +70,14 @@ for (t in timeslices) {
 
 			if (identical(sort(as.integer(unique(sub.populations$spp.name))) , sort(as.integer(sub.clade.phylo$tip.label)))==F ) {print(c(c,t,'Error: trimmed phylogeny does not contain the correct species')); break} else{}; 
 
-    	reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env')], sub.clade.phylo, t);
-
+    	reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env','extant')], sub.clade.phylo, t);
+		
     	corr.results = xregion.analysis(reg.summary)
           
   		#Pybus & Harvey (2000)'s gamma statistic
-      Gamma = gammaStat(sub.clade.phylo)
+      Gamma.stat = gammaStat(sub.clade.phylo)
       
-      output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, Gamma = Gamma))
+      output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat))
 			print(c(c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
 
  		} else{};

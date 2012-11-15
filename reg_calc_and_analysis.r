@@ -44,8 +44,8 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   if(class(sub.populations) != "data.frame") {
     stop("First argument must be a dataframe\n")
   } 
-  if(class(sub.populations) == "data.frame" & ncol(sub.populations) != 4) {
-    stop("First argumument should have 4 cols: sites, species, time of origin, and reg.env\n")
+  if(class(sub.populations) == "data.frame" & ncol(sub.populations) != 5) {
+    stop("First argumument should have 5 cols: sites, species, time of origin, and reg.env\n")
   }
   if(class(max.time) != "integer") {
     stop("max.time must be an integer\n")
@@ -102,11 +102,11 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   # that ever appeared (whether through speciation or dispersal) divided by the time
   # since the first colonization of that region.
   num.all.lineages = data.frame(table(sub.populations$region))
-  extinct.lineages = aggregate(sub.populations$extant,by=list(sub.populationss$region), function(x) sum(x==0))
-  time.col = aggregate(all.populations$time.of.origin,by=list(sub.populations$region), min)
+  extinct.lineages = aggregate(sub.populations$extant,by=list(sub.populations$region), function(x) sum(x==0))
+  time.col = aggregate(sub.populations$time.of.origin,by=list(sub.populations$region), min)
   output = data.frame(region = extinct.lineages$Group.1, extinct.pops=extinct.lineages$x, 
-                      total.pops=num.all.lineages$Freq, time.in.region=max.time-time.col$x)
-  output$extinction.rate = output$extinct.pops/output$total.pops/output$time.in.region
+                      total.pops=num.all.lineages$Freq, time.in.region.pops=max.time-time.col$x)
+  output$extinction.rate = output$extinct.pops/output$total.pops/output$time.in.region.pops
   
   MRD.PSV.ext.out = merge(MRD.PSV.out, output, by='region')
   return(MRD.PSV.ext.out)

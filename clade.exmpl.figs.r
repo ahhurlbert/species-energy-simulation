@@ -31,7 +31,7 @@ clade.exmpl.figs = function(sim.results, clade.slices=6, seed=1) {
   for (i in clds) {
     cl.members = clade.members(i,phylo.out)
     cl.subset = subset(all.pops, spp.name %in% cl.members)
-    cl.analysis = regional.calc(cl.subset[c('region','spp.name','time.of.origin','reg.env')], phylo.out, max.time)
+    cl.analysis = regional.calc(cl.subset[c('region','spp.name','time.of.origin','reg.env','extant')], phylo.out, max.time)
     attach(cl.analysis)
 
     if(length(unique(richness[!is.na(richness)])) > 2) {

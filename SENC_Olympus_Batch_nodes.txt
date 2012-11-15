@@ -8,7 +8,7 @@
 
 module load R/2.15.1
 
-srun -o sim.$1.out Rscript sim_workflow_Olympus.r $1
+srun -n 1 -o sim.$1.out Rscript sim_workflow_Olympus.r $1
 
-srun rm temp.extinct.sim.$1.*
+srun -n 1 rm temp.extinct.sim.$1.*
 
