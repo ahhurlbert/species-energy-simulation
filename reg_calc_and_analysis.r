@@ -114,7 +114,7 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   
 
 
-xregion.analysis = function(region.summary, min.num.data.points = 10) {
+xregion.analysis = function(region.summary, min.num.data.pts = 10) {
   
   n.regions = nrow(region.summary)
 
