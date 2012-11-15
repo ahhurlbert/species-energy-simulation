@@ -114,7 +114,7 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   
 
 
-xregion.analysis = function(region.summary, min.num.data.pts = 10) {
+xregion.analysis = function(region.summary) {
   
   n.regions = nrow(region.summary)
 
@@ -138,42 +138,42 @@ xregion.analysis = function(region.summary, min.num.data.pts = 10) {
                            clade.origin.time = region.summary$clade.origin[1],
                            richness = region.summary$richness[1])
     
-  if(nrow(unique(region.summary[!is.na(region.summary$time.in.region) & !is.na(region.summary$richness),c('time.in.region','richness')])) > min.num.data.pts) {
+  if(nrow(unique(region.summary[!is.na(region.summary$time.in.region) & !is.na(region.summary$richness),c('time.in.region','richness')])) > 2) {
     r1 = cor.test(region.summary$time.in.region, region.summary$richness, method = "pearson")
     corr.output$r.time.rich = r1$estimate
     corr.output$p.time.rich = r1$p.value
   }
-  if(nrow(unique(region.summary[!is.na(region.summary$reg.env) & !is.na(region.summary$richness),c('reg.env','richness')])) > min.num.data.pts) {
+  if(nrow(unique(region.summary[!is.na(region.summary$reg.env) & !is.na(region.summary$richness),c('reg.env','richness')])) > 2) {
     r2 = cor.test(region.summary$reg.env, region.summary$richness, method = "pearson")
     corr.output$r.env.rich = r2$estimate
     corr.output$p.env.rich = r2$p.value
   }
-  if(nrow(unique(region.summary[!is.na(region.summary$MRD) & !is.na(region.summary$richness),c('MRD','richness')])) > min.num.data.pts) {
+  if(nrow(unique(region.summary[!is.na(region.summary$MRD) & !is.na(region.summary$richness),c('MRD','richness')])) > 2) {
     r3 = cor.test(region.summary$MRD, region.summary$richness, method = "pearson")
     corr.output$r.MRD.rich = r3$estimate
     corr.output$p.MRD.rich = r3$p.value
   }
-  if(nrow(unique(region.summary[!is.na(region.summary$PSV) & !is.na(region.summary$richness),c('PSV','richness')])) > min.num.data.pts) {
+  if(nrow(unique(region.summary[!is.na(region.summary$PSV) & !is.na(region.summary$richness),c('PSV','richness')])) > 2) {
     r4 = cor.test(region.summary$PSV, region.summary$richness, method = "pearson")
     corr.output$r.PSV.rich = r4$estimate
     corr.output$p.PSV.rich = r4$p.value
   }
-  if(nrow(unique(region.summary[!is.na(region.summary$reg.env) & !is.na(region.summary$MRD),c('reg.env','MRD')])) > min.num.data.pts) {
+  if(nrow(unique(region.summary[!is.na(region.summary$reg.env) & !is.na(region.summary$MRD),c('reg.env','MRD')])) > 2) {
     r5 = cor.test(region.summary$reg.env, region.summary$MRD, method = "pearson")
     corr.output$r.env.MRD = r5$estimate
     corr.output$p.env.MRD = r5$p.value
   }
-  if(nrow(unique(region.summary[!is.na(region.summary$reg.env) & !is.na(region.summary$PSV),c('reg.env','PSV')])) > min.num.data.pts) {
+  if(nrow(unique(region.summary[!is.na(region.summary$reg.env) & !is.na(region.summary$PSV),c('reg.env','PSV')])) > 2) {
     r6 = cor.test(region.summary$reg.env, region.summary$PSV, method = "pearson")
     corr.output$r.env.PSV = r6$estimate
     corr.output$p.env.PSV = r6$p.value
   }
-  if(nrow(unique(region.summary[!is.na(region.summary$extinction.rate) & !is.na(region.summary$region),c('reg.env','PSV')])) > min.num.data.pts) {
+  if(nrow(unique(region.summary[!is.na(region.summary$extinction.rate) & !is.na(region.summary$region),c('reg.env','PSV')])) > 2) {
     r7 = cor.test(region.summary$extinction.rate, region.summary$region, method = "pearson")
     corr.output$r.ext.reg = r7$estimate
     corr.output$p.ext.reg = r7$p.value
   }
-  if(nrow(unique(region.summary[!is.na(region.summary$richness) & !is.na(region.summary$extinction.rate),c('reg.env','PSV')])) > min.num.data.pts) {
+  if(nrow(unique(region.summary[!is.na(region.summary$richness) & !is.na(region.summary$extinction.rate),c('reg.env','PSV')])) > 2) {
     r8 = cor.test(region.summary$richness, region.summary$extinction.rate, method = "pearson")
     corr.output$r.rich.ext = r8$estimate
     corr.output$p.rich.ext = r8$p.value
