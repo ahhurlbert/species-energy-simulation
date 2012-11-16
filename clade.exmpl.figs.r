@@ -15,6 +15,9 @@ clade.exmpl.figs = function(sim.results, reg.stats, clade.slices=6, seed=1) {
   # --only focus on clades w/ at least 10 species for analysis
   rootdist = stats[stats$richness >= 10, c('clade.id','clade.origin.time')]
   
+  if (nrow(rootdist) < 1) {
+    stop("There are no clades with sufficient species for analysis")
+  } else {
   clade.time.slices = round(seq(max.time/(clade.slices+1), max.time - max.time/(clade.slices+1),length.out=clade.slices),0)
 
   pdf(paste('clade_example_figs_sim',sim.params[1,1],'.pdf',sep=''),width=10,height=9)
@@ -106,8 +109,10 @@ clade.exmpl.figs = function(sim.results, reg.stats, clade.slices=6, seed=1) {
     mtext(paste('Sim',sim.params[1,1],', Origin =',sim.params[1,3],', w =',sim.params[1,4],', sigma =',sim.params[1,7],
                 ',disp = ',sim.params[1,6],', specn =',sim.params[1,5],',',K.text),outer=T,line=2)
     
-    mtext(paste("CladeID =",i,"; Clade time of origin =", rootdist[rootdist$clade.id==i,'time.of.origin'],"; Clade richness =",length(cl.members)),3,outer=T,line=.3)
+    mtext(paste("CladeID =",clade,"; Clade time of origin =", rootdist[rootdist$clade.id==clade,'time.of.origin'],"; Clade richness =",length(cl.members)),3,outer=T,line=.3)
     detach(cl.analysis)
-  }
+  } #end clade loop
   dev.off()
-}
+} #end else
+
+} #end function
