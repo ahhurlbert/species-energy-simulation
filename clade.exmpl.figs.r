@@ -13,7 +13,7 @@ clade.exmpl.figs = function(sim.results, reg.stats, clade.slices=6, seed=1) {
  
   #Clade origin times (i.e. root distances)
   # --only focus on clades w/ at least 10 species for analysis
-  rootdist = stats[stats$richness >= 10, c('clade.id','clade.origin.time')]
+  rootdist = stats[stats$extant.richness >= 10 & stats$time==sim.params$max.time, c('clade.id','clade.origin.time','extant.richness')]
   
   if (nrow(rootdist) < 1) {
     stop("There are no clades with sufficient species for analysis")
@@ -21,18 +21,26 @@ clade.exmpl.figs = function(sim.results, reg.stats, clade.slices=6, seed=1) {
   clade.time.slices = round(seq(max.time/(clade.slices+1), max.time - max.time/(clade.slices+1),length.out=clade.slices),0)
 
   pdf(paste('clade_example_figs_sim',sim.params[1,1],'.pdf',sep=''),width=10,height=9)
-  par(mfrow=c(3,3),oma = c(1,1,4,0),mar=c(4,4,1,1))
+  
   
   for (c in 1:clade.slices) {
-  
-    #Choose a clade randomly from those that are closest to the specified clade time slice,
+    par(mfrow=c(3,3),oma = c(1,1,4,0),mar=c(4,4,1,1))
+    #Choose a clade randomly from those that are close to the specified clade time slice,
     #specifically those that are within 100 time units of the closest clade
     set.seed(seed)
-    clade = sample(rootdist$clade.id[abs(rootdist$clade.origin.time - clade.time.slices[c]) < 
-                                     (min(abs(rootdist$clade.origin.time - clade.time.slices[c]))+100)],1)
-    cl.members = clade.members(which(phylo.out$tip.label==clade),phylo.out)
-    cl.subset = subset(all.pops, spp.name %in% cl.members)
-    cl.analysis = regional.calc(cl.subset[c('region','spp.name','time.of.origin','reg.env','extant')], phylo.out, max.time)
+    
+    possible.clades = rootdist[abs(rootdist$clade.origin.time - clade.time.slices[c]) < 
+                   (min(abs(rootdist$clade.origin.time - clade.time.slices[c]))+100),]
+    
+    extant.species = unique(all.pops[all.pops$time.of.sp.extinction > sim.params$max.time,'spp.name'])
+    tips.to.drop = as.character(phylo.out$tip.label[which(is.element(phylo.out$tip.label,as.character(extant.species))==F)]);
+    sub.phylo = drop.tip(phylo.out,tips.to.drop);
+    
+    clade.index = sample(1:nrow(possible.clades),1)
+    clade = possible.clades[clade.index,'clade.id']
+    cl.members = clade.members(clade, sub.phylo, tip.labels=T)
+    cl.subset = subset(all.pops, spp.name %in% as.numeric(cl.members))
+    cl.analysis = regional.calc(cl.subset[c('region','spp.name','time.of.origin','reg.env','extant')], sub.phylo, as.integer(max.time))
     
     attach(cl.analysis)
     if(length(unique(richness[!is.na(richness)])) > 2) {
@@ -109,7 +117,7 @@ clade.exmpl.figs = function(sim.results, reg.stats, clade.slices=6, seed=1) {
     mtext(paste('Sim',sim.params[1,1],', Origin =',sim.params[1,3],', w =',sim.params[1,4],', sigma =',sim.params[1,7],
                 ',disp = ',sim.params[1,6],', specn =',sim.params[1,5],',',K.text),outer=T,line=2)
     
-    mtext(paste("CladeID =",clade,"; Clade time of origin =", rootdist[rootdist$clade.id==clade,'time.of.origin'],"; Clade richness =",length(cl.members)),3,outer=T,line=.3)
+    mtext(paste("CladeID =",clade,"; Clade time of origin =", possible.clades[clade.index,'clade.origin.time'],"; Clade richness =",length(cl.members)),3,outer=T,line=.3)
     detach(cl.analysis)
   } #end clade loop
   dev.off()
