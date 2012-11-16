@@ -32,8 +32,8 @@ clade.exmpl.figs = function(sim.results, reg.stats, clade.slices=6, seed=1) {
     possible.clades = rootdist[abs(rootdist$clade.origin.time - clade.time.slices[c]) < 
                    (min(abs(rootdist$clade.origin.time - clade.time.slices[c]))+100),]
     
-    extant.species = unique(all.pops[all.pops$time.of.sp.extinction > sim.params$max.time,'spp.name'])
-    tips.to.drop = as.character(phylo.out$tip.label[which(is.element(phylo.out$tip.label,as.character(extant.species))==F)]);
+    extant.species = unique(all.pops[all.pops$extant==1,'spp.name'])
+    tips.to.drop = as.character(phylo.out$tip.label[!phylo.out$tip.label %in% as.character(extant.species)]);
     sub.phylo = drop.tip(phylo.out,tips.to.drop);
     
     clade.index = sample(1:nrow(possible.clades),1)
