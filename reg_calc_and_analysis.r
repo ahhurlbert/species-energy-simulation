@@ -51,7 +51,9 @@ regional.calc = function(sub.populations, phylo.out, max.time)
     stop("max.time must be an integer\n")
   }
   
-
+  global.clade.richness = length(unique(sub.populations$spp.name))
+  clade.extant.richness = length(unique(sub.populations[sub.populations$extant==1,'spp.name']))
+  
   #Calculate the time of origin of the focal clade within each region
   overall.origin.time = phylo.out$origin.time;
   origin.by.region = aggregate(sub.populations$time.of.origin, by=list(sub.populations$region), min)
@@ -109,6 +111,8 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   output$extinction.rate = output$extinct.pops/output$total.pops/output$time.in.region.pops
   
   MRD.PSV.ext.out = merge(MRD.PSV.out, output, by='region')
+  MRD.PSV.ext.out$global.richness = global.clade.richness
+  MRD.PSV.ext.out$extant.richness = clade.extant.richness
   return(MRD.PSV.ext.out)
 }
   
@@ -136,7 +140,8 @@ xregion.analysis = function(region.summary) {
                            p.rich.ext = NA,
                            n.regions = n.regions,
                            clade.origin.time = region.summary$clade.origin[1],
-                           richness = region.summary$richness[1])
+                           global.richness = region.summary$global.richness[1],
+                           extant.richness = region.summary$extant.richness[1])
     
   if(nrow(unique(region.summary[!is.na(region.summary$time.in.region) & !is.na(region.summary$richness),c('time.in.region','richness')])) > 2) {
     r1 = cor.test(region.summary$time.in.region, region.summary$richness, method = "pearson")
