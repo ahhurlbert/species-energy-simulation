@@ -42,8 +42,14 @@ timeslices = as.integer(round(seq(max(sim.results$time.richness$time)/num.of.tim
 max.time.actual = max(sim.results$time.richness$time);
 
 for (t in timeslices) {
-	sub.species = subset(sim.results$all.populations,time.of.sp.origin < t & time.of.sp.extinction > t);
-	tips.to.drop = as.character(sim.results$phylo.out$tip.label[which(is.element(sim.results$phylo.out$tip.label,as.character(sub.species$spp.name))==F)]);
+	sub.species = as.character(unique(subset(all.populations,time.of.sp.origin < t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
+
+  #Some species may be extant globally but in our boundary regions (0,11) only; 
+  #we need to eliminate species that are not extant within regions 1-10
+  extant.ornot = aggregate(all.populations$extant,by=list(all.populations$spp.name),sum)
+  extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
+  sub.species2 = sub.species[!sub.species %in% extinct.species]
+	tips.to.drop = as.character(phylo.out$tip.label[!phylo.out$tip.label %in% sub.species2]);
   sub.phylo = drop.tip(sim.results$phylo.out,tips.to.drop);
 	temp.root.time = max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1]); temp.root.time;
 	most.recent.spp = sub.phylo$tip.label[as.numeric(names(which.max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1])))]; most.recent.spp;
