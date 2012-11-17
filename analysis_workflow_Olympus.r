@@ -21,6 +21,7 @@ source('make.phylo.jimmy.fun.r');
 source('lat.grad.time.plot.r');
 source('clade.origin.corr.plot.r');
 source('clade.exmpl.figs.r');
+source('extinct.calc.r');
 
 #(3) read in master simulation matrix with chosen parameter combinations
 sim.matrix = as.data.frame(read.csv("SENC_Master_Simulation_Matrix.csv",header=T));
@@ -79,8 +80,12 @@ for (t in timeslices) {
 			if (identical(sort(as.integer(unique(sub.populations$spp.name))) , sort(as.integer(sub.clade.phylo$tip.label)))==F ) {print(c(c,t,'Error: trimmed phylogeny does not contain the correct species')); break} else{}; 
 
     	reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env','extant')], sub.clade.phylo, t);
-		
-    	corr.results = xregion.analysis(reg.summary)
+	
+      #Note that extinction calculation must be done on subset.populations, not sub.populations
+      extinction = extinct.calc(subset.populations, timeslice=t)
+      reg.summary2 = merge(reg.summary,extinction[,c('region','extinction.rate')],by='region')
+      
+    	corr.results = xregion.analysis(reg.summary2)
           
   		#Pybus & Harvey (2000)'s gamma statistic
       Gamma.stat = gammaStat(sub.clade.phylo)
