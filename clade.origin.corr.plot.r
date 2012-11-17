@@ -23,7 +23,7 @@ clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10)
     } else {
       plot(1,1,xlab="",ylab = "Environment-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-50,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(r.MRD.rich[!is.na(r.MRD.rich)]) > min.num.data.pts) {
       plot(clade.origin.time, r.MRD.rich, xlab="",ylab="Mean Root Distance-Richness correlation",ylim=c(-1,1))
@@ -31,7 +31,7 @@ clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10)
     } else {
       plot(1,1,xlab="",ylab = "Mean Root Distance-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-50,-1.1,t+50,-.5,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1000,-1.1,t+50,-.5,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(r.PSV.rich[!is.na(r.PSV.rich)]) > min.num.data.pts) {
       plot(clade.origin.time, r.PSV.rich, xlab = "", ylab="PSV-Richness correlation",ylim=c(-1,1))
@@ -39,15 +39,7 @@ clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10)
     } else {
       plot(1,1,xlab="",ylab = "PSV-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-50,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
-
-    if (length(r.rich.ext[!is.na(r.rich.ext)]) > min.num.data.pts) {
-      plot(clade.origin.time, r.rich.ext, xlab = "", ylab="Extinction Rate-Richness correlation",ylim=c(-1,1))
-      points(smooth.spline(clade.origin.time[!is.na(r.rich.ext)],r.rich.ext[!is.na(r.rich.ext)],df=spline.df),type='l',col='red')
-    } else {
-      plot(1,1,xlab="",ylab = "Extinction Rate-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
-    }
-    #rect(-50,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(r.time.rich[!is.na(r.time.rich)]) > min.num.data.pts) {
       plot(clade.origin.time, r.time.rich, xlab = "",ylab="Time in region-Richness correlation",ylim=c(-1,1))
@@ -55,7 +47,7 @@ clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10)
     } else { 
       plot(1,1,xlab="",ylab = "Time in Region-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-50,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(r.env.MRD[!is.na(r.env.MRD)]) > min.num.data.pts) {
       plot(clade.origin.time, r.env.MRD, xlab="", ylab="Environment-MRD correlation",ylim=c(-1,1))
@@ -63,7 +55,7 @@ clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10)
     } else {
       plot(1,1,xlab="",ylab = "Environment-MRD correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-50,-1.1,t+50,-.5,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1000,-1.1,t+50,-.5,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(r.env.PSV[!is.na(r.env.PSV)]) > min.num.data.pts) {
       plot(clade.origin.time, r.env.PSV, xlab="", ylab="Environment-PSV correlation",ylim=c(-1,1))
@@ -71,7 +63,15 @@ clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10)
     } else {
       plot(1,1,xlab="",ylab = "Environment-PSV correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-50,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
+
+    if (length(r.rich.ext[!is.na(r.rich.ext)]) > min.num.data.pts) {
+      plot(clade.origin.time, r.rich.ext, xlab = "", ylab="Extinction Rate-Richness correlation",ylim=c(-1,1))
+      points(smooth.spline(clade.origin.time[!is.na(r.rich.ext)],r.rich.ext[!is.na(r.rich.ext)],df=spline.df),type='l',col='red')
+    } else {
+      plot(1,1,xlab="",ylab = "Extinction Rate-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
+    }
+    #rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(r.ext.reg[!is.na(r.ext.reg)]) > min.num.data.pts) {
       plot(clade.origin.time, r.ext.reg, xlab = "", ylab="Extinction Rate-Region correlation",ylim=c(-1,1))
@@ -79,7 +79,7 @@ clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10)
     } else {
       plot(1,1,xlab="",ylab = "Extinction Rate-Region correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    #rect(-50,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
+    #rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
     
     if (length(gamma.stat[!is.na(gamma.stat)]) > min.num.data.pts) {
       plot(clade.origin.time, gamma.stat, xlab = "", ylab="Gamma")
@@ -87,7 +87,7 @@ clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10)
     } else {
       plot(1,1,xlab="",ylab = "Gamma",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-50,-1.645,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0) # -1.645 is the critical value for rejecting constant rates
+    rect(-1000,-1.645,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0) # -1.645 is the critical value for rejecting constant rates
 
     mtext("Clade origin time",1,outer=T,line=2)
     if (sim.params[1,8]=='on' & sim.params[1,9]=='on') {
