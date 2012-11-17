@@ -98,22 +98,9 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   MRD.PSV.out$clade.origin = rep(overall.origin.time, nrow(MRD.PSV.out))
   MRD.PSV.out = unique(merge(MRD.PSV.out,sub.populations[,c('region','reg.env')],by='region'))
     
-  #calculate extinction rate
-  # This is in units of extinctions per population per time, calculated as the 
-  # total number of extinctions in a region divided by the total number of populations 
-  # that ever appeared (whether through speciation or dispersal) divided by the time
-  # since the first colonization of that region.
-  num.all.lineages = data.frame(table(sub.populations$region))
-  extinct.lineages = aggregate(sub.populations$extant,by=list(sub.populations$region), function(x) sum(x==0))
-  time.col = aggregate(sub.populations$time.of.origin,by=list(sub.populations$region), min)
-  output = data.frame(region = extinct.lineages$Group.1, extinct.pops=extinct.lineages$x, 
-                      total.pops=num.all.lineages$Freq, time.in.region.pops=max.time-time.col$x)
-  output$extinction.rate = output$extinct.pops/output$total.pops/output$time.in.region.pops
-  
-  MRD.PSV.ext.out = merge(MRD.PSV.out, output, by='region')
-  MRD.PSV.ext.out$global.richness = global.clade.richness
-  MRD.PSV.ext.out$extant.richness = clade.extant.richness
-  return(MRD.PSV.ext.out)
+  MRD.PSV.out$global.richness = global.clade.richness
+  MRD.PSV.out$extant.richness = clade.extant.richness
+  return(MRD.PSV.out)
 }
   
 
