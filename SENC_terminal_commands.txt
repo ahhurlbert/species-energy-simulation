@@ -29,54 +29,54 @@ chmod u+x SENC_Olympus_zipping_unix.sh
 
 ## for zipping files for easy transport
 
-cd SENC/ 
+cd SENC.2nd.run/ 
 
 
-zip slurm.archive.zip slurm*
+zip slurm.archive2.zip slurm*
 
-mv slurm.archive.zip ~/
-
-
-zip senc.params.zip SENC_params.out*
-
-mv senc.params.zip ~/
+mv slurm.archive2.zip ~/
 
 
-zip senc.time.rich.zip SENC_time.rich*
+zip senc.params2.zip SENC_params.out*
 
-mv  senc.time.rich.zip ~/
-
-
-zip senc.stats.zip SENC_Stats*
-
-mv  senc.stats.zip ~/
+mv senc.params2.zip ~/
 
 
-zip clade.example.figs.zip clade_example*
+zip senc.time.rich2.zip SENC_time.rich*
 
-mv  clade.example.figs.zip ~/
-
-
-zip lat.grad.figs.zip lat_grad_thru*
-
-mv  lat.grad.figs.zip ~/
+mv  senc.time.rich2.zip ~/
 
 
-zip corrs.v.age.figs.zip corrs_vs_*
+zip senc.stats2.zip SENC_Stats*
 
-mv  corrs.v.age.figs.zip ~/
-
-
-zip all.pops.zip SENC_all.pops*
-
-mv  all.pops.zip ~/
+mv  senc.stats2.zip ~/
 
 
-zip sim.out.zip sim.*
+zip clade.example.figs2.zip clade_example*
 
-mv  sim.out.zip ~/
+mv  clade.example.figs2.zip ~/
 
 
-zip senc.phylo.zip SENC_phylo*
+zip lat.grad.figs2.zip lat_grad_thru*
 
-mv  senc.phylo.zip ~/
+mv  lat.grad.figs2.zip ~/
+
+
+zip corrs.v.age.figs2.zip corrs_vs_*
+
+mv  corrs.v.age.figs2.zip ~/
+
+
+zip all.pops2.zip SENC_all.pops*
+
+mv  all.pops2.zip ~/
+
+
+zip sim.out2.zip sim.*
+
+mv  sim.out2.zip ~/
+
+
+zip senc.phylo2.zip SENC_phylo*
+
+mv  senc.phylo2.zip ~/
