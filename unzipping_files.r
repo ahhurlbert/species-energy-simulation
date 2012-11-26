@@ -1,0 +1,5 @@
+unzipped.filenames = unzip('C:/SENCoutput/senc.out.1.zip')
+all.pops = read.csv(unzipped.filenames[1], header=T)
+params.out = read.csv(unzipped.filenames[2],header=T)
+phylo.out = read.tree(unzipped.filenames[3], header=T)
+time.rich = read.tree(unzipped.filenames[4], header=T)
