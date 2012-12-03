@@ -3,7 +3,7 @@
 
 # NOTE: May not be worth doing this over early time slices. Perhaps just for last time point,
 #       in which case time loop can be commented out and set t = max(stats.output$time)
-
+ 
 clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10, output.dir) {
   timeslices = unique(stats.output$time)  
 
