@@ -4,11 +4,11 @@
 # NOTE: May not be worth doing this over early time slices. Perhaps just for last time point,
 #       in which case time loop can be commented out and set t = max(stats.output$time)
 
-clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10) {
+clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10, output.dir) {
   timeslices = unique(stats.output$time)  
 
   #Plotting
-  pdf(paste('corrs_vs_cladeage_sim',stats.output$sim[1],'.pdf',sep=''),height=8,width=9)
+  pdf(paste(output.dir,'/corrs_vs_cladeage_sim',stats.output$sim[1],'.pdf',sep=''),height=8,width=9)
   par(mfrow=c(3,3),oma=c(5,1,4,0),mar=c(2,5,2,1))
 
   for (t in timeslices) {
