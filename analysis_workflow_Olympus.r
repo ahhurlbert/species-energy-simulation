@@ -138,7 +138,9 @@ for (sim in which.sims) {
   ####################################################
   lat.grad.time.plot(sim.results, numslices = 10, output.dir = analysis_dir)
   clade.origin.corr.plot(output, params.out, output.dir = analysis_dir)
-  clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_dir)
+  
+  # There are currently some bugs in clade.exmpl.figs.
+  #clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_dir)
   
   
 } # end sim loop
