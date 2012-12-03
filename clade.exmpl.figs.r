@@ -2,14 +2,14 @@
 # The 'time.buffer' is the potential +/- variation (in time units) allowed in selecting clades of a specific age
 
 
-clade.exmpl.figs = function(sim.results, reg.stats, clade.slices=6, seed=1, output.dir) {
+clade.exmpl.figs = function(sim.results, stats.output, clade.slices=6, seed=1, output.dir) {
   require(caper)
   
   all.pops = sim.results$all.populations
   phylo.out = sim.results$phylo.out
   max.time = as.integer(max(all.pops$time.of.origin))
   sim.params = sim.results$params.out
-  stats = reg.stats
+  stats = stats.output
  
   #Clade origin times (i.e. root distances)
   # --only focus on clades w/ at least 10 species for analysis
