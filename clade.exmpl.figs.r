@@ -2,7 +2,7 @@
 # The 'time.buffer' is the potential +/- variation (in time units) allowed in selecting clades of a specific age
 
 
-clade.exmpl.figs = function(sim.results, reg.stats, clade.slices=6, seed=1) {
+clade.exmpl.figs = function(sim.results, reg.stats, clade.slices=6, seed=1, output.dir) {
   require(caper)
   
   all.pops = sim.results$all.populations
@@ -20,7 +20,7 @@ clade.exmpl.figs = function(sim.results, reg.stats, clade.slices=6, seed=1) {
   } else {
   clade.time.slices = round(seq(max.time/(clade.slices+1), max.time - max.time/(clade.slices+1),length.out=clade.slices),0)
 
-  pdf(paste('clade_example_figs_sim',sim.params[1,1],'.pdf',sep=''),width=10,height=9)
+  pdf(paste(output.dir,'/clade_example_figs_sim',sim.params[1,1],'.pdf',sep=''),width=10,height=9)
   
   
   for (c in 1:clade.slices) {
