@@ -69,7 +69,12 @@ for (sim in which.sims) {
     # we need to eliminate species that are not extant within regions 1-10 (which is all that is 
     # reflected in the all.populations dataframe)
     # FIXME: 
-    # Add more explanatory comments justifying we 
+    # Add more explanatory comments justifying why we don't need to consider species that existed
+    # at time t but went extinct before the present.
+    # In some cases (e.g. sim 2, t=6000), tips.to.drop includes all tips and so sub.phylo is empty.
+    # Does it make sense for this to ever happen? If not, fix it. 
+    # If so, need to provide an if-else error catch both in the creation of sub.phylo, 
+    # and of sub.clade.phylo inside the clade loop. (Sim 3, t = 156 bonks at that point)
     extant.ornot = aggregate(all.populations$extant,by=list(all.populations$spp.name),sum)
     extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
     sub.species2 = sub.species[!sub.species %in% extinct.species]
