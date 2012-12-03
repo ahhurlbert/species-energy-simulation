@@ -1,9 +1,9 @@
 
-#Function for unzipping output files
+#Function for unzipping output files, and storing them in a list
 # --output_dir is the directory where the zipped output files reside
 
-output.unzip = function(output_dir, sim_ID) {
-  unzipped.filenames = unzip(paste(output_dir,'/senc.out.',sim_ID,'.zip',sep=''))
+output.unzip = function(sim_dir, sim_ID) {
+  unzipped.filenames = unzip(paste(sim_dir,'/senc.out.',sim_ID,'.zip',sep=''))
   all.populations = read.csv(unzipped.filenames[1], header=T)
   params.out = read.csv(unzipped.filenames[2],header=T)
   phylo.out = read.tree(unzipped.filenames[3])
