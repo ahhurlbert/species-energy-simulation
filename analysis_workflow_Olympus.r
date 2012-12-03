@@ -75,6 +75,7 @@ for (sim in which.sims) {
     # Does it make sense for this to ever happen? If not, fix it. 
     # If so, need to provide an if-else error catch both in the creation of sub.phylo, 
     # and of sub.clade.phylo inside the clade loop. (Sim 3, t = 156 bonks at that point)
+    # NOTE: code runs for sim==5 currently as a test case
     extant.ornot = aggregate(all.populations$extant,by=list(all.populations$spp.name),sum)
     extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
     sub.species2 = sub.species[!sub.species %in% extinct.species]
@@ -106,7 +107,7 @@ for (sim in which.sims) {
         
       if (identical(sort(as.integer(unique(sub.populations$spp.name))) , sort(as.integer(sub.clade.phylo$tip.label)))==F ) {print(c(c,t,'Error: trimmed phylogeny does not contain the correct species')); break} else{}; 
       
-      reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env','extant')], sub.clade.phylo, t);
+      reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env','extant')], sub.clade.phylo, as.integer(t));
         
       #Note that extinction calculation must be done on subset.populations, not sub.populations
       extinction = extinct.calc(subset.populations, timeslice=t)
@@ -128,7 +129,7 @@ for (sim in which.sims) {
   #write all of this output to files
   write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,".csv",sep=""),quote=F,row.names=F);
   analysis.end = date();
-  #FIXME: store these warnings to a file, along with sim.id?
+  #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
   #print(c(warnings(),sim.start,sim.end,analysis.end));
   
   
@@ -136,7 +137,7 @@ for (sim in which.sims) {
   # Simulation summary plots
   ####################################################
   lat.grad.time.plot(sim.results, numslices = 10, output.dir = analysis_dir)
-  clade.origin.corr.plot(output, params.out)
+  clade.origin.corr.plot(output, params.out, output.dir = analysis_dir)
   clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_dir)
   
   
