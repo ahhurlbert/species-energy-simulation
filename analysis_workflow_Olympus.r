@@ -62,15 +62,20 @@ for (sim in which.sims) {
   max.time.actual = max(time.richness$time);
   
   for (t in timeslices) {
+    # vector of species in existence at time t
     sub.species = as.character(unique(subset(all.populations,time.of.sp.origin < t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
     
-    #Some species may be extant globally but in our boundary regions (0,11) only; 
-    #we need to eliminate species that are not extant within regions 1-10
+    # Some species may be extant globally (extant==1) but in our boundary regions (0,11) only; 
+    # we need to eliminate species that are not extant within regions 1-10 (which is all that is 
+    # reflected in the all.populations dataframe)
+    # FIXME: 
+    # Add more explanatory comments justifying we 
     extant.ornot = aggregate(all.populations$extant,by=list(all.populations$spp.name),sum)
     extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
     sub.species2 = sub.species[!sub.species %in% extinct.species]
     tips.to.drop = as.character(phylo.out$tip.label[!phylo.out$tip.label %in% sub.species2]);
     sub.phylo = drop.tip(phylo.out,tips.to.drop);
+    
     temp.root.time = max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1]); temp.root.time;
     most.recent.spp = sub.phylo$tip.label[as.numeric(names(which.max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1])))]; most.recent.spp;
     extinct.time.most.recent = unique(all.populations$time.of.sp.extinction[all.populations$spp.name==most.recent.spp]); extinct.time.most.recent;
@@ -88,31 +93,29 @@ for (sim in which.sims) {
       #sub.populations is the subset of populations specific to a particular clade and timeslice
       sub.populations = subset(subset.populations, time.of.origin < t & time.of.extinction > t)
       
-      if (length(unique(sub.populations$spp.name))>=10) {
+      #sub.clade.phylo is a specific simulation clade pulled from the phylogeny that was sliced at timeslice t
+      tips.to.drop = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label,as.character(sub.populations$spp.name))==F)]);
+      sub.clade.phylo = drop.tip(sub.phylo,tips.to.drop);
+      sub.clade.phylo$root.time = max(dist.nodes(sub.clade.phylo)[1:Ntip(sub.clade.phylo),Ntip(sub.clade.phylo) + 1]); sub.clade.phylo$root.time;
+      sub.clade.phylo$origin.time = t - sub.clade.phylo$root.time; sub.clade.phylo$origin.time;
         
-        #sub.clade.phylo is a specific simulation clade pulled from the phylogeny that was sliced at timeslice t
-        tips.to.drop = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label,as.character(sub.populations$spp.name))==F)]);
-        sub.clade.phylo = drop.tip(sub.phylo,tips.to.drop);
-        sub.clade.phylo$root.time = max(dist.nodes(sub.clade.phylo)[1:Ntip(sub.clade.phylo),Ntip(sub.clade.phylo) + 1]); sub.clade.phylo$root.time;
-        sub.clade.phylo$origin.time = t - sub.clade.phylo$root.time; sub.clade.phylo$origin.time;
+      if (identical(sort(as.integer(unique(sub.populations$spp.name))) , sort(as.integer(sub.clade.phylo$tip.label)))==F ) {print(c(c,t,'Error: trimmed phylogeny does not contain the correct species')); break} else{}; 
+      
+      reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env','extant')], sub.clade.phylo, t);
         
-        if (identical(sort(as.integer(unique(sub.populations$spp.name))) , sort(as.integer(sub.clade.phylo$tip.label)))==F ) {print(c(c,t,'Error: trimmed phylogeny does not contain the correct species')); break} else{}; 
+      #Note that extinction calculation must be done on subset.populations, not sub.populations
+      extinction = extinct.calc(subset.populations, timeslice=t)
+      reg.summary2 = merge(reg.summary,extinction[,c('region','extinction.rate')],by='region')
         
-        reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env','extant')], sub.clade.phylo, t);
+      corr.results = xregion.analysis(reg.summary2)
         
-        #Note that extinction calculation must be done on subset.populations, not sub.populations
-        extinction = extinct.calc(subset.populations, timeslice=t)
-        reg.summary2 = merge(reg.summary,extinction[,c('region','extinction.rate')],by='region')
+      #Pybus & Harvey (2000)'s gamma statistic
+      Gamma.stat = gammaStat(sub.clade.phylo)
         
-        corr.results = xregion.analysis(reg.summary2)
+      output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
+                                     clade.richness = length(unique(sub.populations$spp.name))))
+      print(c(c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
         
-        #Pybus & Harvey (2000)'s gamma statistic
-        Gamma.stat = gammaStat(sub.clade.phylo)
-        
-        output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat))
-        print(c(c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
-        
-      } else{};
     } # end sub clade for loop
     
   }; # end timeslice loop
