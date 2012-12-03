@@ -54,7 +54,7 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   global.clade.richness = length(unique(sub.populations$spp.name))
   clade.extant.richness = length(unique(sub.populations[sub.populations$extant==1,'spp.name']))
   
-  #Calculate the time of origin of the focal clade within each region
+  # Calculate the time of origin of the focal clade within each region
   overall.origin.time = phylo.out$origin.time;
   origin.by.region = aggregate(sub.populations$time.of.origin, by=list(sub.populations$region), min)
   names(origin.by.region) = c('region','clade.origin.time')
