@@ -8,10 +8,12 @@ if(Allen==1) {
   setwd('c:/documents and settings/hurlbert/species-energy-simulation')
   Rlib.location = "C:/program files/R/R-2.15.1/library"  
   sim_dir = "C:/SENCoutput"
+  analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses"
 }
 else {
   Rlib.location = "/pic/people/steg815/Rlibs"            
   sim_dir = ............ #wherever all of your zipped output files are
+  analysis_dir = .......... #wherever you want to store the results of these analyses
 }
 
 # Simulation workflow
@@ -116,17 +118,18 @@ for (sim in which.sims) {
   }; # end timeslice loop
   
   #write all of this output to files
-  write.csv(output,paste("SENC_Stats_sim",sim,".csv",sep=""),quote=F,row.names=F);
+  write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,".csv",sep=""),quote=F,row.names=F);
   analysis.end = date();
-  print(c(warnings(),sim.start,sim.end,analysis.end));
+  #FIXME: store these warnings to a file, along with sim.id?
+  #print(c(warnings(),sim.start,sim.end,analysis.end));
   
   
   ####################################################
   # Simulation summary plots
   ####################################################
-  lat.grad.time.plot(sim.results, numslices = 10)
+  lat.grad.time.plot(sim.results, numslices = 10, output.dir = analysis_dir)
   clade.origin.corr.plot(output, params.out)
-  clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0)
+  clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_dir)
   
   
 } # end sim loop
