@@ -41,8 +41,10 @@ clade.exmpl.figs = function(sim.results, stats.output, clade.slices=6, seed=1, o
     cl.members = clade.members(clade, sub.phylo, tip.labels=T)
     cl.subset = subset(all.pops, spp.name %in% as.numeric(cl.members))
     cl.analysis = regional.calc(cl.subset[c('region','spp.name','time.of.origin','reg.env','extant')], sub.phylo, as.integer(max.time))
+    cl.extinct = extinct.calc(cl.subset, timeslice=t)
+    cl.analysis2 = merge(cl.analysis,cl.extinct,by='region')
     
-    attach(cl.analysis)
+    attach(cl.analysis2)
     if(length(unique(richness[!is.na(richness)])) > 2) {
       plot(richness~reg.env, xlab="Environment",ylab="Species Richness", cex=3, pch=16, col='darkblue',xlim=range(sim.results$all.populations$reg.env))
       legend("top",legend=paste('r =',round(cor(richness,reg.env,use="complete.obs"),2)), bty='n')
@@ -118,7 +120,7 @@ clade.exmpl.figs = function(sim.results, stats.output, clade.slices=6, seed=1, o
                 ',disp = ',sim.params[1,6],', specn =',sim.params[1,5],',',K.text),outer=T,line=2)
     
     mtext(paste("CladeID =",clade,"; Clade time of origin =", possible.clades[clade.index,'clade.origin.time'],"; Clade richness =",length(cl.members)),3,outer=T,line=.3)
-    detach(cl.analysis)
+    detach(cl.analysis2)
   } #end clade loop
   dev.off()
 } #end else
