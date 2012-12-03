@@ -1,7 +1,7 @@
 # This function takes simulation output and creates a plot of the latitudinal gradient in
 # species richness for a specified number of points throughout the time course of the simulation.
 
-lat.grad.time.plot = function(sim.results, numslices) {
+lat.grad.time.plot = function(sim.results, numslices, output.dir) {
   all.pops = sim.results$all.populations
   rich.time = sim.results$time.richness
   phylo.out = sim.results$phylo.out
@@ -14,11 +14,11 @@ lat.grad.time.plot = function(sim.results, numslices) {
   slices = round(seq(max.time/numslices, max.time,by=max.time/numslices),0)
   cols = rainbow(numslices+1)
 
-  pdf(paste('lat_grad_thru_time_sim',sim.params[1,1],'.pdf',sep=''),height=6,width=8)
+  pdf(paste(output.dir,'/lat_grad_thru_time_sim',sim.params[1,1],'.pdf',sep=''),height=6,width=8)
   par(mfrow=c(1,1),oma=c(0,0,2.5,0),mar=c(4,4,1,1))
   plot(c(1,10),c(0,max(rich.time2$spp.rich)),type="n",xlab="Latitude",ylab="Species richness")
   sapply(slices,function(x) points(11 - rich.time2$region[rich.time2$time==x], rich.time2$spp.rich[rich.time2$time==x],type='l',col=cols[which(slices==x)]))
-  legend('topright',legend=slices,lty='solid',col=cols[2:(numslices+1)])
+  legend('topright',legend=slices,lty='solid',col=cols[1:numslices])
   if (sim.params$carry.cap=='on' & sim.params$energy.gradient=='on') {
     K.text = 'K gradient present'
   } else if (sim.params$carry.cap=='on' & sim.params$energy.gradient=='off') {
