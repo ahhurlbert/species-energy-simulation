@@ -76,7 +76,7 @@ for (sim in which.sims) {
     # FIXME: 
     # Add more explanatory comments justifying why we don't need to consider species that existed
     # at time t but went extinct before the present.
-    # In some cases (e.g. sim 2, t=6000), tips.to.drop includes all tips and so sub.phylo is empty.
+    # In some cases (e.g. sim 1 or 2, t=6000), tips.to.drop includes all tips and so sub.phylo is empty.
     # Does it make sense for this to ever happen? If not, fix it. 
     # If so, need to provide an if-else error catch both in the creation of sub.phylo, 
     # and of sub.clade.phylo inside the clade loop. (Sim 3, t = 156 bonks at that point)
