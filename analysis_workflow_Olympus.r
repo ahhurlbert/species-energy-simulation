@@ -151,13 +151,14 @@ for (sim in which.sims) {
   clade.origin.corr.plot(output, params.out, output.dir = analysis_dir)
   
   # There are currently some bugs in clade.exmpl.figs.
-  #clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_dir)
+  # clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_dir)
   
-  #Add overall summary info
+  # Add overall summary info
   sim.matrix[sim.matrix$sim.id==sim,'n.regions'] = length(unique(all.populations$region))
   sim.matrix[sim.matrix$sim.id==sim,'extant.S'] = nrow(extant.ornot[extant.ornot$x>0,])
   sim.matrix[sim.matrix$sim.id==sim,'extinct.S'] = length(extinct.species)
-  sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = nrow(output)
+  # Number of rows of output with at least 1 correlation (there are 4 non-correlation cols in corr.results)
+  sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = sum(apply(output,1,function(x) sum(is.na(x)) < (ncol(corr.results)-4)))
   
 } # end sim loop
 
