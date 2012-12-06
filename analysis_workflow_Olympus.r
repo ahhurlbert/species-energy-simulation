@@ -47,6 +47,7 @@ sim.matrix$n.regions = NA
 sim.matrix$extant.S = NA
 sim.matrix$extinct.S = NA
 sim.matrix$skipped.clades = NA
+sim.matrix$skipped.times = NA
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 which.sims = 1:max(sim.matrix$sim.id)
@@ -78,6 +79,7 @@ for (sim in which.sims) {
   extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
 
   skipped.clades = 0
+  skipped.times = ""
   for (t in timeslices) {
     # vector of species in existence at time t
     sub.species = as.character(unique(subset(all.populations,time.of.sp.origin <= t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
@@ -92,55 +94,60 @@ for (sim in which.sims) {
     # NOTE: code runs for sim==5 currently as a test case
     sub.species2 = sub.species[!sub.species %in% extinct.species]
     tips.to.drop = as.character(phylo.out$tip.label[!phylo.out$tip.label %in% sub.species2]);
-    sub.phylo = drop.tip(phylo.out,tips.to.drop);
     
-    temp.root.time = max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1]); temp.root.time;
-    most.recent.spp = sub.phylo$tip.label[as.numeric(names(which.max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1])))]; most.recent.spp;
-    extinct.time.most.recent = unique(all.populations$time.of.sp.extinction[all.populations$spp.name==most.recent.spp]); extinct.time.most.recent;
-    sub.phylo$root.time = temp.root.time + max(c(0,max.time.actual - extinct.time.most.recent)); sub.phylo$root.time;
-    sub.phylo = collapse.singles(timeSliceTree(sub.phylo,sliceTime=(max.time.actual - t),plot=F,drop.extinct = T));
-    num.of.spp = length(sub.phylo$tip.label);
+    # check to see if there are at least 2 species for continuing with the analysis; if not store the skipped timeslice
+    if ( (length(phylo.out$tip.label) - length(tips.to.drop)) < 2) {
+      skipped.times = paste(skipped.times, t) # keep track of the timeslices that were skipped in a text string
+    } else {
+      sub.phylo = drop.tip(phylo.out,tips.to.drop);
     
-    for (c in (num.of.spp+1):max(sub.phylo$edge)) {
+      temp.root.time = max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1]); temp.root.time;
+      most.recent.spp = sub.phylo$tip.label[as.numeric(names(which.max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1])))]; most.recent.spp;
+      extinct.time.most.recent = unique(all.populations$time.of.sp.extinction[all.populations$spp.name==most.recent.spp]); extinct.time.most.recent;
+      sub.phylo$root.time = temp.root.time + max(c(0,max.time.actual - extinct.time.most.recent)); sub.phylo$root.time;
+      sub.phylo = collapse.singles(timeSliceTree(sub.phylo,sliceTime=(max.time.actual - t),plot=F,drop.extinct = T));
+      num.of.spp = length(sub.phylo$tip.label);
+    
+      for (c in (num.of.spp+1):max(sub.phylo$edge)) {
       
-      #pull out list of species names belonging to each subclade
-      sub.clade = clade.members(c, sub.phylo, tip.labels=T)
-      subset.populations = subset(all.populations, spp.name %in% as.numeric(sub.clade));
+        #pull out list of species names belonging to each subclade
+        sub.clade = clade.members(c, sub.phylo, tip.labels=T)
+        subset.populations = subset(all.populations, spp.name %in% as.numeric(sub.clade));
       
-      #sub.populations is the subset of populations specific to a particular clade and timeslice
-      sub.populations = subset(subset.populations, time.of.origin <= t & time.of.extinction > t)
+        #sub.populations is the subset of populations specific to a particular clade and timeslice
+        sub.populations = subset(subset.populations, time.of.origin <= t & time.of.extinction > t)
       
-      #sub.clade.phylo is a specific simulation clade pulled from the phylogeny that was sliced at timeslice t
-      tips.to.drop2 = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label,as.character(sub.populations$spp.name))==F)]);
+        #sub.clade.phylo is a specific simulation clade pulled from the phylogeny that was sliced at timeslice t
+        tips.to.drop2 = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label,as.character(sub.populations$spp.name))==F)]);
       
-      # check to see if there are at least 2 species for continuing with the analysis; if not increment skipped.clades
-      if((length(sub.phylo$tip.label) - length(tips.to.drop2)) < 2) {
-        skipped.clades = skipped.clades + 1
-      } else {
+        # check to see if there are at least 2 species for continuing with the analysis; if not increment skipped.clades
+        if((length(sub.phylo$tip.label) - length(tips.to.drop2)) < 2) {
+          skipped.clades = skipped.clades + 1
+        } else {
               
-        sub.clade.phylo = drop.tip(sub.phylo,tips.to.drop2);
-        sub.clade.phylo$root.time = max(dist.nodes(sub.clade.phylo)[1:Ntip(sub.clade.phylo),Ntip(sub.clade.phylo) + 1]); sub.clade.phylo$root.time;
-        sub.clade.phylo$origin.time = t - sub.clade.phylo$root.time; sub.clade.phylo$origin.time;
+          sub.clade.phylo = drop.tip(sub.phylo,tips.to.drop2);
+          sub.clade.phylo$root.time = max(dist.nodes(sub.clade.phylo)[1:Ntip(sub.clade.phylo),Ntip(sub.clade.phylo) + 1]); sub.clade.phylo$root.time;
+          sub.clade.phylo$origin.time = t - sub.clade.phylo$root.time; sub.clade.phylo$origin.time;
         
-        if (identical(sort(as.integer(unique(sub.populations$spp.name))) , sort(as.integer(sub.clade.phylo$tip.label)))==F ) {print(c(c,t,'Error: trimmed phylogeny does not contain the correct species')); break} else{}; 
+          if (identical(sort(as.integer(unique(sub.populations$spp.name))) , sort(as.integer(sub.clade.phylo$tip.label)))==F ) {print(c(c,t,'Error: trimmed phylogeny does not contain the correct species')); break} else{}; 
       
-        reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env','extant')], sub.clade.phylo, as.integer(t));
+          reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env','extant')], sub.clade.phylo, as.integer(t));
         
-        #Note that extinction calculation must be done on subset.populations, not sub.populations
-        extinction = extinct.calc(subset.populations, timeslice=t)
-        reg.summary2 = merge(reg.summary,extinction[,c('region','extinction.rate')],by='region')
+          #Note that extinction calculation must be done on subset.populations, not sub.populations
+          extinction = extinct.calc(subset.populations, timeslice=t)
+          reg.summary2 = merge(reg.summary,extinction[,c('region','extinction.rate')],by='region')
         
-        corr.results = xregion.analysis(reg.summary2)
+          corr.results = xregion.analysis(reg.summary2)
         
-        #Pybus & Harvey (2000)'s gamma statistic
-        Gamma.stat = gammaStat(sub.clade.phylo)
+          #Pybus & Harvey (2000)'s gamma statistic
+          Gamma.stat = gammaStat(sub.clade.phylo)
         
-        output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
+          output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
                                      clade.richness = length(unique(sub.populations$spp.name))))
-        print(c(sim,c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
-      } # end else  
-    } # end sub clade for loop
-    
+          print(c(sim,c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
+        } # end second else  
+      } # end sub clade for loop
+    } # end first else
   }; # end timeslice loop
   
   #write all of this output to files
@@ -166,7 +173,7 @@ for (sim in which.sims) {
   # Number of rows of output with at least 1 correlation (there are 4 non-correlation cols in corr.results)
   sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = sum(apply(output,1,function(x) sum(is.na(x)) < (ncol(corr.results)-4)))
   sim.matrix[sim.matrix$sim.id==sim,'skipped.clades'] = skipped.clades # number of clades skipped over for analysis, summed over timeslices
-    
+  sim.matrix[sim.matrix$sim.id==sim,'skipped.times'] = skipped.times # number of time slices skipped over for analysis
 } # end sim loop
 
 write.csv(sim.matrix,paste(analysis_dir,'/sim.matrix.output_',Sys.Date(),'.csv',sep=''),row.names=F)
