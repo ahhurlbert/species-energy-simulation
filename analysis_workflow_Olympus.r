@@ -4,7 +4,7 @@
 #sim = as.numeric(sim[length(sim)]);
 
 # Choose number of time slices per simulation to analyze
-num.of.time.slices = 5;
+num.of.time.slices = 1;
 
 #New parameter for taking into account which of us is running this code
 if(Allen==1) {
@@ -62,8 +62,7 @@ for (sim in which.sims) {
   # If just a single timeslice, then use the end of the simulation, otherwise space them equally
   if (num.of.time.slices==1) {
     timeslices = max.time.actual
-  }
-  else {
+  } else {
     timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0));
   }
   
