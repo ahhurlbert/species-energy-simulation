@@ -40,8 +40,13 @@ source('clade.exmpl.figs.r');
 source('extinct.calc.r');
 source('unzipping_files.r');
 
-#(3) read in master simulation matrix with chosen parameter combinations
+#(3) read in master simulation matrix with chosen parameter combinations; 
+#    then add fields for storing output summary
 sim.matrix = as.data.frame(read.csv("SENC_Master_Simulation_Matrix.csv",header=T));
+sim.matrix$n.regions = NA
+sim.matrix$extant.S = NA
+sim.matrix$extinct.pops = NA
+
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 which.sims = 1:max(sim.matrix$sim.id)
@@ -66,13 +71,16 @@ for (sim in which.sims) {
     timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0));
   }
   
+  # Some species may be extant globally (extant==1) but in our boundary regions (0,11) only; 
+  # we need to eliminate species that are not extant within regions 1-10 (which is all that is 
+  # reflected in the all.populations dataframe)
+  extant.ornot = aggregate(all.populations$extant,by=list(all.populations$spp.name),sum)
+  extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
+    
   for (t in timeslices) {
     # vector of species in existence at time t
     sub.species = as.character(unique(subset(all.populations,time.of.sp.origin < t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
     
-    # Some species may be extant globally (extant==1) but in our boundary regions (0,11) only; 
-    # we need to eliminate species that are not extant within regions 1-10 (which is all that is 
-    # reflected in the all.populations dataframe)
     # FIXME: 
     # Add more explanatory comments justifying why we don't need to consider species that existed
     # at time t but went extinct before the present.
@@ -81,8 +89,6 @@ for (sim in which.sims) {
     # If so, need to provide an if-else error catch both in the creation of sub.phylo, 
     # and of sub.clade.phylo inside the clade loop. (Sim 3, t = 156 bonks at that point)
     # NOTE: code runs for sim==5 currently as a test case
-    extant.ornot = aggregate(all.populations$extant,by=list(all.populations$spp.name),sum)
-    extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
     sub.species2 = sub.species[!sub.species %in% extinct.species]
     tips.to.drop = as.character(phylo.out$tip.label[!phylo.out$tip.label %in% sub.species2]);
     sub.phylo = drop.tip(phylo.out,tips.to.drop);
@@ -125,7 +131,7 @@ for (sim in which.sims) {
         
       output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
                                      clade.richness = length(unique(sub.populations$spp.name))))
-      print(c(c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
+      print(c(sim,c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
         
     } # end sub clade for loop
     
@@ -147,6 +153,12 @@ for (sim in which.sims) {
   # There are currently some bugs in clade.exmpl.figs.
   #clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_dir)
   
+  #Add overall summary info
+  sim.matrix[sim.matrix$sim.id==sim,'n.regions'] = length(unique(all.populations$region))
+  sim.matrix[sim.matrix$sim.id==sim,'extant.S'] = nrow(extant.ornot[extant.ornot$x>0,])
+  sim.matrix[sim.matrix$sim.id==sim,'extinct.S'] = length(extinct.species)
+  sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = nrow(output)
   
 } # end sim loop
 
+write.csv(sim.matrix,paste(analysis_dir,'/sim.matrix.output_',Sys.Date(),'.csv',sep=''),row.names=F)
