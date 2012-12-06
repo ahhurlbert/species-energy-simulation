@@ -58,8 +58,14 @@ for (sim in which.sims) {
   params.out = sim.results$params.out
 
   
-  timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0));
   max.time.actual = max(time.richness$time);
+  # If just a single timeslice, then use the end of the simulation, otherwise space them equally
+  if (num.of.time.slices==1) {
+    timeslices = max.time.actual
+  }
+  else {
+    timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0));
+  }
   
   for (t in timeslices) {
     # vector of species in existence at time t
