@@ -45,7 +45,7 @@ source('unzipping_files.r');
 sim.matrix = as.data.frame(read.csv("SENC_Master_Simulation_Matrix.csv",header=T));
 sim.matrix$n.regions = NA
 sim.matrix$extant.S = NA
-sim.matrix$extinct.pops = NA
+sim.matrix$extinct.S = NA
 
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
