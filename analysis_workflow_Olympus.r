@@ -79,7 +79,7 @@ for (sim in which.sims) {
     
   for (t in timeslices) {
     # vector of species in existence at time t
-    sub.species = as.character(unique(subset(all.populations,time.of.sp.origin < t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
+    sub.species = as.character(unique(subset(all.populations,time.of.sp.origin <= t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
     
     # FIXME: 
     # Add more explanatory comments justifying why we don't need to consider species that existed
@@ -108,10 +108,11 @@ for (sim in which.sims) {
       subset.populations = subset(all.populations, spp.name %in% as.numeric(sub.clade));
       
       #sub.populations is the subset of populations specific to a particular clade and timeslice
-      sub.populations = subset(subset.populations, time.of.origin < t & time.of.extinction > t)
+      sub.populations = subset(subset.populations, time.of.origin <= t & time.of.extinction > t)
       
       #sub.clade.phylo is a specific simulation clade pulled from the phylogeny that was sliced at timeslice t
       tips.to.drop = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label,as.character(sub.populations$spp.name))==F)]);
+      
       sub.clade.phylo = drop.tip(sub.phylo,tips.to.drop);
       sub.clade.phylo$root.time = max(dist.nodes(sub.clade.phylo)[1:Ntip(sub.clade.phylo),Ntip(sub.clade.phylo) + 1]); sub.clade.phylo$root.time;
       sub.clade.phylo$origin.time = t - sub.clade.phylo$root.time; sub.clade.phylo$origin.time;
