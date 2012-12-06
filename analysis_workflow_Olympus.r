@@ -3,6 +3,9 @@
 #sim = commandArgs();
 #sim = as.numeric(sim[length(sim)]);
 
+# Choose number of time slices per simulation to analyze
+num.of.time.slices = 5;
+
 #New parameter for taking into account which of us is running this code
 if(Allen==1) {
   setwd('c:/documents and settings/hurlbert/species-energy-simulation')
@@ -37,11 +40,8 @@ source('clade.exmpl.figs.r');
 source('extinct.calc.r');
 source('unzipping_files.r');
 
-#(3) read in master simulation matrix with chosen parameter combinations, and define number of 
-#    time slices to analyze
+#(3) read in master simulation matrix with chosen parameter combinations
 sim.matrix = as.data.frame(read.csv("SENC_Master_Simulation_Matrix.csv",header=T));
-num.of.time.slices = 5;
-
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 which.sims = 1:max(sim.matrix$sim.id)
