@@ -3,7 +3,7 @@
 # --output_dir is the directory where the zipped output files reside
 
 output.unzip = function(sim_dir, sim_ID) {
-  unzipped.filenames = unzip(paste(sim_dir,'/senc.out.',sim_ID,'.zip',sep=''))
+  unzipped.filenames = unzip(paste(sim_dir,'/senc.out.',sim_ID,'.zip',sep=''), exdir = sim_dir)
   all.populations = read.csv(unzipped.filenames[1], header=T)
   params.out = read.csv(unzipped.filenames[2],header=T)
   phylo.out = read.tree(unzipped.filenames[3])
