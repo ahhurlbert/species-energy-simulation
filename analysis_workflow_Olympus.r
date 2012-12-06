@@ -100,9 +100,7 @@ for (sim in which.sims) {
     sub.phylo$root.time = temp.root.time + max(c(0,max.time.actual - extinct.time.most.recent)); sub.phylo$root.time;
     sub.phylo = collapse.singles(timeSliceTree(sub.phylo,sliceTime=(max.time.actual - t),plot=F,drop.extinct = T));
     num.of.spp = length(sub.phylo$tip.label);
-    rm('tips.to.drop','temp.root.time');
     
-
     for (c in (num.of.spp+1):max(sub.phylo$edge)) {
       
       #pull out list of species names belonging to each subclade
@@ -113,14 +111,14 @@ for (sim in which.sims) {
       sub.populations = subset(subset.populations, time.of.origin <= t & time.of.extinction > t)
       
       #sub.clade.phylo is a specific simulation clade pulled from the phylogeny that was sliced at timeslice t
-      tips.to.drop = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label,as.character(sub.populations$spp.name))==F)]);
+      tips.to.drop2 = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label,as.character(sub.populations$spp.name))==F)]);
       
       # check to see if there are at least 2 species for continuing with the analysis; if not increment skipped.clades
-      if((num.of.spp - length(tips.to.drop)) < 2) {
+      if((length(sub.phylo$tip.label) - length(tips.to.drop2)) < 2) {
         skipped.clades = skipped.clades + 1
       } else {
               
-        sub.clade.phylo = drop.tip(sub.phylo,tips.to.drop);
+        sub.clade.phylo = drop.tip(sub.phylo,tips.to.drop2);
         sub.clade.phylo$root.time = max(dist.nodes(sub.clade.phylo)[1:Ntip(sub.clade.phylo),Ntip(sub.clade.phylo) + 1]); sub.clade.phylo$root.time;
         sub.clade.phylo$origin.time = t - sub.clade.phylo$root.time; sub.clade.phylo$origin.time;
         
