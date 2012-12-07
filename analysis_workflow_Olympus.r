@@ -199,7 +199,7 @@ for (sim in which.sims) {
                     "\n"),
               file = paste(analysis_dir,"/SENC_Stats_sim",sim,"_",date,".csv",sep=""),
               sep = ",",
-              append = T))
+              append = T)
           print(c(sim,c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
         } # end second else  
       } # end sub clade for loop
