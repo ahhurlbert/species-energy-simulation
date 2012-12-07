@@ -219,6 +219,7 @@ for (sim in which.sims) {
   # Simulation summary plots
   ####################################################
   lat.grad.time.plot(sim.results, numslices = 10, output.dir = analysis_dir)
+  output = read.csv(paste(analysis_dir,"/SENC_Stats_sim",sim,"_",date,".csv",sep=""), header=T)
   clade.origin.corr.plot(output, params.out, output.dir = analysis_dir)
   
   # There are currently some bugs in clade.exmpl.figs.
