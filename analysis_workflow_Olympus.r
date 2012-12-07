@@ -80,8 +80,7 @@ for (sim in which.sims) {
                       clade.origin.time = NA, 
                       global.richness = NA, 
                       extant.richness = NA, 
-                      gamma.stat = NA,
-                      clade.richness = NA);
+                      gamma.stat = NA);
   write.csv(output, paste(analysis_dir,"/SENC_Stats_sim",sim,"_",date,".csv",sep=""),quote=F,row.names=F);
 
   # (5) read in simulation results for specified simulation from the output zip file
@@ -127,8 +126,8 @@ for (sim in which.sims) {
     if ( (length(phylo.out$tip.label) - length(tips.to.drop)) < min.num.spp) {
       skipped.times = paste(skipped.times, t) # keep track of the timeslices that were skipped in a text string
     } else {
-      sub.phylo = drop.tip(phylo.out,tips.to.drop);
     
+      sub.phylo = drop.tip(phylo.out,tips.to.drop);
       temp.root.time = max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1]); temp.root.time;
       most.recent.spp = sub.phylo$tip.label[as.numeric(names(which.max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1])))]; most.recent.spp;
       extinct.time.most.recent = unique(all.populations$time.of.sp.extinction[all.populations$spp.name==most.recent.spp]); extinct.time.most.recent;
@@ -194,12 +193,11 @@ for (sim in which.sims) {
                     clade.origin.time = corr.results$clade.origin.time,
                     global.richness = corr.results$global.richness,
                     extant.richness = corr.results$extant.richness,
-                    gamma.stat = Gamma.stat,
-                    clade.richness = length(unique(sub.populations$spp.name)),
-                    "\n"),
+                    gamma.stat = Gamma.stat),
               file = paste(analysis_dir,"/SENC_Stats_sim",sim,"_",date,".csv",sep=""),
               sep = ",",
-              append = T)
+              append = T,
+              fill = T)
           print(c(sim,c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
         } # end second else  
       } # end sub clade for loop
