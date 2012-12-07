@@ -5,7 +5,8 @@
 
 # Choose number of time slices per simulation to analyze
 num.of.time.slices = 1;
-min.num.spp = 5;
+# Set minimum number of species in a clade needed to proceed with analysis
+min.num.spp = 8;
 
 #New parameter for taking into account which of us is running this code
 if(Allen==1) {
