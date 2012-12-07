@@ -5,6 +5,7 @@
 
 # Choose number of time slices per simulation to analyze
 num.of.time.slices = 1;
+min.num.spp = 5;
 
 #New parameter for taking into account which of us is running this code
 if(Allen==1) {
@@ -95,8 +96,8 @@ for (sim in which.sims) {
     sub.species2 = sub.species[!sub.species %in% extinct.species]
     tips.to.drop = as.character(phylo.out$tip.label[!phylo.out$tip.label %in% sub.species2]);
     
-    # check to see if there are at least 2 species for continuing with the analysis; if not store the skipped timeslice
-    if ( (length(phylo.out$tip.label) - length(tips.to.drop)) < 2) {
+    # check to see if there are at least min.num.spp species for continuing with the analysis; if not store the skipped timeslice
+    if ( (length(phylo.out$tip.label) - length(tips.to.drop)) < min.num.spp) {
       skipped.times = paste(skipped.times, t) # keep track of the timeslices that were skipped in a text string
     } else {
       sub.phylo = drop.tip(phylo.out,tips.to.drop);
@@ -121,7 +122,7 @@ for (sim in which.sims) {
         tips.to.drop2 = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label,as.character(sub.populations$spp.name))==F)]);
       
         # check to see if there are at least 2 species for continuing with the analysis; if not increment skipped.clades
-        if((length(sub.phylo$tip.label) - length(tips.to.drop2)) < 2) {
+        if((length(sub.phylo$tip.label) - length(tips.to.drop2)) < min.num.spp) {
           skipped.clades = skipped.clades + 1
         } else {
               
