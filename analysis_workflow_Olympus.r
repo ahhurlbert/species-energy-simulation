@@ -56,7 +56,33 @@ which.sims = 1:max(sim.matrix$sim.id)
 
 for (sim in which.sims) {
   rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.out', 'output', 'sim.results'))
-  output = numeric();
+  date = Sys.Date()
+  output = data.frame(sim=NA,
+                      clade.id = NA, 
+                      time = NA, 
+                      r.time.rich  = NA,
+                      p.time.rich  = NA,
+                      r.env.rich  = NA,
+                      p.env.rich  = NA,
+                      r.MRD.rich  = NA,
+                      p.MRD.rich  = NA,
+                      r.PSV.rich  = NA,
+                      p.PSV.rich  = NA,
+                      r.env.MRD  = NA,
+                      p.env.MRD   = NA,
+                      r.env.PSV  = NA,
+                      p.env.PSV    = NA,
+                      r.ext.reg  = NA,
+                      p.ext.reg = NA,
+                      r.rich.ext  = NA,
+                      p.rich.ext  = NA,
+                      n.regions  = NA,
+                      clade.origin.time = NA, 
+                      global.richness = NA, 
+                      extant.richness = NA, 
+                      gamma.stat = NA,
+                      clade.richness = NA);
+  write.csv(output, paste(analysis_dir,"/SENC_Stats_sim",sim,"_",date,".csv",sep=""),quote=F,row.names=F);
 
   # (5) read in simulation results for specified simulation from the output zip file
   sim.results = output.unzip(sim_dir,sim)
@@ -144,16 +170,42 @@ for (sim in which.sims) {
           #Pybus & Harvey (2000)'s gamma statistic
           Gamma.stat = gammaStat(sub.clade.phylo)
         
-          output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
-                                     clade.richness = length(unique(sub.populations$spp.name))))
+          # Append results for this clade/timeslice combo to the stats output file
+          cat(cbind(sim=sim,
+                    clade.id = c, 
+                    time = t, 
+                    r.time.rich  = corr.results$r.time.rich,
+                    p.time.rich  = corr.results$p.time.rich,
+                    r.env.rich  = corr.results$r.env.rich,
+                    p.env.rich  = corr.results$p.env.rich,
+                    r.MRD.rich  = corr.results$r.MRD.rich,
+                    p.MRD.rich  = corr.results$p.MRD.rich,
+                    r.PSV.rich  = corr.results$r.PSV.rich,
+                    p.PSV.rich  = corr.results$p.PSV.rich,
+                    r.env.MRD  = corr.results$r.env.MRD,
+                    p.env.MRD   = corr.results$p.env.MRD,
+                    r.env.PSV  = corr.results$r.env.PSV,
+                    p.env.PSV    = corr.results$p.env.PSV,
+                    r.ext.reg  = corr.results$r.ext.reg,
+                    p.ext.reg = corr.results$p.ext.reg,
+                    r.rich.ext  = corr.results$r.rich.ext,
+                    p.rich.ext  = corr.results$p.rich.ext,
+                    n.regions  = corr.results$n.regions,
+                    clade.origin.time = corr.results$clade.origin.time,
+                    global.richness = corr.results$global.richness,
+                    extant.richness = corr.results$extant.richness,
+                    gamma.stat = Gamma.stat,
+                    clade.richness = length(unique(sub.populations$spp.name),
+                    "\n"),
+              file = paste(analysis_dir,"/SENC_Stats_sim",sim,"_",date,".csv",sep=""),
+              sep = ",",
+              append = T))
           print(c(sim,c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
         } # end second else  
       } # end sub clade for loop
     } # end first else
   }; # end timeslice loop
   
-  #write all of this output to files
-  write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,".csv",sep=""),quote=F,row.names=F);
   analysis.end = date();
   #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
   #print(c(warnings(),sim.start,sim.end,analysis.end));
