@@ -195,7 +195,7 @@ for (sim in which.sims) {
                     global.richness = corr.results$global.richness,
                     extant.richness = corr.results$extant.richness,
                     gamma.stat = Gamma.stat,
-                    clade.richness = length(unique(sub.populations$spp.name),
+                    clade.richness = length(unique(sub.populations$spp.name)),
                     "\n"),
               file = paste(analysis_dir,"/SENC_Stats_sim",sim,"_",date,".csv",sep=""),
               sep = ",",
