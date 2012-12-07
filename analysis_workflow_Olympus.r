@@ -50,6 +50,7 @@ sim.matrix$extant.S = NA
 sim.matrix$extinct.S = NA
 sim.matrix$skipped.clades = NA
 sim.matrix$skipped.times = NA
+sim.matrix$output.rows = NA
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 which.sims = 1:max(sim.matrix$sim.id)
