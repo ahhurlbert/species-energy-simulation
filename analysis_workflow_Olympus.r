@@ -107,6 +107,7 @@ for (sim in which.sims) {
 
   skipped.clades = 0
   skipped.times = ""
+  output.rows = 0
   for (t in timeslices) {
     # vector of species in existence at time t
     sub.species = as.character(unique(subset(all.populations,time.of.sp.origin <= t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
@@ -197,7 +198,11 @@ for (sim in which.sims) {
               file = paste(analysis_dir,"/SENC_Stats_sim",sim,"_",date,".csv",sep=""),
               sep = ",",
               append = T,
-              fill = T)
+              fill = 250)
+          # Count number of rows of output with at least one correlation calculated
+          if (sum(is.na(corr.results)) < (ncol(corr.results)-4)) {
+            output.rows = output.rows+1
+          }
           print(c(sim,c,t,date(),length(sub.clade.phylo$tip.label),extinct.time.most.recent));
         } # end second else  
       } # end sub clade for loop
@@ -223,7 +228,7 @@ for (sim in which.sims) {
   sim.matrix[sim.matrix$sim.id==sim,'extant.S'] = nrow(extant.ornot[extant.ornot$x>0,])
   sim.matrix[sim.matrix$sim.id==sim,'extinct.S'] = length(extinct.species)
   # Number of rows of output with at least 1 correlation (there are 4 non-correlation cols in corr.results)
-  sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = sum(apply(output,1,function(x) sum(is.na(x)) < (ncol(corr.results)-4)))
+  sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = output.rows
   sim.matrix[sim.matrix$sim.id==sim,'skipped.clades'] = skipped.clades # number of clades skipped over for analysis, summed over timeslices
   sim.matrix[sim.matrix$sim.id==sim,'skipped.times'] = skipped.times # number of time slices skipped over for analysis
 } # end sim loop
