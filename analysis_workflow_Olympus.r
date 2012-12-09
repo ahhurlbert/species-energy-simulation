@@ -163,7 +163,16 @@ for (sim in which.sims) {
   # Simulation summary plots
   ####################################################
   lat.grad.time.plot(sim.results, numslices = 10, output.dir = analysis_dir)
-  clade.origin.corr.plot(output, params.out, output.dir = analysis_dir)
+  
+  # clade.origin.corr.plot only if there are some output rows 
+  if(!is.null(nrow(output))) {
+    clade.origin.corr.plot(output, params.out, output.dir = analysis_dir)
+  
+    # Number of rows of output with at least 1 correlation (there are 4 non-correlation cols in corr.results)
+    sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = sum(apply(output,1,function(x) sum(is.na(x)) < (ncol(corr.results)-4)))
+  } else {
+    sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = 0
+  }
   
   # There are currently some bugs in clade.exmpl.figs.
   # clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_dir)
@@ -172,9 +181,7 @@ for (sim in which.sims) {
   sim.matrix[sim.matrix$sim.id==sim,'n.regions'] = length(unique(all.populations$region))
   sim.matrix[sim.matrix$sim.id==sim,'extant.S'] = nrow(extant.ornot[extant.ornot$x>0,])
   sim.matrix[sim.matrix$sim.id==sim,'extinct.S'] = length(extinct.species)
-  # Number of rows of output with at least 1 correlation (there are 4 non-correlation cols in corr.results)
-  sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = sum(apply(output,1,function(x) sum(is.na(x)) < (ncol(corr.results)-4)))
-  sim.matrix[sim.matrix$sim.id==sim,'skipped.clades'] = skipped.clades # number of clades skipped over for analysis, summed over timeslices
+    sim.matrix[sim.matrix$sim.id==sim,'skipped.clades'] = skipped.clades # number of clades skipped over for analysis, summed over timeslices
   sim.matrix[sim.matrix$sim.id==sim,'skipped.times'] = skipped.times # number of time slices skipped over for analysis
 } # end sim loop
 
