@@ -6,6 +6,8 @@ output = read.csv('//Bioark.bio.unc.edu/hurlbertallen/Manuscripts/CladeVsCommuni
 output = output[-1,]
 output = droplevels(output)
 
+output$beta_over_alpha = output$beta/output$alpha
+
 boxwidth = .3
 
 
@@ -25,12 +27,12 @@ boxplot(output$output.rows ~ output$carry.cap, notch=T, boxwex = boxwidth, ylab 
 plot(1,1,type="n",axes=F,ylab="",xlab="")
 mtext("Carrying Capacity",1,outer=T, cex=1.5)
 
+xs = c(4:7,20)
 ys = c(14,15,16,17,19)
-ycols = c('darkblue','orange2','yellow4','skyblue','darkred')
 
-for (i in 4:7) {
+for (i in xs) {
   for (y in ys) {
-    if (i %in% c(5,6)) { xvar = log10(output[,i])}
+    if (i %in% c(5,6,20)) { xvar = log10(output[,i])}
     else { xvar = output[,i] }
     plot(output[output$carry.cap=="off",y] ~ jitter(xvar[output$carry.cap=="off"]), ylab = names(output)[y], 
          xlab="", col='darkblue',pch=2, cex=1.5, ylim = range(output[,y],na.rm=T))
