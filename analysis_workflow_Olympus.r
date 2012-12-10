@@ -124,7 +124,7 @@ for (sim in which.sims) {
           #sub.clade.phylo is a specific simulation clade pulled from the phylogeny that was sliced at timeslice t
           tips.to.drop2 = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label,as.character(sub.populations$spp.name))==F)]);
         
-          # check to see if there are at least 2 species for continuing with the analysis; if not increment skipped.clades
+          # check to see if there are at least min.num.spp species for continuing with the analysis; if not increment skipped.clades
           if((length(sub.phylo$tip.label) - length(tips.to.drop2)) < min.num.spp) {
             skipped.clades = skipped.clades + 1
           } else {
