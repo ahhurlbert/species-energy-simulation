@@ -61,9 +61,7 @@ for (sim in which.sims) {
   # (5) read in simulation results for specified simulation from the output zip file
   sim.results = output.unzip(sim_dir,sim)
   
-  if ( is.null(sim.results) ) {
-    next
-  } else {
+  if ( !is.null(sim.results) ) {
     all.populations = sim.results$all.populations
     time.richness = sim.results$time.richness
     phylo.out = sim.results$phylo.out
@@ -187,7 +185,7 @@ for (sim in which.sims) {
     sim.matrix[sim.matrix$sim.id==sim,'extinct.S'] = length(extinct.species)
     sim.matrix[sim.matrix$sim.id==sim,'skipped.clades'] = skipped.clades # number of clades skipped over for analysis, summed over timeslices
     sim.matrix[sim.matrix$sim.id==sim,'skipped.times'] = skipped.times # number of time slices skipped over for analysis
-  } # end first ifelse (file check)
+  } # end first if (file check)
 } # end sim loop
 
 write.csv(sim.matrix,paste(analysis_dir,'/sim.matrix.output_',Sys.Date(),'.csv',sep=''),row.names=F)
