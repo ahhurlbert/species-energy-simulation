@@ -10,7 +10,7 @@ boxwidth = .3
 
 
 pdf(paste('//Bioark.bio.unc.edu/hurlbertallen/Manuscripts/CladeVsCommunity/analyses/simulation_output_summary_',Sys.Date(),'.pdf',sep=''),height = 6, width = 8)
-par(mfrow=c(2,3),oma = c(4,1,1,1),mar = c(3,5,1,1),cex.lab = 2)
+par(mfrow=c(2,3),oma = c(4,1,1,1),mar = c(3,5,1,1),cex.lab = 1.5)
 # Carrying capacity on or off
 boxplot(output$n.regions ~ output$carry.cap, ylab = "Number of regions",boxwex= boxwidth, notch=T,col='darkblue')
 
@@ -23,7 +23,7 @@ boxplot(output$skipped.clades ~ output$carry.cap, boxwex = boxwidth, ylab = "Num
 boxplot(output$output.rows ~ output$carry.cap, boxwex = boxwidth, ylab = "Number of output rows", col = 'darkred')
 
 plot(1,1,type="n",axes=F,ylab="",xlab="")
-mtext("Carrying Capacity",1,outer=T, cex=2)
+mtext("Carrying Capacity",1,outer=T, cex=1.5)
 
 ys = c(14,15,16,17,19)
 ycols = c('darkblue','orange2','yellow4','skyblue','darkred')
