@@ -7,6 +7,7 @@ output = output[-1,]
 output = droplevels(output)
 
 output$beta_over_alpha = output$beta/output$alpha
+output$skipped.clades.pct = output$skipped.clades/output$extant.S
 
 boxwidth = .3
 
@@ -28,7 +29,7 @@ plot(1,1,type="n",axes=F,ylab="",xlab="")
 mtext("Carrying Capacity",1,outer=T, cex=1.5)
 
 xs = c(4:7,20)
-ys = c(14,15,16,17,19)
+ys = c(14,15,16,21,19)
 
 for (i in xs) {
   for (y in ys) {
