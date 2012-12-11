@@ -1,6 +1,6 @@
 # Evaluating relationship between simulation output correlations and simulation parameters
 
-file_dir = '//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses'
+file_dir = '//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/summaryplots'
 
 sim.rs = compile.firstlines(file_dir , "SENC_Stats_sim")
 
