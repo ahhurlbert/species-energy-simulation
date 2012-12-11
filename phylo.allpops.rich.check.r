@@ -19,7 +19,7 @@ phylo.allpops.check = function(file_dir) {
   check = data.frame(sim = NA, allpops.S = NA, phylo.S = NA)
   for (i in sims) {
     pops = read.csv(paste(file_dir,'/SENC_all.pops_sim',i,'.csv',sep=''), header=T)
-    phy = read.tre(paste(file_dir,'/SENC_phylo_sim',i,'.tre',sep=''))
+    phy = read.tree(paste(file_dir,'/SENC_phylo_sim',i,'.tre',sep=''))
     if (nrow(pops) > 0) {
       check = rbind(check, c(i, length(unique(pops$spp.name)), length(phy$tip.label)))
     } else {
