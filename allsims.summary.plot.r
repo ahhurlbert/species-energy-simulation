@@ -2,8 +2,10 @@
 
 file_dir = '//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/summaryplots'
 
-sim.rs = compile.firstlines(file_dir , "SENC_Stats_sim")
+#sim.rs = compile.firstlines(file_dir , "SENC_Stats_sim")
+#write.csv(sim.rs,paste(file_dir,'/allsims_bigclade_stats_output.csv',sep=''), row.names=F)
 
+sim.rs = read.csv(paste(file_dir,'/allsims_bigclade_stats_output.csv',sep=''), header=T)
 sim.matrix = read.csv(paste(file_dir,'/sim.matrix.output_2012-12-10.csv',sep=''), header=T)
 
 sim.big = merge(sim.matrix, sim.rs, by.x="sim.id", by.y="sim", all.x=T)
