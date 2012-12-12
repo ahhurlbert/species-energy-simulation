@@ -1,4 +1,9 @@
-# Script for summarizing simulation output
+##############################################
+# Author: Allen Hurlbert
+# Function: Script for summarizing simulation output, primarily to see whether certain 
+#   parameter combinations were resulting in more skipped clades, fewer output rows,
+#   species, or number of regions in the analysis
+#
 
 output = read.csv('//Bioark.bio.unc.edu/hurlbertallen/Manuscripts/CladeVsCommunity/analyses/sim.matrix.output_2012-12-10.csv',header=T)
 
