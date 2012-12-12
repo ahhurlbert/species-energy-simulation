@@ -2,7 +2,7 @@
 
 file_dir = '//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/summaryplots'
 
-#sim.rs = compile.firstlines(file_dir , "SENC_Stats_sim")
+#sim.rs = compile.firstlines(file_dir , "SENC_Stats_sim")          #takes ~12 minutes on Hurlbert office machine
 #write.csv(sim.rs,paste(file_dir,'/allsims_bigclade_stats_output.csv',sep=''), row.names=F)
 
 sim.rs = read.csv(paste(file_dir,'/allsims_bigclade_stats_output.csv',sep=''), header=T)
@@ -33,7 +33,7 @@ summary.plot = function(sim.big, carry.cap, energy.gradient, yvars, file_dir) {
   for (i in yvars) {
     plot(jitter(sub.sim$w),jitter(sub.sim$sigma_E),pch=16, xlab = "<--- Environmental Filtering",
          ylab="<--- Niche Conservatism",col=colors[(round(sub.sim[,which(names(sub.sim)==i)],2)*100)+100], 
-         main = paste("K ",carry.cap,", Gradient ",energy.gradient,", size = beta/alpha, color =",i,sep=''), 
+         main = paste("K ",carry.cap,", Gradient ",energy.gradient,", size = beta/alpha, color = ",i,sep=''), 
          cex = log10(sub.sim$beta/sub.sim$alpha)*.5+.5)
     mtext("red - , blue +",3,line=0.5)
   }
