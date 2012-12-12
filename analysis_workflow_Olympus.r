@@ -14,8 +14,7 @@ if(Allen==1) {
   Rlib.location = "C:/program files/R/R-2.15.1/library"
   sim_dir = "C:/SENCoutput"
   analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses"
-}
-else {
+} else {
   Rlib.location = "/pic/people/steg815/Rlibs"
   sim_dir = ............ #wherever all of your zipped output files are
   analysis_dir = .......... #wherever you want to store the results of these analyses
@@ -33,6 +32,7 @@ library(mvtnorm,lib.loc=Rlib.location);
 library(caper,lib.loc=Rlib.location);
 library(paleotree,lib.loc=Rlib.location);
 library(plyr,lib.loc=Rlib.location);
+library(phytools, lib.loc=Rlib.location);
 
 source('reg_calc_and_analysis.r');
 source('make.phylo.jimmy.fun.r');
@@ -146,8 +146,22 @@ for (sim in which.sims) {
             #Pybus & Harvey (2000)'s gamma statistic
             Gamma.stat = gammaStat(sub.clade.phylo)
             
+            #Calculate Blomberg's K for two traits: environmental optimum, and mean region of occurrence
+            spp.traits = aggregate(sub.populations$region, by = list(sub.populations$spp.name, sub.populations$env.opt),
+                                   function(x) mean(x, na.rm=T))
+            names(spp.traits) = c('spp.name','env.opt','region')
+            
+            spp.env = spp.traits$env.opt
+            names(spp.env) = spp.traits$spp.name
+            BK.env = phylosig(sub.clade.phylo, spp.env[sub.clade.phylo$tip.label], method="K")
+            
+            spp.reg = spp.traits$region
+            names(spp.reg) = spp.traits$spp.name
+            BK.reg = phylosig(sub.clade.phylo, spp.reg[sub.clade.phylo$tip.label], method="K")
+            
             output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
-                                       clade.richness = length(unique(sub.populations$spp.name))))
+                                         clade.richness = length(unique(sub.populations$spp.name)), 
+                                         BK.env = BK.env , BK.reg = BK.reg))
             print(paste(sim,c,t,date(),length(sub.clade.phylo$tip.label),sep="   "));
           } # end third else
         } # end sub clade for loop
