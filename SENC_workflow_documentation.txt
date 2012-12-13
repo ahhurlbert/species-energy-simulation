@@ -1,0 +1,61 @@
+# Workflow for SENC simulations
+
+
+
+
+
+
+
+# Workflow for analysis of SENC simulation output
+
+FILE: analysis_workflow_Olympus.r
+
+FILE INPUTS: 
+ DATA
+  SENC_Master_Simulation_Matrix.csv 
+    Table listing the parameter combinations of every simulation to be run.
+  senc.out.XXX.zip
+    Zipped output files where XXX is the simulation id, ranging from 1 to ~2000
+ SCRIPTS
+  unzipping_files.r
+    Unzips simulation output of the form senc.out.XXX.zip, stores info in sim.results
+  reg_calc_and_analysis.r
+    
+  extinct.calc.r
+  make.phylo.jimmy.fun.r
+  lat.grad.time.plot.r
+  clade.origin.corr.plot.r
+  clade.exmpl.figs.r #currently broken
+
+VARIABLE INPUTS: 
+  number.of.time.slices
+    The number of points in time over the course of the simulation to analyze results.
+  min.num.spp
+    The minimum number of species a clade must have to be analyzed as its own entity.
+  Allen
+    If Allen==1, then various local paths are specified to read and write files
+    correctly on Allen's office machine. If Allen==0, then paths should be set for
+    James' working environment.
+
+FILE OUTPUTS:
+  SENC_Stats_simXXX.csv
+    Often referred to as the "stats" file or "output" file. For each subclade and at
+    each specified timeslice within simulation XXX, the following information is stored:
+    simID, cladeID, time, correlation coefficients and p-values for correlations among
+    richness, environment, region, MRD, and PSV, Pybus & Harvey's gamma statistic, and
+    Blomberg's K for both environmental optimum and mean region of occurrence.
+  lat_grad_thru_time_simXXX.pdf
+    Plot of species richness versus latitude for ten equally spaced points in time from
+    throughout the simulation.
+  corrs_vs_cladeage_simXXX.pdf
+    9-panel bivariate plots with clade origin time (the inverse of clade age) on the X
+    and the various variables from SENC_Stats_simXXX.csv on the Y.
+    NOTE: Need to modify to include the two Blomberg's K values as two additional plots.
+  sim.matrix.output_YYYY-MM-DD.csv
+    One row for each simulation with summary information regarding the simulation
+    parameters, the total number of regions over which species occurred, the number of 
+    extant species, the number of species going extinct over the simulation, the number
+    of clades that were skipped in analysis because they were smaller than the min.num.spp
+    threshold, the number of timeslices that were skipped because there were insufficient
+    species (usually timeslices very early on under a limited range of parameters), and
+    the total number of rows of output in that simulation's SENC_Stats_simXXX.csv file.
