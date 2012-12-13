@@ -6,10 +6,21 @@
 # calculated before.
 
 file_dir = 'C:/SENCoutput'
+analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses"
+rundate = Sys.Date()
+outfileName = paste(analysis_dir,'/sim.matrix.output_',rundate,'.csv',sep='')
 
 
-BlomK.stats = function(file_dir, t=30000) {
+BlomK.stats = function(file_dir, outfileName) {
   require(ape)
+  require(phytools)
+  
+  unlink(outfileName)
+  fileConn = file(outfileName, open = "wt")
+  on.exit(close(fileConn))
+  
+  # Write header line for output file
+  cat("sim", "BK.env", "BK.reg","\n", sep=",", file=fileConn)
   
   files = list.files(file_dir)
   allpops.files = files[grep('all.pops',files)]
@@ -17,8 +28,6 @@ BlomK.stats = function(file_dir, t=30000) {
   
   sims = as.vector( sapply(allpops.files, function(x)
     as.numeric(strsplit(strsplit(x, "sim")[[1]][2] , "\\.csv")[[1]][1])) )
-  
-  sim.BK = data.frame(sim = NA, BK.env = NA, BK.reg = NA)
   
   for (i in sims) {
     pops = read.csv(paste(file_dir,'/SENC_all.pops_sim',i,'.csv',sep=''), header=T)
@@ -48,10 +57,8 @@ BlomK.stats = function(file_dir, t=30000) {
       names(spp.reg) = spp.traits$spp.name
       BK.reg = phylosig(phy2, spp.reg[phy2$tip.label], method="K")
         
-      sim.BK = rbind(sim.BK, cbind(sim = i, BK.env = BK.env, BK.reg = BK.reg))
+      cat(i, BK.env, BK.reg, "\n", sep=',', file = fileConn)
       print(paste(i, date(), sep="   "))
     } # end if
   } # end sim loop
-  sim.BK = sim.BK[-1,]
-  return(sim.BK)
 }
