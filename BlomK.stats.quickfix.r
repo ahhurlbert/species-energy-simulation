@@ -8,7 +8,7 @@
 file_dir = 'C:/SENCoutput'
 analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses"
 rundate = Sys.Date()
-outfileName = paste(analysis_dir,'/sim.matrix.output_',rundate,'.csv',sep='')
+outfileName = paste(analysis_dir,'/BlombergK.output_',rundate,'.csv',sep='')
 
 
 BlomK.stats = function(file_dir, outfileName) {
