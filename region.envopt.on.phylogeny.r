@@ -51,7 +51,7 @@ region.envopt.phylo.plot = function(file_dir, output_dir) {
       plot(phy2, type="fan", show.tip.label=F)
       tiplabels(pch=16,col = sp.reg2$cols[sapply(phy2$tip.label, function(x) which(as.numeric(x)==sp.reg2$spp.name))])
       legend('topright',legend = 1:10, pch = 16, col = as.character(reg.cols$cols))
-      legend('topleft','Region', bty='n', cex = 1.5)
+      legend('topleft','Region', bty='n', cex = 1.2)
       
       # Environmental optimum colors
       envopt.cols = colorRampPalette(c('darkblue','skyblue','gray95','pink','red','darkred'))(40)
@@ -64,7 +64,7 @@ region.envopt.phylo.plot = function(file_dir, output_dir) {
       plot(phy, type="fan", show.tip.label=F)
       tiplabels(pch = 16, col = envopt.cols[ceiling(envopts[phy2$tip.label])])
       legend('topright',legend = seq(-10,50,length.out = 5), pch = 16, col = envopt.cols[seq(1,40,length.out=5)])
-      legend('topleft','Environmental\nOptimum', bty='n', cex = 1.5)
+      legend('topleft','Environmental\nOptimum', bty='n', cex = 1.2)
       
       # Annotate plot
       if (params$carry.cap=='on' & params$energy.gradient=='on') {
