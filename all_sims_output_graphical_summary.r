@@ -5,7 +5,7 @@
 #   species, or number of regions in the analysis
 #
 
-output = read.csv('//Bioark.bio.unc.edu/hurlbertallen/Manuscripts/CladeVsCommunity/analyses/sim.matrix.output_2012-12-10.csv',header=T)
+output = read.csv('//Bioark.bio.unc.edu/hurlbertallen/Manuscripts/CladeVsCommunity/analyses/sim.matrix.output_2012-12-14.csv',header=T)
 
 # Get rid of initial NA row
 output = output[-1,]
@@ -46,7 +46,7 @@ for (i in xs) {
            xlab="",ylab = names(output)[y], col='red',pch=16)
   }
   plot(1,1,type="n",axes=F,ylab="",xlab="")
-  legend("center",c("K on","K off"), pch = c(2,16),col = c('darkblue','red'), cex=2)
+  legend("center",c("K on","K off"), pch = c(16,2),col = c('red','darkblue'), cex=2)
   mtext(names(output)[i], 1, outer=T, cex=2)
 }
 dev.off()
