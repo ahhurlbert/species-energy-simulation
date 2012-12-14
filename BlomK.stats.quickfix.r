@@ -10,8 +10,14 @@ analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/
 rundate = Sys.Date()
 outfileName = paste(analysis_dir,'/BlombergK.output_',rundate,'.csv',sep='')
 
+sim.matrix = read.csv('C:/Documents and Settings/Hurlbert/species-energy-simulation/SENC_Master_Simulation_Matrix.csv', header=T)
+sim.matrix2 = sim.matrix[!(sim.matrix$carry.cap=='off' & 
+                           sim.matrix$energy.gradient=='on') & 
+                           sim.matrix$sim.id!=0,]
 
-BlomK.stats = function(file_dir, outfileName) {
+which.sims = sim.matrix2$sim.id
+
+BlomK.stats = function(which.sims, file_dir, outfileName) {
   require(ape)
   require(phytools)
   
@@ -22,14 +28,15 @@ BlomK.stats = function(file_dir, outfileName) {
   # Write header line for output file
   cat("sim", "BK.env", "BK.reg","\n", sep=",", file=fileConn)
   
+  # Check that files exist for all of the sim #s requested; only use sims with files
   files = list.files(file_dir)
   allpops.files = files[grep('all.pops',files)]
-  phylo.files = files[grep('phylo',files)]
-  
-  sims = as.vector( sapply(allpops.files, function(x)
+  f.sims = as.vector( sapply(allpops.files, function(x)
     as.numeric(strsplit(strsplit(x, "sim")[[1]][2] , "\\.csv")[[1]][1])) )
+  sims = which.sims[which.sims %in% f.sims]
   
   for (i in sims) {
+
     pops = read.csv(paste(file_dir,'/SENC_all.pops_sim',i,'.csv',sep=''), header=T)
     phy = read.tree(paste(file_dir,'/SENC_phylo_sim',i,'.tre',sep=''))
     extant.spp = unique(pops$spp.name[pops$extant==1])
