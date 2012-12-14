@@ -32,7 +32,8 @@ BlomK.stats = function(file_dir, outfileName) {
   for (i in sims) {
     pops = read.csv(paste(file_dir,'/SENC_all.pops_sim',i,'.csv',sep=''), header=T)
     phy = read.tree(paste(file_dir,'/SENC_phylo_sim',i,'.tre',sep=''))
-    if (nrow(pops) > 0) {
+    extant.spp = unique(pops$spp.name[pops$extant==1])
+    if (length(extant.spp) > 2) {
     
       # sub.pops contains only extant species
       sub.pops = subset(pops, extant==1)
