@@ -9,7 +9,7 @@
 # Workflow for analysis of SENC simulation output
 
 FILE: analysis_workflow_Olympus.r
-
+---------------------------------
 FILE INPUTS: 
  DATA
   SENC_Master_Simulation_Matrix.csv 
@@ -22,10 +22,15 @@ FILE INPUTS:
   reg_calc_and_analysis.r
     
   extinct.calc.r
+    Calculates an extinction rate for each region
   make.phylo.jimmy.fun.r
+    Makes a phylogeny from the edge and edge.length info collected during the simulation
   lat.grad.time.plot.r
+    Makes the lat_grad_thru_time_simXXX.pdf plots.
   clade.origin.corr.plot.r
-  clade.exmpl.figs.r #currently broken
+    Makes the corr_vs_cladeage_simXXX.pdf plots.
+  clade.exmpl.figs.r 
+    Makes clade_example_figs_simXXX.pdf plots. Currently broken.
 
 VARIABLE INPUTS: 
   number.of.time.slices
