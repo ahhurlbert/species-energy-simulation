@@ -65,7 +65,7 @@ region.envopt.phylo.plot = function(file_dir, output_dir) {
       # Plot phylogeny coded by environmental optimum
       plot(phy, type="fan", show.tip.label=F)
       tiplabels(pch = 16, col = envopt.cols[ceiling(envopts[phy2$tip.label])])
-      legend('topright',legend = seq(min(spp.envopts$env.opt),max(spp.envopts$env.opt),length.out = 5), 
+      legend('topright',legend = round(seq(min(spp.envopts$env.opt),max(spp.envopts$env.opt),length.out = 5),1), 
              pch = 16, col = envopt.cols[seq(1,40,length.out=5)])
       legend('topleft','Environmental\nOptimum', bty='n', cex = 1.2)
       
