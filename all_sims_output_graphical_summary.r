@@ -5,19 +5,28 @@
 #   species, or number of regions in the analysis
 #
 
-output = read.csv('//Bioark.bio.unc.edu/hurlbertallen/Manuscripts/CladeVsCommunity/analyses/sim.matrix.output_2012-12-14.csv',header=T)
+user = 'james';
+
+if (user == 'james') {output = read.csv('//olympus/steg815/senc.output/sim.matrix.output_2012-12-14.csv',header=T); head(output);};
+if (user == 'allen') {output = read.csv('//Bioark.bio.unc.edu/hurlbertallen/Manuscripts/CladeVsCommunity/analyses/sim.matrix.output_2012-12-14.csv',header=T)};
 
 # Get rid of initial NA row
 output = output[-1,]
 output = droplevels(output)
+
+# drop unwanted parameter values
+output = subset(output,output$w > 1); head(output);
+output = subset(output,output$alpha == 1.00E-06); head(output);
+output = subset(output,output$sigma_E == 5); head(output);
 
 output$beta_over_alpha = output$beta/output$alpha
 output$skipped.clades.pct = output$skipped.clades/output$extant.S
 
 boxwidth = .3
 
+if (user == 'james') {pdf(paste('//olympus/steg815/senc.output/simulation_output_summary_',gsub(":","_",gsub(" ","-",Sys.time())),'.pdf',sep=''),height = 6, width = 8)};
+if (user == 'allen') {pdf(paste('//Bioark.bio.unc.edu/hurlbertallen/Manuscripts/CladeVsCommunity/analyses/simulation_output_summary_',Sys.Date(),'.pdf',sep=''),height = 6, width = 8)};
 
-pdf(paste('//Bioark.bio.unc.edu/hurlbertallen/Manuscripts/CladeVsCommunity/analyses/simulation_output_summary_',Sys.Date(),'.pdf',sep=''),height = 6, width = 8)
 par(mfrow=c(2,3),oma = c(4,1,1,1),mar = c(3,5,1,1),cex.lab = 1.5)
 # Carrying capacity on or off
 boxplot(output$n.regions ~ output$carry.cap, ylab = "Number of regions",boxwex= boxwidth, notch=T,col='darkblue')
