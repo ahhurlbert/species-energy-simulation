@@ -49,6 +49,9 @@ f2 = function(x) {
 }
 sim.big$sigma.reg = sapply(sim.big, f2)
 
+sim.big$symbol = 16
+sim.big[sim.big$reg.of.origin=='temperate','symbol'] = 17
+
 # List of independent variables to plot (using color)
 yvars = c('r.time.rich','r.env.rich','r.MRD.rich','r.PSV.rich','r.env.MRD',
           'r.env.PSV','r.ext.reg','r.rich.ext')
@@ -67,7 +70,7 @@ summary.plot = function(sim.big, yvars, file_dir) {
   pdf(paste(file_dir,'/summary_plots_alpha_',Alpha,'_beta_',Beta,'.pdf',sep=''),height=6,width=8)
   par(mar = c(4,4,4,1))
   for (i in yvars) {
-    plot(sim.big$w.K, sim.big$sigma.reg, pch=16, xlab = "<--- Environmental Filtering",
+    plot(sim.big$w.K, sim.big$sigma.reg, pch = sim.big$symbol, xlab = "<--- Environmental Filtering",
          ylab="<--- Niche Conservatism",col=colors[(round(sim.big[,which(names(sim.big)==i)],2)*100)+100], 
          main = paste("alpha = ",Alpha,"; beta = ",Beta,"; color = ",i,sep=''), cex=2)
     mtext("red - , blue +",3,line=0.5)
