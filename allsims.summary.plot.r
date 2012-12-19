@@ -69,7 +69,7 @@ summary.plot = function(sim.big, yvars, file_dir) {
   for (i in yvars) {
     plot(sim.big$w.K, sim.big$sigma.reg, pch=16, xlab = "<--- Environmental Filtering",
          ylab="<--- Niche Conservatism",col=colors[(round(sim.big[,which(names(sim.big)==i)],2)*100)+100], 
-         main = paste("alpha = ",Alpha,"; beta = ",Beta,"; color = ",i,sep=''))
+         main = paste("alpha = ",Alpha,"; beta = ",Beta,"; color = ",i,sep=''), cex=2)
     mtext("red - , blue +",3,line=0.5)
   }
   dev.off()
