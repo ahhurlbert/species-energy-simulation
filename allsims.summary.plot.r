@@ -47,7 +47,7 @@ f2 = function(x) {
   }
   return(y)
 }
-sim.big$sigma.reg = sapply(sim.big, f2)
+sim.big$sigma.reg = sapply(1:nrow(sim.big), f2)
 
 sim.big$symbol = 16
 sim.big[sim.big$reg.of.origin=='temperate','symbol'] = 17
