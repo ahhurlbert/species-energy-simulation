@@ -9,6 +9,7 @@ num.of.time.slices = 1;
 min.num.spp = 8;
 
 Allen = 0;
+partial.analysis = 1; # toggle to determine whether we're looking at all sims or just some
 
 #New parameter for taking into account which of us is running this code
 if(Allen==1) {
@@ -76,7 +77,9 @@ sim.matrix$skipped.clades = NA
 sim.matrix$skipped.times = NA
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
-which.sims = 1:max(sim.matrix$sim.id)
+if (partial.analysis == 0) {which.sims = 1:max(sim.matrix$sim.id)};
+if (partial.analysis == 1) {which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)};
+
 
 foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar% {
 
