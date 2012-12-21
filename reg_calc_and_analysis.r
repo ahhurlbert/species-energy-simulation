@@ -72,7 +72,7 @@ regional.calc = function(sub.populations, phylo.out, max.time)
   tips.to.root <- data.frame(spp.name=phylo.out$tip.label,root.dist)
   MRD.ini <- merge(sub.pops, tips.to.root, sort = FALSE)
   MRD.ini <- MRD.ini[order(MRD.ini$region), ]
-  MRD.table <- ddply(idata.frame(MRD.ini), "region", summarise, RD=sum(root.dist), richness=length(unique(spp.name)))
+  MRD.table <- ddply(MRD.ini, "region", summarise, RD=sum(root.dist), richness=length(unique(spp.name)))
   MRD <- data.frame(region=MRD.table$region, richness=MRD.table$richness, MRD=MRD.table$RD/MRD.table$richness)
   
   MRD2 <- merge(MRD, reg.time, by = "region", all = T)
