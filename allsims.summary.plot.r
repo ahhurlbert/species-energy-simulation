@@ -21,6 +21,9 @@ sim.matrix.sm = subset(sim.matrix, alpha == Alpha & beta == Beta & !(carry.cap==
 sim.big = merge(sim.matrix.sm, sim.rs, by.x="sim.id", by.y="sim", all.x=T)
 sim.big = sim.big[sim.big$sim.id!=0,]
 
+sim.big$log.BK.env = log10(sim.big$BK.env)
+sim.big$log.BK.reg = log10(sim.big$BK.reg)
+
 # Within each combination of w and sigma, space out simulations along x-axis based
 # on carry.cap/energy.gradient and along y-axis based on reg.of.origin
 x.offset = .5
@@ -56,7 +59,7 @@ sim.big[sim.big$reg.of.origin=='temperate','symbol'] = 17
 
 # List of independent variables to plot (using color)
 yvars = c('r.time.rich','r.env.rich','r.MRD.rich','r.PSV.rich','r.env.MRD',
-          'r.env.PSV','r.ext.reg','r.rich.ext')
+          'r.env.PSV','r.ext.reg','r.rich.ext','log.BK.env','log.BK.reg')
 
 
 # Plots are on sigma_E versus w space, with color reflecting yvars (list above)
@@ -64,23 +67,23 @@ yvars = c('r.time.rich','r.env.rich','r.MRD.rich','r.PSV.rich','r.env.MRD',
 
 summary.plot = function(sim.big, yvars, file_dir) {
   colors = colorRampPalette(c('red','pink','white','skyblue','darkblue'))(201)
-  gamma.factor = 4 #based on the fact that gamma seems to vary btw -25 and +25, 
-                   #multiplying by 4 then adding 100 gives a range of values from 0 to 200
-                   #for indexing colors; may need to be adjusted if gamma exceeds this range.
   
   pdf(paste(file_dir,'/summary_plots_alpha_',Alpha,'_beta_',Beta,'.pdf',sep=''),height=6,width=8)
   par(mar = c(4,4,4,1))
   for (i in yvars) {
     y = sim.big[,which(names(sim.big)==i)]
-    if (i %in% c('BK.env','BK.reg')) {
-      col.index = round((y - min(y,na.rm=T))/(max(y,na.rm=T) - min(y,na.rm=T)),2)*200
+    if (i %in% c('log.BK.env','log.BK.reg')) {
+      col.index = round(y,2)*50 + 100 #color scale ranges from BK values of -2 to 2
     } else {
-      col.index = round(y,2)*100 + 100
+      col.index = round(y,2)*100 + 100 #color scale for correlations from -1 to 1
     }
     plot(sim.big$w.K, sim.big$sigma.reg, pch = sim.big$symbol, xlab = "<--- Environmental Filtering",
          ylab="<--- Niche Conservatism",col=colors[col.index], 
-         main = paste("alpha = ",Alpha,"; beta = ",Beta,"; color = ",i,sep=''), cex=2)
+         main = paste("alpha = ",Alpha,"; beta = ",Beta,"; color = ",i,sep=''), cex=2, ylim = c(1,12.5))
     mtext("red - , blue +",3,line=0.5)
+    text(x=c(10.2,11.1,11.7),y=rep(12.25,3),c('K\ngradient','K\nconstant','no\nK'), cex = 0.75)
+    legend("topleft",pch=c(16,17),c('tropical origin','temperate origin'), cex = 0.75, bty = "n")
+    segments(x0 = c(11-x.offset, 11, 11+x.offset), y0 = 11.2+y.offset, x1 = c(10.2,11.1,11.7), y1 = 11.8)
   }
   dev.off()
 }
