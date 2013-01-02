@@ -79,7 +79,7 @@ summary.plot = function(sim.big, yvars, file_dir) {
     }
     plot(sim.big$w.K, sim.big$sigma.reg, pch = sim.big$symbol, xlab = "<--- Environmental Filtering",
          ylab="<--- Niche Conservatism",col=colors[col.index], 
-         main = paste("alpha = ",Alpha,"; beta = ",Beta,"; color = ",i,sep=''), cex=2, ylim = c(1,12.5))
+         main = paste("alpha = ",Alpha,"; beta = ",Beta,"; color = ",i,sep=''), cex=2, ylim = c(.5,12.5))
     mtext("red - , blue +",3,line=0.5)
     text(x=c(10.2,11.1,11.7),y=rep(12.25,3),c('K\ngradient','K\nconstant','no\nK'), cex = 0.75)
     legend("topleft",pch=c(16,17),c('tropical origin','temperate origin'), cex = 0.75, bty = "n")
