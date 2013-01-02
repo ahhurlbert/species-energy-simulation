@@ -45,10 +45,10 @@ sim.big$w.K = sapply(1:nrow(sim.big), f1)
 
 f2 = function(x) {
   if(sim.big[x,'reg.of.origin']=='tropical') {
-    y = sim.big[x,'sigma_E'] + .25
+    y = sim.big[x,'sigma_E'] + y.offset
   }
   if(sim.big[x,'reg.of.origin']=='temperate') {
-    y = sim.big[x,'sigma_E'] - .25
+    y = sim.big[x,'sigma_E'] - y.offset
   }
   return(y)
 }
