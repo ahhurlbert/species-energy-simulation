@@ -71,14 +71,12 @@ summary.plot = function(sim.big, yvars, file_dir) {
   for (i in yvars) {
     y = sim.big[,which(names(sim.big)==i)]
     if (i %in% c('BK.env','BK.reg')) {
-      m = 200 #color scale multiplier
-      a = 0   #color scale added constant
+      col.index = round((y - min(y,na.rm=T))/(max(y,na.rm=T) - min(y,na.rm=T)),2)*200
     } else {
-      m = 100
-      a = 100
+      col.index = round(y,2)*100 + 100
     }
     plot(sim.big$w.K, sim.big$sigma.reg, pch = sim.big$symbol, xlab = "<--- Environmental Filtering",
-         ylab="<--- Niche Conservatism",col=colors[(round((y - min(y,na.rm=T))/(max(y,na.rm=T) - min(y,na.rm=T)),2)*m)+a], 
+         ylab="<--- Niche Conservatism",col=col.index, 
          main = paste("alpha = ",Alpha,"; beta = ",Beta,"; color = ",i,sep=''), cex=2)
     mtext("red - , blue +",3,line=0.5)
   }
