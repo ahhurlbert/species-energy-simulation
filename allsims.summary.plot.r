@@ -54,12 +54,11 @@ sim.big[sim.big$reg.of.origin=='temperate','symbol'] = 17
 
 # List of independent variables to plot (using color)
 yvars = c('r.time.rich','r.env.rich','r.MRD.rich','r.PSV.rich','r.env.MRD',
-          'r.env.PSV','r.ext.reg','r.rich.ext')
+          'r.env.PSV','r.ext.reg','r.rich.ext','BK.env','BK.reg')
 
 
-# Plots for K gradient simulations
-# -- plots are on sigma_E versus w space, with symbol size reflecting beta/alpha
-# -- and color reflecting yvars (list above)
+# Plots are on sigma_E versus w space, with color reflecting yvars (list above)
+
 
 summary.plot = function(sim.big, yvars, file_dir) {
   colors = colorRampPalette(c('red','pink','white','skyblue','darkblue'))(201)
@@ -70,8 +69,16 @@ summary.plot = function(sim.big, yvars, file_dir) {
   pdf(paste(file_dir,'/summary_plots_alpha_',Alpha,'_beta_',Beta,'.pdf',sep=''),height=6,width=8)
   par(mar = c(4,4,4,1))
   for (i in yvars) {
+    y = sim.big[,which(names(sim.big)==i)]
+    if (i %in% c('BK.env','BK.reg')) {
+      m = 200 #color scale multiplier
+      a = 0   #color scale added constant
+    } else {
+      m = 100
+      a = 100
+    }
     plot(sim.big$w.K, sim.big$sigma.reg, pch = sim.big$symbol, xlab = "<--- Environmental Filtering",
-         ylab="<--- Niche Conservatism",col=colors[(round(sim.big[,which(names(sim.big)==i)],2)*100)+100], 
+         ylab="<--- Niche Conservatism",col=colors[(round((y - min(y,na.rm=T))/(max(y,na.rm=T) - min(y,na.rm=T)),2)*m)+a], 
          main = paste("alpha = ",Alpha,"; beta = ",Beta,"; color = ",i,sep=''), cex=2)
     mtext("red - , blue +",3,line=0.5)
   }
