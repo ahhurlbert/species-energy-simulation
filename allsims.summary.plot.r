@@ -7,6 +7,8 @@ file_dir = '//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/anal
 
 sim.rs = read.csv(paste(file_dir,'/allsims_bigclade_stats_output.csv',sep=''), header=T)
 sim.matrix = read.csv(paste(file_dir,'/sim.matrix.output_2012-12-20.csv',sep=''), header=T)
+# warning: sim.matrix.output_2012-12-20.csv currently messed up (all text entries changed to '1')
+# I replaced first 11 columns with older sim.matrix.output file
 
 # Set alpha and beta to explore variation in other axes of parameter space; 
 Alpha = 1e-6
@@ -25,7 +27,7 @@ x.offset = .5
 y.offset = .25
 
 f1 = function(x) {
-  if(sim.big[x,'carry.cap']==1 & sim.big[x,'energy.gradient']=="on") {
+  if(sim.big[x,'carry.cap']=="on" & sim.big[x,'energy.gradient']=="on") {
      y = sim.big[x,'w'] - x.offset
   }
   if(sim.big[x,'carry.cap']=="off" & sim.big[x,'energy.gradient']=="off") {
@@ -58,7 +60,7 @@ yvars = c('r.time.rich','r.env.rich','r.MRD.rich','r.PSV.rich','r.env.MRD',
 
 
 # Plots are on sigma_E versus w space, with color reflecting yvars (list above)
-
+# TO DO: Need a legend still
 
 summary.plot = function(sim.big, yvars, file_dir) {
   colors = colorRampPalette(c('red','pink','white','skyblue','darkblue'))(201)
@@ -76,7 +78,7 @@ summary.plot = function(sim.big, yvars, file_dir) {
       col.index = round(y,2)*100 + 100
     }
     plot(sim.big$w.K, sim.big$sigma.reg, pch = sim.big$symbol, xlab = "<--- Environmental Filtering",
-         ylab="<--- Niche Conservatism",col=col.index, 
+         ylab="<--- Niche Conservatism",col=colors[col.index], 
          main = paste("alpha = ",Alpha,"; beta = ",Beta,"; color = ",i,sep=''), cex=2)
     mtext("red - , blue +",3,line=0.5)
   }
