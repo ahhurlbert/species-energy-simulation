@@ -6,7 +6,7 @@ file_dir = '//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/anal
 #write.csv(sim.rs,paste(file_dir,'/allsims_bigclade_stats_output.csv',sep=''), row.names=F)
 
 sim.rs = read.csv(paste(file_dir,'/allsims_bigclade_stats_output.csv',sep=''), header=T)
-sim.matrix = read.csv(paste(file_dir,'/sim.matrix.output.bk_2012-12-18.csv',sep=''), header=T)
+sim.matrix = read.csv(paste(file_dir,'/sim.matrix.output_2012-12-20.csv',sep=''), header=T)
 
 # Set alpha and beta to explore variation in other axes of parameter space; 
 Alpha = 1e-6
