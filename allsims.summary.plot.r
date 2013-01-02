@@ -25,7 +25,7 @@ x.offset = .5
 y.offset = .25
 
 f1 = function(x) {
-  if(sim.big[x,'carry.cap']=="on" & sim.big[x,'energy.gradient']=="on") {
+  if(sim.big[x,'carry.cap']==1 & sim.big[x,'energy.gradient']=="on") {
      y = sim.big[x,'w'] - x.offset
   }
   if(sim.big[x,'carry.cap']=="off" & sim.big[x,'energy.gradient']=="off") {
@@ -54,7 +54,7 @@ sim.big[sim.big$reg.of.origin=='temperate','symbol'] = 17
 
 # List of independent variables to plot (using color)
 yvars = c('r.time.rich','r.env.rich','r.MRD.rich','r.PSV.rich','r.env.MRD',
-          'r.env.PSV','r.ext.reg','r.rich.ext','BK.env','BK.reg')
+          'r.env.PSV','r.ext.reg','r.rich.ext')
 
 
 # Plots are on sigma_E versus w space, with color reflecting yvars (list above)
