@@ -4,7 +4,7 @@
 # NOTE: May not be worth doing this over early time slices. Perhaps just for last time point,
 #       in which case time loop can be commented out and set t = max(stats.output$time)
  
-clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10, output.dir) {
+clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10, min.num.spp.per.clade = 30, output.dir) {
   timeslices = unique(stats.output$time[!is.na(stats.output$time)])  
 
   #Plotting
@@ -13,7 +13,7 @@ clade.origin.corr.plot = function(stats.output,sim.params,min.num.data.pts = 10,
 
   for (t in timeslices) {
     #t = max(stats.output$time)                 #comment this out if looping over multiple time slices
-    x = subset(stats.output, time==t & n.regions>2, select = 2:ncol(stats.output))
+    x = subset(stats.output, time==t & n.regions>2 & clade.richness >= min.num.spp.per.clade, select = 2:ncol(stats.output))
     spline.df = 4
     
     if (length(x$r.env.rich[!is.na(x$r.env.rich)]) > min.num.data.pts) {
