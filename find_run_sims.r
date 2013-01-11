@@ -11,6 +11,12 @@ all.sims = 1:2592;
 to.analyze = all.sims[which(is.element(all.sims,sims.analyzed)==F)];
 write.csv(to.analyze,"sims.to.analyze.csv",quote=F,row.names=F);
 
+### confirm all files are in specific folder
+
+setwd("//olympus/steg815/senc.output");
+
+foo = list.files(pattern='SENC_params.out_sim'); head(foo); length(foo);
+
 ### older code below here
 
 setwd("C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/SENC_Olympus/full-run-nov2012");
