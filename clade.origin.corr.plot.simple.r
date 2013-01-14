@@ -45,7 +45,8 @@ clade.origin.corr.plot.simple = function(stats.output,
     mtext(paste('Origin =',sim.params[1,3],', ndisp = ',sim.params[1,6],', specn =',sim.params[1,5],',',K.text),outer=T)
   
     if (length(x$gamma.stat[!is.na(x$gamma.stat)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$gamma.stat, xlab = "", ylab="Gamma",main=paste('w =',sim.params[1,4],', sigma =',sim.params[1,7],sep=""))
+      plot(x$clade.origin.time, x$gamma.stat, xlab = "", ylab="Gamma", ylim = c(-15,3), 
+           main=paste('w =',sim.params[1,4],', sigma =',sim.params[1,7],sep=""))
       points(smooth.spline(x$clade.origin.time[!is.na(x$gamma.stat)],x$gamma.stat[!is.na(x$gamma.stat)],df=spline.df),type='l',col='red')
     } else {
       plot(1,1,xlab="",ylab = "Gamma",type="n",xlim=c(0,t),ylim=c(-1,1))
