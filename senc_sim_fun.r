@@ -126,21 +126,6 @@ senc_sim_fun = function(sim.matrix,sim) {
 
 		};
 
-		## start: remove after done with local vis
-		if (is.element(curr.time,seq(0,max.time,50))==T) {
-			plotting.colors = rev(c("#A50026","#D73027","#F46D43","#FDAE61","#FEE090","#E0F3F8","#ABD9E9","#74ADD1","#4575B4","#313695"));
-
-			plot(time.richness[,3][time.richness[,2] == 1] ~ time.richness[,1][time.richness[,2] == 1],typ="n",cex.lab=2,cex.axis=1.5,xlab="Time",ylab="Species Richness",ylim=c(0,max(time.richness[,3])));
-
-			for (i in c(1,4,7,10)) {
-	
-				points(time.richness[,3][time.richness[,2] == i] ~ time.richness[,1][time.richness[,2] == i],typ="l",col=plotting.colors[i],lwd=2);
-
-			};
-
-		}
-		## end: remove after done with local vis
-
 		## build attributes used in phylogeny construction
 		mutated.populations = all.populations[all.populations$mutate>0,];
 		# leave only one mutant from each species. Assuming there are at most two mutations per species, choose the region of mutation randomly...see the 'sample' piece of the code

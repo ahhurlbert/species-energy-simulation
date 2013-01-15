@@ -3,7 +3,7 @@
 
 ## for multiple jobs per node
 
-cd SENC.2nd.run/ 
+cd senc.output.130114/ 
 
 tr '\r' '\n' < SENC_Olympus_Batch_nodes.txt > SENC_Olympus_Batch_nodes_unix.txt
 

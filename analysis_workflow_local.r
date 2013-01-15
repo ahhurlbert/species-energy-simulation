@@ -19,7 +19,7 @@ if(Allen==1) {
   analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses"
 } else {
   setwd('C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation')
-  sim_dir = "//olympus/steg815/senc.output" #wherever all of your zipped output files are
+  sim_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/senc.output" #wherever all of your zipped output files are
   analysis_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/senc.output" #wherever you want to store the results of these analyses
 }
 
@@ -64,7 +64,7 @@ source('clade.exmpl.figs.r');
 source('extinct.calc.r');
 source('unzipping_files.r');
 
-cl = makeCluster(8);
+cl = makeCluster(6);
 registerDoParallel(cl);
 
 #(3) read in master simulation matrix with chosen parameter combinations;
@@ -75,6 +75,8 @@ sim.matrix$extant.S = NA
 sim.matrix$extinct.S = NA
 sim.matrix$skipped.clades = NA
 sim.matrix$skipped.times = NA
+sim.matrix$BK.reg = NA
+sim.matrix$BK.env = NA
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 if (partial.analysis == 0) {which.sims = 1:max(sim.matrix$sim.id)};
@@ -227,6 +229,9 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
     sim.matrix[sim.matrix$sim.id==sim,'extinct.S'] = length(extinct.species)
     sim.matrix[sim.matrix$sim.id==sim,'skipped.clades'] = skipped.clades # number of clades skipped over for analysis, summed over timeslices
     sim.matrix[sim.matrix$sim.id==sim,'skipped.times'] = skipped.times # number of time slices skipped over for analysis
+    sim.matrix[sim.matrix$sim.id==sim,'BK.reg'] = BK.reg # blomberg's K based on region
+    sim.matrix[sim.matrix$sim.id==sim,'BK.env'] = BK.env # blomberg's K based on environment
+
     write.csv(sim.matrix[sim.matrix$sim.id==sim,],paste(analysis_dir,"/sim.matrix.output.",sim,".csv",sep=""),quote=F,row.names=F);
     sim.matrix[sim.matrix$sim.id==sim,]
   } # end first if (file check)
