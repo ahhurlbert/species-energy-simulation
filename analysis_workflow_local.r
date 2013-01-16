@@ -19,8 +19,8 @@ if(Allen==1) {
   analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses"
 } else {
   setwd('C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation')
-  sim_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/senc.output" #wherever all of your zipped output files are
-  analysis_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/senc.output" #wherever you want to store the results of these analyses
+  sim_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/senc.out.130115" #wherever all of your zipped output files are
+  analysis_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/senc.out.130115" #wherever you want to store the results of these analyses
 }
 
 # Simulation workflow
@@ -64,7 +64,7 @@ source('clade.exmpl.figs.r');
 source('extinct.calc.r');
 source('unzipping_files.r');
 
-cl = makeCluster(6);
+cl = makeCluster(8);
 registerDoParallel(cl);
 
 #(3) read in master simulation matrix with chosen parameter combinations;

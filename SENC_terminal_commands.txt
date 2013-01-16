@@ -15,7 +15,7 @@ chmod u+x SENC_Olympus_Execute_nodes_unix.sh
 
 ## zipping output for specified simulations
 
-cd SENC.2nd.run/
+cd senc.output.130114/
 
 tr '\r' '\n' < SENC_Olympus_Batch_zipping.txt > SENC_Olympus_Batch_zipping_unix.txt
 
