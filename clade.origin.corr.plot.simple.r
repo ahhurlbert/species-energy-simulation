@@ -36,7 +36,7 @@ clade.origin.corr.plot.simple = function(stats.output,
     }
     rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
-    mtext("Clade origin time",1,outer=T,line=2)
+    mtext("Clade origin time",1,outer=T,line=1)
     if (sim.params[1,8]=='on' & sim.params[1,9]=='on') {
       K.text = 'K gradient present'
     } else if (sim.params[1,8]=='on' & sim.params[1,9]=='off') {
