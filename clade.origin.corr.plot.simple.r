@@ -10,27 +10,28 @@ clade.origin.corr.plot.simple = function(stats.output,
                                   min.num.spp.per.clade = 30, 
                                   min.num.regions = 5, 
                                   output.dir) {
-  timeslices = unique(stats.output$time[!is.na(stats.output$time)])  
+#  timeslices = unique(stats.output$time[!is.na(stats.output$time)])  
 
   
-  for (t in timeslices) {
-    #t = max(stats.output$time)                 #comment this out if looping over multiple time slices
+#  for (t in timeslices) {
+    t = max(stats.output$time)                 #comment this out if looping over multiple time slices
     x = subset(stats.output, time==t & n.regions >= min.num.regions & clade.richness >= min.num.spp.per.clade, select = 2:ncol(stats.output))
     spline.df = 4
     
     if (length(x$r.env.rich[!is.na(x$r.env.rich)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$r.env.rich, xlab="",ylab="Environment-Richness correlation",ylim=c(-1,1),main=paste('w =',sim.params[1,4],', sigma =',sim.params[1,7],sep=""))
-      points(smooth.spline(x$clade.origin.time[!is.na(x$r.env.rich)],x$r.env.rich[!is.na(x$r.env.rich)],df=spline.df),type='l',col='red')
+      plot(x$clade.origin.time, x$r.env.rich, xlab="",ylab="r (Env-Richness)",ylim=c(-1,1))
+      points(smooth.spline(x$clade.origin.time[!is.na(x$r.env.rich)],x$r.env.rich[!is.na(x$r.env.rich)],df=spline.df),
+        type='l',col='red')
     } else {
-      plot(1,1,xlab="",ylab = "Environment-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
+      plot(1,1,xlab="",ylab = "r (Env-Richness)",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
     rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(x$r.time.rich[!is.na(x$r.time.rich)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$r.time.rich, xlab = "",ylab="Time in region-Richness correlation",ylim=c(-1,1),main=paste('w =',sim.params[1,4],', sigma =',sim.params[1,7],sep=""))
+      plot(x$clade.origin.time, x$r.time.rich, xlab = "",ylab="r (Time-Richness)",ylim=c(-1,1),main=paste('w =',sim.params[1,4],', sigma =',sim.params[1,7],sep=""))
       points(smooth.spline(x$clade.origin.time[!is.na(x$r.time.rich)],x$r.time.rich[!is.na(x$r.time.rich)],df=spline.df),type='l',col='red')
     } else { 
-      plot(1,1,xlab="",ylab = "Time in Region-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
+      plot(1,1,xlab="",ylab = "r (Time-Richness)",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
     rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
@@ -45,15 +46,14 @@ clade.origin.corr.plot.simple = function(stats.output,
     mtext(paste('Origin =',sim.params[1,3],', ndisp = ',sim.params[1,6],', specn =',sim.params[1,5],',',K.text),outer=T)
   
     if (length(x$gamma.stat[!is.na(x$gamma.stat)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$gamma.stat, xlab = "", ylab="Gamma", ylim = c(-15,3), 
-           main=paste('w =',sim.params[1,4],', sigma =',sim.params[1,7],sep=""))
+      plot(x$clade.origin.time, x$gamma.stat, xlab = "", ylab="Gamma", ylim = c(-15,3))
       points(smooth.spline(x$clade.origin.time[!is.na(x$gamma.stat)],x$gamma.stat[!is.na(x$gamma.stat)],df=spline.df),type='l',col='red')
     } else {
       plot(1,1,xlab="",ylab = "Gamma",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
     rect(-1000,-1.645,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0) # -1.645 is the critical value for rejecting constant rates
 
-  }
+  #}
  
   
 }
