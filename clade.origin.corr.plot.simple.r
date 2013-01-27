@@ -15,6 +15,7 @@ clade.origin.corr.plot.simple = function(stats.output,
   
 #  for (t in timeslices) {
     #t = max(stats.output$time)                 #comment this out if looping over multiple time slices
+    t = 30000
     x = subset(stats.output, n.regions >= min.num.regions & clade.richness >= min.num.spp.per.clade, select = 2:ncol(stats.output))
     spline.df = 4
     
