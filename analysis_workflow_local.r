@@ -14,7 +14,7 @@ partial.analysis = 1; # toggle to determine whether we're looking at all sims or
 #New parameter for taking into account which of us is running this code
 if(Allen==1) {
   setwd('c:/documents and settings/hurlbert/species-energy-simulation')
-  Rlib.location = "C:/program files/R/R-2.15.1/library"
+  Rlib.location = "C:/program files/R/R-2.15.2/library"
   sim_dir = "C:/SENCoutput"
   analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses"
 } else {
