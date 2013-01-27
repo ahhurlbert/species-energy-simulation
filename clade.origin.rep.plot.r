@@ -15,7 +15,7 @@ w.sigma.layout.plot = function(reg, K, grad) {
       temp = read.csv(paste(sim_dir,'/SENC_Stats_sim',sim.reps1[r,1],'.csv',sep=''),header=T)
       stats.output1 = rbind(stats.output1,temp)
     }
-    clade.origin.corr.plot.simple(stats.output1, sim.matrix[sim.matrix$sim.id==sim.reps1[1,],], min.num.data.pts = 10, 
+  clade.origin.corr.plot.simple(stats.output1, sim.matrix[sim.matrix$sim.id==sim.reps1[1,],], min.num.data.pts = 10, 
                                 min.num.spp.per.clade = 30, min.num.regions = 5, output.dir )
   }
 }
@@ -23,7 +23,7 @@ w.sigma.layout.plot = function(reg, K, grad) {
 
 
 pdf(paste(output.dir,'/cladevscorr_10reps_',Sys.Date(),'.pdf',sep=''), height = 10, width = 8)
-par(mfrow=c(4,3), oma=c(0,0,4,0), mar = c(3,4,1.5,1))
+par(mfrow=c(4,3), oma=c(2,0,3,0), mar = c(3,4,1.5,1))
 w.sigma.layout.plot('tropical','on','on')
 w.sigma.layout.plot('tropical','off','off')
 w.sigma.layout.plot('temperate','on','on')
