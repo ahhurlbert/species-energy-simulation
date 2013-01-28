@@ -16,8 +16,10 @@ clade.origin.corr.plot.simple = function(stats.output,
 #  for (t in timeslices) {
     #t = max(stats.output$time)                 #comment this out if looping over multiple time slices
     t = 30000
-    x = subset(stats.output, n.regions >= min.num.regions & clade.richness >= min.num.spp.per.clade, select = 2:ncol(stats.output))
-    clade.origin = subset(x, clade.richness == max(x$clade.richness))
+    x = subset(stats.output, n.regions >= min.num.regions & clade.richness >= min.num.spp.per.clade)
+    starting.clades = aggregate(x$clade.richness, by = list(x$sim), max)
+    names(starting.clades) = c('sim','clade.richness')
+    clade.origin = merge(starting.clades, x, by= c('sim','clade.richness'))
     spline.df = 4
     
     if (length(x$r.env.rich[!is.na(x$r.env.rich)]) > min.num.data.pts) {
@@ -50,7 +52,7 @@ clade.origin.corr.plot.simple = function(stats.output,
     mtext(paste('Origin =',sim.params[1,3],', ndisp = ',sim.params[1,6],', specn =',sim.params[1,5],',',K.text),outer=T)
   
     if (length(x$gamma.stat[!is.na(x$gamma.stat)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$gamma.stat, xlab = "", ylab="Gamma", ylim = c(-17,3))
+      plot(x$clade.origin.time, x$gamma.stat, xlab = "", ylab="Gamma", ylim = c(-20,3))
       rect(-1000,-1.645,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0) # -1.645 is the critical value for rejecting constant rates
       points(smooth.spline(x$clade.origin.time[!is.na(x$gamma.stat)],x$gamma.stat[!is.na(x$gamma.stat)],df=spline.df),type='l',col='red')
       points(clade.origin$clade.origin.time, clade.origin$gamma.stat, col = 'skyblue', pch = 17, cex = 2)
