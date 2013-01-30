@@ -3,6 +3,8 @@
 # --output_dir is the directory where the zipped output files reside
 
 output.unzip = function(sim_dir, sim_ID) {
+  require(ape)
+  
   
   #check that file exists (returns value of 0 when mode=0 if file exists)
   if( file.access(paste(sim_dir,'/senc.out.',sim_ID,'.zip',sep=''), mode=0) == 0 ) {
