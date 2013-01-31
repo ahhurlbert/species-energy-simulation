@@ -1,4 +1,13 @@
-lat.grad.movie = function(all.populations, time.step) {
+github_dir = 'C:/Documents and Settings/Hurlbert/species-energy-simulation'
+source(paste(github_dir,'/unzipping_files.r',sep=''))
+
+sim_dir = 'c:/sencoutput/senc.out.130115' #directory with simulation output
+
+lat.grad.movie = function(sim, sim_dir, time.step) {
+  
+  sim.out = output.unzip(sim_dir, sim)
+  all.populations = sim.out$all.populations
+    
   timeslices = seq(10,10000, by=time.step)
 
   max.rich = max(table(all.populations[all.populations$time.of.extinction > 30000,'region']))
@@ -19,5 +28,8 @@ lat.grad.movie = function(all.populations, time.step) {
     reg.rich.thru.time = rbind(reg.rich.thru.time, cbind(time=rep(t,nrow(all.reg.rich)), all.reg.rich))
     for (i in 1:1000000) {}
   }
-
 }
+
+
+lat.grad.movie(2635, sim_dir, 10)
+
