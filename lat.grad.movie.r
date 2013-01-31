@@ -30,6 +30,6 @@ lat.grad.movie = function(sim, sim_dir, time.step) {
   }
 }
 
-
+# Example for plotting movie for sim 2635
 lat.grad.movie(2635, sim_dir, 10)
 
