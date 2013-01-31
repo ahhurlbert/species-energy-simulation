@@ -3,11 +3,15 @@ source(paste(github_dir,'/unzipping_files.r',sep=''))
 
 sim_dir = 'c:/sencoutput/senc.out.130115' #directory with simulation output
 
+
 lat.grad.movie = function(sim, sim_dir, time.step) {
   
   sim.out = output.unzip(sim_dir, sim)
   all.populations = sim.out$all.populations
-    
+
+  sim.matrix = read.csv(paste(sim_dir,'/sim.matrix.output_2013-01-16.csv',sep=''),header=T)
+  params = sim.matrix[sim.matrix$sim.id==sim,]
+  
   timeslices = seq(10,10000, by=time.step)
 
   max.rich = max(table(all.populations[all.populations$time.of.extinction > 30000,'region']))
@@ -22,7 +26,8 @@ lat.grad.movie = function(sim, sim_dir, time.step) {
     all.reg.rich$region = as.numeric(as.character(all.reg.rich$region))
 
     plot(11 - all.reg.rich$region, log10(all.reg.rich$total.rich), type='b', lwd = 4, cex = .5, col = 'red',
-                                         xlim = c(0,11), ylim=c(0, log10(max.rich)), xlab="Latitude",ylab = "log10 Species richness")
+         xlim = c(0,11), ylim=c(0, log10(max.rich)), xlab="Latitude",ylab = "log10 Species richness",
+         main=paste(params[1,3],"origin; K", params[1,8]))
     text(10, log10(max.rich), paste("t =", t))
     
     reg.rich.thru.time = rbind(reg.rich.thru.time, cbind(time=rep(t,nrow(all.reg.rich)), all.reg.rich))
