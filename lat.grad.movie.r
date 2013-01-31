@@ -1,6 +1,6 @@
-lat.grad.movie = function(all.populations) {
-  timeslices = seq(10,10000,by=10)
-  time.window = timeslices[2] - timeslices[1]
+lat.grad.movie = function(all.populations, time.step) {
+  timeslices = seq(10,10000, by=time.step)
+
   max.rich = max(table(all.populations[all.populations$time.of.extinction > 30000,'region']))
   
   reg.rich.thru.time = data.frame(time=NA, region=NA, total.rich=NA)
