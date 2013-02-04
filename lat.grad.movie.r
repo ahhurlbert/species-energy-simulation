@@ -4,7 +4,7 @@ source(paste(github_dir,'/unzipping_files.r',sep=''))
 sim_dir = 'c:/sencoutput/senc.out.130115' #directory with simulation output
 
 #sim_matrix = 'c:/sencoutput/senc.out.130115/sim.matrix.output_2013-01-16.csv'
-sim_matrix = '//bioark.bio.unc.edu/hurlbert/manuscripts/cladevscommunity/analyses/sim.matrix.output_2012-12-14.csv'
+sim_matrix = '//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/sim.matrix.output_2012-12-14.csv'
 
 lat.grad.movie = function(sim, sim_matrix, time.step, unzip=T) {
   
