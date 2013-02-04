@@ -32,7 +32,7 @@ lat.grad.movie = function(sim, sim_matrix, sim_dir, time.step, time.max, unzip=T
 
     plot(11 - all.reg.rich$region, log10(all.reg.rich$total.rich), type='b', lwd = 4, cex = .5, col = 'red',
          xlim = c(0,11), ylim=c(0, log10(max.rich)), xlab="Latitude",ylab = "log10 Species richness",
-         main=paste(params[1,3],"origin; K", params[1,8]))
+         main=paste(params[1,3],"origin; K", params[1,8]), "; w =",params[1,4],"; sigma = ",params[1,7])
     text(10, log10(max.rich), paste("t =", t))
     
     reg.rich.thru.time = rbind(reg.rich.thru.time, cbind(time=rep(t,nrow(all.reg.rich)), all.reg.rich))
