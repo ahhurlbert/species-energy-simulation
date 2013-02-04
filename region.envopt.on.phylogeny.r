@@ -59,12 +59,12 @@ region.envopt.phylo.plot = function(file_dir, output_dir) {
       spp.envopts = unique(pops[,c('spp.name','env.opt')])
       
       # Rescale environmental optimum values to range between 0 and 40 for converting to colors
-      envopts = 40*(max(spp.envopts$env.opt) - spp.envopts$env.opt)/(max(spp.envopts$env.opt) - min(spp.envopts$env.opt))      #rescales env opt from [-10,50] to [0,40]
+      envopts = 39*(spp.envopts$env.opt - min(spp.envopts$env.opt))/(max(spp.envopts$env.opt) - min(spp.envopts$env.opt)) + 1
       names(envopts) = spp.envopts$spp.name
       
       # Plot phylogeny coded by environmental optimum
       plot(phy, type="fan", show.tip.label=F)
-      tiplabels(pch = 16, col = envopt.cols[ceiling(envopts[phy2$tip.label])])
+      tiplabels(pch = 16, col = envopt.cols[round(envopts[phy2$tip.label])])
       legend('topright',legend = round(seq(min(spp.envopts$env.opt),max(spp.envopts$env.opt),length.out = 5),1), 
              pch = 16, col = envopt.cols[seq(1,40,length.out=5)])
       legend('topleft','Environmental\nOptimum', bty='n', cex = 1.2)
