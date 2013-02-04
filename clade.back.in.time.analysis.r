@@ -58,6 +58,9 @@ dev.off()
 #Subset all.populations to only include these clade members
 clade.3011.pops = subset(all.populations, spp.name %in% all.clade.member.names.3011)
 
+#timeslices = seq(600,5400,length.out = 9)     #set appropriately for the specific clade
+time.window = timeslices[2] - timeslices[1]
+
 reg.rich.thru.time = data.frame(time=NA, 
                                 region=NA, 
                                 total.rich=NA,       # richness of all species extant during the timeslice
@@ -66,9 +69,6 @@ reg.rich.thru.time = data.frame(time=NA,
                                 clade.ext.pops=NA,   # total number of pops within the clade going extinct prior to timeslice
                                 total.ext.spp=NA,    # total number of species going globally extinct in the time window
                                 clade.ext.spp=NA)    # total number of species within the clade going globally extinct in the time window
-
-timeslices = seq(600,5400,length.out = 9)
-time.window = timeslices[2] - timeslices[1]
 
 for (t in timeslices) {
   sub.pops = subset(clade.3011.pops, time.of.origin < t & time.of.extinction > t)
@@ -109,7 +109,7 @@ for (t in timeslices) {
 
 cols = rainbow(length(timeslices)+1)
 
-pdf(paste(newplot_dir,"/focalclade",clade,"_thru_time_",Sys.Date(),".pdf",sep=""), height = 6, width = 10)
+pdf(paste(newplot_dir,"/sim",sim,"_focalclade",clade,"_thru_time_",Sys.Date(),".pdf",sep=""), height = 6, width = 10)
 
 # Richness plots
 par(mfrow=c(1,2),oma=c(0,0,2.5,0),mar=c(4,4,1,1))
