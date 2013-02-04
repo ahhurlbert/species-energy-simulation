@@ -3,8 +3,10 @@ source(paste(github_dir,'/unzipping_files.r',sep=''))
 
 sim_dir = 'c:/sencoutput/senc.out.130115' #directory with simulation output
 
+#sim_matrix = 'c:/sencoutput/senc.out.130115/sim.matrix.output_2013-01-16.csv'
+sim_matrix = '//bioark.bio.unc.edu/hurlbert/manuscripts/cladevscommunity/analyses/sim.matrix.output_2012-12-14.csv'
 
-lat.grad.movie = function(sim, sim_dir, time.step, unzip=T) {
+lat.grad.movie = function(sim, sim_matrix, time.step, unzip=T) {
   
   if(unzip) {
     sim.out = output.unzip(sim_dir, sim)
@@ -12,7 +14,7 @@ lat.grad.movie = function(sim, sim_dir, time.step, unzip=T) {
   } else { 
     all.populations = read.csv(paste(sim_dir,'/SENC_all.pops_sim',sim,'.csv',sep=''), header=T)
   }
-  sim.matrix = read.csv(paste(sim_dir,'/sim.matrix.output_2013-01-16.csv',sep=''),header=T)
+  sim.matrix = read.csv(sim_matrix,header=T)
   params = sim.matrix[sim.matrix$sim.id==sim,]
   
   timeslices = seq(10,10000, by=time.step)
