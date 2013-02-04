@@ -6,7 +6,7 @@ sim_dir = 'c:/sencoutput/senc.out.130115' #directory with simulation output
 #sim_matrix = 'c:/sencoutput/senc.out.130115/sim.matrix.output_2013-01-16.csv'
 sim_matrix = '//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/sim.matrix.output_2012-12-14.csv'
 
-lat.grad.movie = function(sim, sim_matrix, time.step, unzip=T) {
+lat.grad.movie = function(sim, sim_matrix, sim_dir, time.step, time.max, unzip=T) {
   
   if(unzip) {
     sim.out = output.unzip(sim_dir, sim)
@@ -17,7 +17,7 @@ lat.grad.movie = function(sim, sim_matrix, time.step, unzip=T) {
   sim.matrix = read.csv(sim_matrix,header=T)
   params = sim.matrix[sim.matrix$sim.id==sim,]
   
-  timeslices = seq(10,10000, by=time.step)
+  timeslices = seq(time.step, time.max, by=time.step)
 
   max.rich = max(table(all.populations[all.populations$time.of.extinction > 30000,'region']))
   
