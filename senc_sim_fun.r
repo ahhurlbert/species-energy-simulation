@@ -13,7 +13,13 @@ senc_sim_fun = function(sim.matrix,sim) {
 	num.of.bins = sim.matrix$num.of.bins[sim.matrix$sim.id == sim]; 
 	max.time = sim.matrix$max.time[sim.matrix$sim.id == sim];
 	max.richness = sim.matrix$max.richness[sim.matrix$sim.id == sim];
-
+	temperate_disturb_intensity = sim.matrix$temperate_disturb_intensity[sim.matrix$sim.id == sim];
+	tropical_disturb_intensity = sim.matrix$tropical_disturb_intensity[sim.matrix$sim.id == sim];
+	disturb_frequency = sim.matrix$disturb_frequency[sim.matrix$sim.id == sim];
+  
+  disturb_times = seq(0,max.time,disturb_frequency);
+  reg.disturb.intensity = as.data.frame(cbind(seq(0,num.of.bins,1),seq(temperate_disturb_intensity,tropical_disturb_intensity,length=(num.of.bins+1)))); colnames(reg.disturb.intensity) = c('region','intensity');
+	
 	extinct.pops.output.times = numeric();
 	print.times = seq(0,max.time,10);
 	tot.extinct.pops = 0;
@@ -102,6 +108,17 @@ senc_sim_fun = function(sim.matrix,sim) {
 		reg.pop.sizes = as.data.frame(tapply(all.populations$pop.size,all.populations$region,FUN=sum));
 		reg.pop.sizes = cbind(rownames(reg.pop.sizes),reg.pop.sizes); colnames(reg.pop.sizes) = c("region","reg.individuals.real");
 		all.populations = merge(all.populations,reg.pop.sizes,by='region');
+    
+    if (is.element(curr.time,disturb_times)==T) {
+      
+      for (reg.sampled in unique(all.populations$region[all.populations$extant==1])) {
+        
+        reg.disturb = reg.disturb.intensity$intensity[reg.disturb.intensity$region==reg.sampled];
+        all.populations$pop.size[all.populations$region==reg.sampled & all.populations$extant==1] = round((1-reg.disturb)*all.populations$pop.size[all.populations$region==reg.sampled & all.populations$extant==1],digits=0);
+        
+      }  
+          
+    }
 
 		## evaluate mutation across all extant species
 		num.of.mutations = mutation.fun(population.size=all.populations$pop.size,alpha.param=alpha);
@@ -256,7 +273,8 @@ senc_sim_fun = function(sim.matrix,sim) {
 	write.csv(time.richness,paste("SENC_time.rich_sim",sim,".csv",sep=""),quote=F,row.names=F);
 	write.tree(phylo.out,paste("SENC_phylo_sim",sim,".tre",sep=""));
 	end.params = data.frame(sim.id=sim,status='completed',reg.of.origin=reg.of.origin,w=w,alpha=alpha,beta=beta,sigma_E=sigma_E,carry.cap=carry.cap,
-                          energy.gradient=energy.gradient,max.K=max.K,num.of.bins=num.of.bins,max.time=max.time,max.richness=max.richness); 
+                          energy.gradient=energy.gradient,max.K=max.K,num.of.bins=num.of.bins,max.time=max.time,max.richness=max.richness,temperate_disturb_intensity = temperate_disturb_intensity,
+                          tropical_disturb_intensity = tropical_disturb_intensity,disturb_frequency=disturb_frequency); 
 	write.csv(end.params,paste("SENC_params.out_sim",sim,".csv",sep=""),quote=F,row.names=F);
 
 	return(list(all.populations=all.populations,time.richness=time.richness,phylo.out=phylo.out,params.out=end.params));
