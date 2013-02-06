@@ -32,7 +32,7 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=T
   max.rich = max(table(all.populations[all.populations$time.of.extinction > 30000,'region']))
   
   reg.rich.thru.time = data.frame(time=NA, region=NA, total.rich=NA)
-  par(mfrow = c(1,1))
+  par(mfrow = c(2,1), mar = c(4,4,2,1), mgp = c(2.5,1,0))
   for (t in timeslices) {
     
     all.pops = subset(all.populations, time.of.origin < t & time.of.extinction > t)
@@ -46,6 +46,19 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=T
     text(10, log10(max.rich)+.5, paste("t =", t))
     
     reg.rich.thru.time = rbind(reg.rich.thru.time, cbind(time=rep(t,nrow(all.reg.rich)), all.reg.rich))
+    
+    # Panel 2: environmental optima
+    regions = c(1,4,7,10)
+    
+    plot(1,1,type="n",xlim=c(-5,45), ylim = c(0,0.4), xlab="Thermal Optimum", ylab = "Density")
+    reg.env = unique(all.populations[all.populations$region %in% regions, c('region','reg.env')])
+    abline(v = reg.env$reg.env, lty="dotted")
+    for (r in regions) {
+      if (nrow(all.pops[all.pops$region==r,]) > 3) {
+        points(density(all.pops[all.pops$region==r, 'env.opt']), type = 'l', col = 'red')
+      }
+    }
+    
     for (i in 1:1000000) {}
   }
 }
