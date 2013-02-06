@@ -3,7 +3,7 @@
 
 ## for multiple jobs per node
 
-cd senc.output.130114/ 
+cd sims.out.130204/ 
 
 tr '\r' '\n' < SENC_Olympus_Batch_nodes.txt > SENC_Olympus_Batch_nodes_unix.txt
 
@@ -15,7 +15,7 @@ chmod u+x SENC_Olympus_Execute_nodes_unix.sh
 
 ## zipping output for specified simulations
 
-cd senc.output.130114/
+cd sims.out.130204/
 
 tr '\r' '\n' < SENC_Olympus_Batch_zipping.txt > SENC_Olympus_Batch_zipping_unix.txt
 

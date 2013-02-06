@@ -1,11 +1,27 @@
-github_dir = 'C:/Documents and Settings/Hurlbert/species-energy-simulation'
-source(paste(github_dir,'/unzipping_files.r',sep=''))
+Allen = 0;
 
-sim_dir = 'c:/sencoutput/senc.out.130115' #directory with simulation output
+if (Allen == 1) {
 
-#sim_matrix = 'c:/sencoutput/senc.out.130115/sim.matrix.output_2013-01-16.csv'
-sim.matrix = read.csv('//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/sim.matrix.output_2012-12-14.csv',header=T)
+  github_dir = 'C:/Documents and Settings/Hurlbert/species-energy-simulation'
+  source(paste(github_dir,'/unzipping_files.r',sep=''))
 
+  sim_dir = 'c:/sencoutput/senc.out.130115' #directory with simulation output
+
+  #sim_matrix = 'c:/sencoutput/senc.out.130115/sim.matrix.output_2013-01-16.csv'
+  sim.matrix = read.csv('//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/sim.matrix.output_2012-12-14.csv',header=T)
+}
+
+if (Allen == 0) {
+  
+  github_dir = 'C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation'
+  source(paste(github_dir,'/unzipping_files.r',sep=''))
+  
+  sim_dir = 'C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204' #directory with simulation output
+  
+  #sim_matrix = 'c:/sencoutput/senc.out.130115/sim.matrix.output_2013-01-16.csv'
+  sim.matrix = as.data.frame(read.csv('C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204/sim.matrix.output_2013-02-05.csv',header=T))
+
+}
 
 # Function that shows a time lapse movie of the development of the latitudinal gradient in species richness.
 # Arguments include the simID, sim.matrix, directory in which simulation files are stored, 
@@ -33,7 +49,7 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=T
     all.reg.rich = data.frame(table(all.pops$region))
     names(all.reg.rich) = c('region','total.rich')
     all.reg.rich$region = as.numeric(as.character(all.reg.rich$region))
-
+    Sys.sleep(0)
     plot(11 - all.reg.rich$region, log10(all.reg.rich$total.rich), type='b', lwd = 4, cex = .5, col = 'red',
          xlim = c(0,11), ylim=c(0, log10(max.rich)+.5), xlab="Latitude",ylab = "log10 Species richness",
          main=paste(params[1,3],"origin; K", params[1,8], "; w =",params[1,4],"; sigma = ",params[1,7]))
@@ -45,5 +61,5 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=T
 }
 
 # Example for plotting movie for sim 2635
-lat.grad.movie(2635, sim_dir, 10)
+lat.grad.movie(2945,sim.matrix, sim_dir, 50,time.max=30000)
 
