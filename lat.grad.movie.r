@@ -2,7 +2,7 @@ Allen = 0;
 
 if (Allen == 1) {
   github_dir = 'C:/Documents and Settings/Hurlbert/species-energy-simulation'
-  sim_dir = 'c:/sencoutput/senc.out.130204' #directory with simulation output
+  sim_dir = 'c:/sencoutput/sims.out.130204' #directory with simulation output
 }
 
 if (Allen == 0) {
