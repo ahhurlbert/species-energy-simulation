@@ -67,6 +67,6 @@ lat.grad.movie.comp = function(sims, sim.matrix, sim_dir, time.step, time.max, u
   }
 }
 
-# Example for plotting movie for sim 2635
-lat.grad.movie(2945,sim.matrix, sim_dir, 50,time.max=30000)
+# Example for plotting movie for comparing sims 3035 and 3095
+lat.grad.movie(sims = c(3035, 3095), sim.matrix, sim_dir, 50,time.max=30000)
 
