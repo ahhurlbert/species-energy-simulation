@@ -1,27 +1,17 @@
 Allen = 0;
 
 if (Allen == 1) {
-
   github_dir = 'C:/Documents and Settings/Hurlbert/species-energy-simulation'
-  source(paste(github_dir,'/unzipping_files.r',sep=''))
-
-  sim_dir = 'c:/sencoutput/senc.out.130115' #directory with simulation output
-
-  #sim_matrix = 'c:/sencoutput/senc.out.130115/sim.matrix.output_2013-01-16.csv'
-  sim.matrix = read.csv('//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/sim.matrix.output_2012-12-14.csv',header=T)
+  sim_dir = 'c:/sencoutput/senc.out.130204' #directory with simulation output
 }
 
 if (Allen == 0) {
-  
   github_dir = 'C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation'
-  source(paste(github_dir,'/unzipping_files.r',sep=''))
-  
   sim_dir = 'C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204' #directory with simulation output
-  
-  #sim_matrix = 'c:/sencoutput/senc.out.130115/sim.matrix.output_2013-01-16.csv'
-  sim.matrix = as.data.frame(read.csv('C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204/sim.matrix.output_2013-02-05.csv',header=T))
-
 }
+
+source(paste(github_dir,'/unzipping_files.r',sep=''))
+sim.matrix = read.csv(paste(github_dir,'/SENC_Master_Simulation_Matrix.csv',sep=''), header=T)
 
 # Function that shows a time lapse movie of the development of the latitudinal gradient in species richness.
 # Arguments include the simID, sim.matrix, directory in which simulation files are stored, 
