@@ -56,14 +56,14 @@ lat.grad.movie.comp = function(sims, sim.matrix, sim_dir, time.step, time.max, u
     plot(11 - all.reg.rich1$region, log10(all.reg.rich1$total.rich), type='b', lwd = 4, cex = .5, col = 'red',
          xlim = c(0,11), ylim=c(0, log10(max.rich)+.5), xlab="Latitude",ylab = "log10 Species richness",
          main=paste(params1[1,3],"origin; K", params1[1,8], "; w =",params1[1,4],"; sigma = ",params1[1,7]))
-    points(11 - all.reg.rich2$region, log10(all.reg.rich2$total.rich)+.05, type='b', lwd = 4, cex = .5, col = 'blue',
+    points(11 - all.reg.rich2$region, log10(all.reg.rich2$total.rich), type='b', lwd = 4, cex = .5, col = 'blue',
            xlim = c(0,11), ylim=c(0, log10(max.rich)+.5))
     legend('topleft',c(paste('freq =', params1[1,15],'; magn =', params1[1,16]),
                               paste('freq =', params2[1,15],'; magn =', params2[1,16])), lwd=4, col = c('red','blue'))
     text(10, log10(max.rich)+.5, paste("t =", t))
     
     #reg.rich.thru.time = rbind(reg.rich.thru.time, cbind(time=rep(t,nrow(all.reg.rich)), all.reg.rich))
-    for (i in 1:1000000) {}
+    for (i in 1:100000) {}
   }
 }
 
