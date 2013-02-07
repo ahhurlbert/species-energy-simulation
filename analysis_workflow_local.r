@@ -80,7 +80,7 @@ sim.matrix$BK.env = NA
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 if (partial.analysis == 0) {which.sims = 1:max(sim.matrix$sim.id)};
-if (partial.analysis == 1) {which.sims = 2925:3104}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
+if (partial.analysis == 1) {which.sims = 3105:3124}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
 
 
 foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar% {

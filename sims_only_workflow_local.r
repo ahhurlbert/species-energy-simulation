@@ -22,7 +22,7 @@ source('C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-en
 sim.matrix = as.data.frame(read.csv("C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation/SENC_Master_Simulation_Matrix.csv",header=T));
 
 #(4) call simulation
-sim = 3104
+sim = 3105
 sim.start = date(); print(sim.start);
 sim.results = senc_sim_fun(sim.matrix=sim.matrix,sim=sim)
 sim.end = date(); print(sim.end);

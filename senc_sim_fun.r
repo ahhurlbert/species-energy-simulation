@@ -17,9 +17,18 @@ senc_sim_fun = function(sim.matrix,sim) {
 	tropical_disturb_intensity = sim.matrix$tropical_disturb_intensity[sim.matrix$sim.id == sim];
 	disturb_frequency = sim.matrix$disturb_frequency[sim.matrix$sim.id == sim];
   
-  disturb_times = seq(0,max.time,disturb_frequency);
-  reg.disturb.intensity = as.data.frame(cbind(seq(0,num.of.bins,1),seq(temperate_disturb_intensity,tropical_disturb_intensity,length=(num.of.bins+1)))); colnames(reg.disturb.intensity) = c('region','intensity');
-	
+  if (disturb_frequency == 0) {
+    
+    disturb_times = 0;
+    reg.disturb.intensity = as.data.frame(cbind(seq(0,num.of.bins,1),rep(0,length=(num.of.bins+1)))); colnames(reg.disturb.intensity) = c('region','intensity');
+                       
+  } else {
+    
+    disturb_times = seq(0,max.time,disturb_frequency);
+    reg.disturb.intensity = as.data.frame(cbind(seq(0,num.of.bins,1),seq(temperate_disturb_intensity,tropical_disturb_intensity,length=(num.of.bins+1)))); colnames(reg.disturb.intensity) = c('region','intensity');
+        
+    };
+  
 	extinct.pops.output.times = numeric();
 	print.times = seq(0,max.time,10);
 	tot.extinct.pops = 0;

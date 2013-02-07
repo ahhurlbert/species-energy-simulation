@@ -13,9 +13,9 @@ num.of.bins = c(11); # one less than the actual number of bins, starting with bi
 max.time = c(30000); # simulation time steps
 max.richness = c(3000); # maximum total richness of the system
 replicates = 1:10; # number of replicates for each param combination
-disturb_frequency = c(10,50,100); # number of time steps between disturbance events
-temperate_disturb_intensity = c(0.75,0.85,0.95); # fraction of individuals lost during a disturbance event in the temperate zone
-tropical_disturb_intensity = c(0.75); # fraction of individuals lost during a disturbance event in the tropical zone
+disturb_frequency = c(0); # number of time steps between disturbance events
+temperate_disturb_intensity = c(0); # fraction of individuals lost during a disturbance event in the temperate zone
+tropical_disturb_intensity = c(0); # fraction of individuals lost during a disturbance event in the tropical zone
 
 #(2) update master simulation matrix with chosen parameter combinations
 setwd("C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation");
