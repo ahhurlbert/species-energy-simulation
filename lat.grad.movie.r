@@ -59,7 +59,7 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
       }
     }
     
-    for (i in 1:1000000) {}
+    for (i in 1:100000) {}
   }
 }
 

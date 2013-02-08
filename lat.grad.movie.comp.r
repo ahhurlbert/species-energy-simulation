@@ -1,8 +1,8 @@
-Allen = 0;
+Allen = 1;
 
 if (Allen == 1) {
   github_dir = 'C:/Documents and Settings/Hurlbert/species-energy-simulation'
-  sim_dir = 'c:/sencoutput/sims.out.130204' #directory with simulation output
+  sim_dir = 'c:/sencoutput' #directory with simulation output
 }
 
 if (Allen == 0) {
@@ -18,7 +18,7 @@ sim.matrix = read.csv(paste(github_dir,'/SENC_Master_Simulation_Matrix.csv',sep=
 # temporal resolution and duration of the movie, and whether the sim files need to be unzipped or not.
 # Now modified to compare two simulations at once.
 
-lat.grad.movie.comp = function(sims, sim.matrix, sim_dir, time.step, time.max, unzip=T) {
+lat.grad.movie.comp = function(sims, sim.matrix, sim_dir, time.step, time.max, unzip=F) {
   
   if(unzip) {
     sim.out1 = output.unzip(sim_dir, sims[1])
