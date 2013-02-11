@@ -6,15 +6,17 @@
 file_dir = 'C:/SENCoutput'
 
 
-region.envopt.phylo.plot = function(file_dir, output_dir) {
+region.envopt.phylo.plot = function(file_dir, output_dir, sims=F) {
   require(ape)
   
-  files = list.files(file_dir)
-  allpops.files = files[grep('all.pops',files)]
-  #phylo.files = files[grep('phylo',files)]
+  if (!sims) {
+    files = list.files(file_dir)
+    allpops.files = files[grep('all.pops',files)]
+    #phylo.files = files[grep('phylo',files)]
   
-  sims = as.vector( sapply(allpops.files, function(x)
+    sims = as.vector( sapply(allpops.files, function(x)
                       as.numeric(strsplit(strsplit(x, "sim")[[1]][2] , "\\.csv")[[1]][1])) )
+  } 
   
   for (i in sims) {
       
