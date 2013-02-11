@@ -31,7 +31,7 @@ region.envopt.phylo.plot = function(file_dir, output_dir, sims=F, extant.only=F)
       sub.species2 = sub.species[!sub.species %in% extinct.species]
       tips.to.drop = as.character(phy$tip.label[!phy$tip.label %in% sub.species2]);
       sub.phy = drop.tip(phy,tips.to.drop);
-    }
+    } else { sub.phy = phy }
     
     if (nrow(pops) > 0) {
       
