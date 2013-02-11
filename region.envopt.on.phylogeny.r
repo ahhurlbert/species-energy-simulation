@@ -6,7 +6,7 @@
 file_dir = 'C:/SENCoutput'
 
 
-region.envopt.phylo.plot = function(file_dir, output_dir, sims=F) {
+region.envopt.phylo.plot = function(file_dir, output_dir, sims=F, extant.only=F) {
   require(ape)
   
   if (!sims) {
@@ -23,6 +23,15 @@ region.envopt.phylo.plot = function(file_dir, output_dir, sims=F) {
     pops = read.csv(paste(file_dir,'/SENC_all.pops_sim',i,'.csv',sep=''), header=T)
     phy = read.tree(paste(file_dir,'/SENC_phylo_sim',i,'.tre',sep=''))
     params = read.csv(paste(file_dir,'/SENC_params.out_sim',i,'.csv',sep=''), header=T)
+    
+    if(extant.only) {
+      extant.ornot = aggregate(pops$extant,by=list(pops$spp.name),sum)
+      extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
+      sub.species = as.character(unique(pops$spp.name));
+      sub.species2 = sub.species[!sub.species %in% extinct.species]
+      tips.to.drop = as.character(phy$tip.label[!phy$tip.label %in% sub.species2]);
+      sub.phy = drop.tip(phy,tips.to.drop);
+    }
     
     if (nrow(pops) > 0) {
       
@@ -46,8 +55,8 @@ region.envopt.phylo.plot = function(file_dir, output_dir, sims=F) {
       sp.reg2$cols = as.character(sp.reg2$cols)
 
       # Drop species not in pops from phylogeny (these are boundary species only present in regs 0,11)
-      missing.spp = phy$tip.label[!phy$tip.label %in% sp.reg$spp.name]
-      phy2 = drop.tip(phy, missing.spp)
+      missing.spp = sub.phy$tip.label[!sub.phy$tip.label %in% sp.reg$spp.name]
+      phy2 = drop.tip(sub.phy, missing.spp)
       
       # Plot phylogeny coded by region
       plot(phy2, type="fan", show.tip.label=F)
@@ -65,7 +74,7 @@ region.envopt.phylo.plot = function(file_dir, output_dir, sims=F) {
       names(envopts) = spp.envopts$spp.name
       
       # Plot phylogeny coded by environmental optimum
-      plot(phy, type="fan", show.tip.label=F)
+      plot(phy2, type="fan", show.tip.label=F)
       tiplabels(pch = 16, col = envopt.cols[round(envopts[phy2$tip.label])])
       legend('topright',legend = round(seq(min(spp.envopts$env.opt),max(spp.envopts$env.opt),length.out = 5),1), 
              pch = 16, col = envopt.cols[seq(1,40,length.out=5)])
