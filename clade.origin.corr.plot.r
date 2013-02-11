@@ -22,76 +22,76 @@ clade.origin.corr.plot = function(stats.output,
     spline.df = 4
     
     if (length(x$r.env.rich[!is.na(x$r.env.rich)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$r.env.rich, xlab="",ylab="Environment-Richness correlation",ylim=c(-1,1))
-      points(smooth.spline(x$clade.origin.time[!is.na(x$r.env.rich)],x$r.env.rich[!is.na(x$r.env.rich)],df=spline.df),type='l',col='red')
+      plot(log10(x$clade.origin.time), x$r.env.rich, xlab="",ylab="Environment-Richness correlation",ylim=c(-1,1))
+      points(smooth.spline(log10(x$clade.origin.time[!is.na(x$r.env.rich)]),x$r.env.rich[!is.na(x$r.env.rich)],df=spline.df),type='l',col='red')
     } else {
       plot(1,1,xlab="",ylab = "Environment-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1,.5,log10(t)+.5,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(x$r.MRD.rich[!is.na(x$r.MRD.rich)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$r.MRD.rich, xlab="",ylab="Mean Root Distance-Richness correlation",ylim=c(-1,1))
-      points(smooth.spline(x$clade.origin.time[!is.na(x$r.MRD.rich)],x$r.MRD.rich[!is.na(x$r.MRD.rich)],df=spline.df),type='l',col='red')
+      plot(log10(x$clade.origin.time), x$r.MRD.rich, xlab="",ylab="Mean Root Distance-Richness correlation",ylim=c(-1,1))
+      points(smooth.spline(log10(x$clade.origin.time[!is.na(x$r.MRD.rich)]),x$r.MRD.rich[!is.na(x$r.MRD.rich)],df=spline.df),type='l',col='red')
     } else {
       plot(1,1,xlab="",ylab = "Mean Root Distance-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-1000,-1.1,t+50,-.5,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1,-1.1,log10(t)+.5,-.5,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(x$r.PSV.rich[!is.na(x$r.PSV.rich)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$r.PSV.rich, xlab = "", ylab="PSV-Richness correlation",ylim=c(-1,1))
-      points(smooth.spline(x$clade.origin.time[!is.na(x$r.PSV.rich)],x$r.PSV.rich[!is.na(x$r.PSV.rich)],df=spline.df),type='l',col='red')
+      plot(log10(x$clade.origin.time), x$r.PSV.rich, xlab = "", ylab="PSV-Richness correlation",ylim=c(-1,1))
+      points(smooth.spline(log10(x$clade.origin.time[!is.na(x$r.PSV.rich)]),x$r.PSV.rich[!is.na(x$r.PSV.rich)],df=spline.df),type='l',col='red')
     } else {
       plot(1,1,xlab="",ylab = "PSV-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1,.5,log10(t)+.5,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(x$r.time.rich[!is.na(x$r.time.rich)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$r.time.rich, xlab = "",ylab="Time in region-Richness correlation",ylim=c(-1,1))
-      points(smooth.spline(x$clade.origin.time[!is.na(x$r.time.rich)],x$r.time.rich[!is.na(x$r.time.rich)],df=spline.df),type='l',col='red')
+      plot(log10(x$clade.origin.time), x$r.time.rich, xlab = "",ylab="Time in region-Richness correlation",ylim=c(-1,1))
+      points(smooth.spline(log10(x$clade.origin.time[!is.na(x$r.time.rich)]),x$r.time.rich[!is.na(x$r.time.rich)],df=spline.df),type='l',col='red')
     } else { 
       plot(1,1,xlab="",ylab = "Time in Region-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1,.5,log10(t)+.5,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(x$r.env.MRD[!is.na(x$r.env.MRD)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$r.env.MRD, xlab="", ylab="Environment-MRD correlation",ylim=c(-1,1))
-      points(smooth.spline(x$clade.origin.time[!is.na(x$r.env.MRD)],x$r.env.MRD[!is.na(x$r.env.MRD)],df=spline.df),type='l',col='red')
+      plot(log10(x$clade.origin.time), x$r.env.MRD, xlab="", ylab="Environment-MRD correlation",ylim=c(-1,1))
+      points(smooth.spline(log10(x$clade.origin.time[!is.na(x$r.env.MRD)]),x$r.env.MRD[!is.na(x$r.env.MRD)],df=spline.df),type='l',col='red')
     } else {
       plot(1,1,xlab="",ylab = "Environment-MRD correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-1000,-1.1,t+50,-.5,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1,-1.1,log10(t)+.5,-.5,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(x$r.env.PSV[!is.na(x$r.env.PSV)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$r.env.PSV, xlab="", ylab="Environment-PSV correlation",ylim=c(-1,1))
-      points(smooth.spline(x$clade.origin.time[!is.na(x$r.env.PSV)],x$r.env.PSV[!is.na(x$r.env.PSV)],df=spline.df),type='l',col='red')
+      plot(log10(x$clade.origin.time), x$r.env.PSV, xlab="", ylab="Environment-PSV correlation",ylim=c(-1,1))
+      points(smooth.spline(log10(x$clade.origin.time[!is.na(x$r.env.PSV)]),x$r.env.PSV[!is.na(x$r.env.PSV)],df=spline.df),type='l',col='red')
     } else {
       plot(1,1,xlab="",ylab = "Environment-PSV correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
+    rect(-1,.5,log10(t)+.5,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(x$r.rich.ext[!is.na(x$r.rich.ext)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$r.rich.ext, xlab = "", ylab="Extinction Rate-Richness correlation",ylim=c(-1,1))
-      points(smooth.spline(x$clade.origin.time[!is.na(x$r.rich.ext)],x$r.rich.ext[!is.na(x$r.rich.ext)],df=spline.df),type='l',col='red')
+      plot(log10(x$clade.origin.time), x$r.rich.ext, xlab = "", ylab="Extinction Rate-Richness correlation",ylim=c(-1,1))
+      points(smooth.spline(log10(x$clade.origin.time[!is.na(x$r.rich.ext)]),x$r.rich.ext[!is.na(x$r.rich.ext)],df=spline.df),type='l',col='red')
     } else {
       plot(1,1,xlab="",ylab = "Extinction Rate-Richness correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
     #rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
 
     if (length(x$r.ext.reg[!is.na(x$r.ext.reg)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$r.ext.reg, xlab = "", ylab="Extinction Rate-Region correlation",ylim=c(-1,1))
-      points(smooth.spline(x$clade.origin.time[!is.na(x$r.ext.reg)],x$r.ext.reg[!is.na(x$r.ext.reg)],df=spline.df),type='l',col='red')
+      plot(log10(x$clade.origin.time), x$r.ext.reg, xlab = "", ylab="Extinction Rate-Region correlation",ylim=c(-1,1))
+      points(smooth.spline(log10(x$clade.origin.time[!is.na(x$r.ext.reg)]),x$r.ext.reg[!is.na(x$r.ext.reg)],df=spline.df),type='l',col='red')
     } else {
       plot(1,1,xlab="",ylab = "Extinction Rate-Region correlation",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
     #rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
     
     if (length(x$gamma.stat[!is.na(x$gamma.stat)]) > min.num.data.pts) {
-      plot(x$clade.origin.time, x$gamma.stat, xlab = "", ylab="Gamma")
-      points(smooth.spline(x$clade.origin.time[!is.na(x$gamma.stat)],x$gamma.stat[!is.na(x$gamma.stat)],df=spline.df),type='l',col='red')
+      plot(log10(x$clade.origin.time), x$gamma.stat, xlab = "", ylab="Gamma")
+      points(smooth.spline(log10(x$clade.origin.time[!is.na(x$gamma.stat)]),x$gamma.stat[!is.na(x$gamma.stat)],df=spline.df),type='l',col='red')
     } else {
       plot(1,1,xlab="",ylab = "Gamma",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
-    rect(-1000,-1.645,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0) # -1.645 is the critical value for rejecting constant rates
+    rect(-1,-1.645,log10(t)+.5,1.1,col=rgb(.1,.1,.1,.1),lty=0) # -1.645 is the critical value for rejecting constant rates
 
     mtext("Clade origin time",1,outer=T,line=2)
     if (sim.params[1,8]=='on' & sim.params[1,9]=='on') {
@@ -101,7 +101,9 @@ clade.origin.corr.plot = function(stats.output,
     } else if (sim.params[1,8]=='off') {
       K.text = 'no K'
     }
-    mtext(paste('Sim',sim.params[1,1],', Origin =',sim.params[1,3],', w =',sim.params[1,4],', sigma =',sim.params[1,7],
+    mtext(paste('Sim',sim.params[1,1],', Origin =',sim.params[1,3],', w =',sim.params[1,4],', sigma =',
+                sim.params[1,7],', dist.freq =',sim.params[1,'disturb_frequency'],', dist.intens.temp =',
+                sim.params[1,'temperate_disturb_intensity'],
                 ',\ndisp = ',sim.params[1,6],', specn =',sim.params[1,5],',',K.text,', time =',t),outer=T)
     
   }
