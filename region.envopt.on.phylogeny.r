@@ -23,6 +23,7 @@ region.envopt.phylo.plot = function(file_dir, output_dir=NA, sims=F, extant.only
     pops = read.csv(paste(file_dir,'/SENC_all.pops_sim',i,'.csv',sep=''), header=T)
     phy = read.tree(paste(file_dir,'/SENC_phylo_sim',i,'.tre',sep=''))
     params = read.csv(paste(file_dir,'/SENC_params.out_sim',i,'.csv',sep=''), header=T)
+    stats = read.csv(paste(file_dir,'/SENC_Stats_sim',i,'.csv',sep=''), header=T)
     
     if(extant.only) {
       extant.ornot = aggregate(pops$extant,by=list(pops$spp.name),sum)
@@ -64,6 +65,7 @@ region.envopt.phylo.plot = function(file_dir, output_dir=NA, sims=F, extant.only
       tiplabels(pch=16,col = sp.reg2$cols[sapply(phy2$tip.label, function(x) which(as.numeric(x)==sp.reg2$spp.name))])
       legend('topright',legend = 1:10, pch = 16, col = as.character(reg.cols$cols))
       legend('topleft','Region', bty='n', cex = 1.2)
+      legend('bottomright',legend = paste('gamma =',round(stats$gamma.stat[1],1)), cex= 1.3, bty="n")
       
       # Environmental optimum colors
       envopt.cols = colorRampPalette(c('darkblue','skyblue','gray95','pink','red','darkred'))(40)
@@ -80,6 +82,7 @@ region.envopt.phylo.plot = function(file_dir, output_dir=NA, sims=F, extant.only
       legend('topright',legend = round(seq(min(spp.envopts$env.opt),max(spp.envopts$env.opt),length.out = 5),1), 
              pch = 16, col = envopt.cols[seq(1,40,length.out=5)])
       legend('topleft','Environmental\nOptimum', bty='n', cex = 1.2)
+      legend('bottomright',legend = paste('Bk =',round(stats$BK.env[1],1)), cex= 1.3, bty="n")
       
       # Annotate plot
       if (params$carry.cap=='on' & params$energy.gradient=='on') {
