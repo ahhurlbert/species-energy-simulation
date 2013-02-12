@@ -92,8 +92,10 @@ region.envopt.phylo.plot = function(file_dir, output_dir=NA, sims=F, extant.only
       } else if (params$carry.cap=='off') {
         K.text = 'no K'
       }
-      mtext(paste('Sim',params[1,1],', Origin =',params[1,3],', w =',params[1,4],', sigma =',params[1,7],
-                  ',\ndisp = ',params[1,6],', specn =',params[1,5],',',K.text), 3 , cex = 1.75, outer = T)
+      mtext(paste('Sim',sim.params[1,1],', Origin =',sim.params[1,3],', w =',sim.params[1,4],', sigma =',
+                  sim.params[1,7],', dist.freq =',sim.params[1,'disturb_frequency'],', dist.intens.temp =',
+                  sim.params[1,'temperate_disturb_intensity'],',\ndisp = ',sim.params[1,6],', specn =',
+                  sim.params[1,5],',',K.text,', time =',t),outer=T)
       
       extant.spp = unique(pops[pops$extant==1,'spp.name'])
       mtext(paste(length(phy$tip.label),"species total;",
