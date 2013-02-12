@@ -6,7 +6,7 @@
 file_dir = 'C:/SENCoutput'
 
 
-region.envopt.phylo.plot = function(file_dir, output_dir, sims=F, extant.only=F) {
+region.envopt.phylo.plot = function(file_dir, output_dir=NA, sims=F, extant.only=F) {
   require(ape)
   
   if (!sims) {
@@ -34,8 +34,9 @@ region.envopt.phylo.plot = function(file_dir, output_dir, sims=F, extant.only=F)
     } else { sub.phy = phy }
     
     if (nrow(pops) > 0) {
-      
-      png(paste(output_dir,'/reg_envopt_phylo_fig_sim',i,'.png',sep=''), height = 6, width = 12, units="in", res=72)  
+      if(!is.na(output_dir)) {
+        png(paste(output_dir,'/reg_envopt_phylo_fig_sim',i,'.png',sep=''), height = 6, width = 12, units="in", res=72)  
+      }
       par(mfrow=c(1,2), oma = c(2,0,4,0), mar = c(1,1,1,2))
       # Based on the region of origin for the simulation, determine whether to 
       # keep track of the minimum or maximum region reached by a species
@@ -95,8 +96,10 @@ region.envopt.phylo.plot = function(file_dir, output_dir, sims=F, extant.only=F)
       mtext(paste(length(phy$tip.label),"species total;",
                   length(extant.spp),"extant;",
                   length(missing.spp),"missing"),1, outer = T, cex = 1.5)
-      dev.off()
+      if(!is.na(output_dir)) {
+        dev.off()
+        print(paste(i,date(),sep="   "))
+      }
       } # end if - data check
-    print(paste(i,date(),sep="   "))
   } # end sim loop
 } # end function
