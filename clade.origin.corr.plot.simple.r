@@ -33,7 +33,7 @@ clade.origin.corr.plot.simple = function(stats.output,
     }
     
     if (length(x$r.time.rich[!is.na(x$r.time.rich)]) > min.num.data.pts) {
-      plot(log10(x$clade.origin.time), x$r.time.rich, xlab = "",ylab="r (Time-Richness)",ylim=c(-1,1),main=paste('w =',sim.params[1,4],', sigma =',sim.params[1,7],sep=""))
+      plot(log10(x$clade.origin.time), x$r.time.rich, xlab = "",ylab="r (Time-Richness)",ylim=c(-1,1))
       rect(-1000,.5,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0)
       points(smooth.spline(log10(x$clade.origin.time[!is.na(x$r.time.rich)]),x$r.time.rich[!is.na(x$r.time.rich)],df=spline.df),type='l',col='red')
       points(log10(clade.origin$clade.origin.time), clade.origin$r.time.rich, col = 'skyblue', pch = 17, cex = 2)
@@ -41,7 +41,7 @@ clade.origin.corr.plot.simple = function(stats.output,
       plot(1,1,xlab="",ylab = "r (Time-Richness)",type="n",xlim=c(0,t),ylim=c(-1,1))
     }
     
-    mtext("Clade origin time",1,outer=T,line=.8)
+    mtext("Clade origin time",1,outer=T,line=1.2)
     if (sim.params[1,8]=='on' & sim.params[1,9]=='on') {
       K.text = 'K gradient present'
     } else if (sim.params[1,8]=='on' & sim.params[1,9]=='off') {
@@ -49,8 +49,12 @@ clade.origin.corr.plot.simple = function(stats.output,
     } else if (sim.params[1,8]=='off') {
       K.text = 'no K'
     }
-    mtext(paste('Origin =',sim.params[1,3],', ndisp = ',sim.params[1,6],', specn =',sim.params[1,5],',',K.text),outer=T)
-  
+    mtext(paste('Sim',sim.params[1,1],', Origin =',sim.params[1,3],', w =',sim.params[1,4],', sigma =',
+                sim.params[1,7],', dist.freq =',sim.params[1,'disturb_frequency'],', dist.intens.temp =',
+                sim.params[1,'temperate_disturb_intensity'],
+                ',\ndisp = ',sim.params[1,6],', specn =',sim.params[1,5],',',K.text,', time =',t),outer=T)
+    
+    
     if (length(x$gamma.stat[!is.na(x$gamma.stat)]) > min.num.data.pts) {
       plot(log10(x$clade.origin.time), x$gamma.stat, xlab = "", ylab="Gamma", ylim = c(-25,3))
       rect(-1000,-1.645,t+50,1.1,col=rgb(.1,.1,.1,.1),lty=0) # -1.645 is the critical value for rejecting constant rates
