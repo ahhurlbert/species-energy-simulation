@@ -1,4 +1,4 @@
-sim_dir = 'C:SENCoutput/'
+sim_dir = 'C:/SENCoutput'
 
 rep.plot = function(sub.sim.matrix) {
   sim.uniq1 = unique(sub.sim.matrix[,c(3:9,15,16)])
