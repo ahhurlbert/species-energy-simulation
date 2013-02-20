@@ -128,4 +128,8 @@ sapply(Kgrad.te$sim.id, function(x)
   points(11 - oldgrad.Kgrad.te[oldgrad.Kgrad.te$sim==x,'region'], 
          oldgrad.Kgrad.te[oldgrad.Kgrad.te$sim==x,'spp.rich'], 
          type = 'l', lwd=2, col = 'indianred4', lty='dashed'))
+
+#legend
+legend("topright",c('temperate origin','tropical origin','early','late'), lwd = 2,
+       col = c('pink','gray80','gray40','gray40'), lty=c('solid','solid','dashed','solid'))
 dev.off()
