@@ -9,7 +9,7 @@ file_dir = 'C:/SENCoutput'
 region.envopt.phylo.plot = function(file_dir, output_dir=NA, sims=F, extant.only=F) {
   require(ape)
   
-  if (!sims) {
+  if (sims[1]==F) {
     files = list.files(file_dir)
     allpops.files = files[grep('all.pops',files)]
     #phylo.files = files[grep('phylo',files)]
@@ -95,7 +95,7 @@ region.envopt.phylo.plot = function(file_dir, output_dir=NA, sims=F, extant.only
       mtext(paste('Sim',params[1,1],', Origin =',params[1,3],', w =',params[1,4],', sigma =',
                   params[1,7],', dist.freq =',params[1,'disturb_frequency'],', dist.intens.temp =',
                   params[1,'temperate_disturb_intensity'],',\ndisp = ',params[1,6],', specn =',
-                  params[1,5],',',K.text,', time =',t),outer=T)
+                  params[1,5],',',K.text,', time =',t), side=3, outer=T)
       
       extant.spp = unique(pops[pops$extant==1,'spp.name'])
       mtext(paste(length(phy$tip.label),"species total;",
