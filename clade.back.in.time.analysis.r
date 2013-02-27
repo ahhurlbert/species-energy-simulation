@@ -1,11 +1,23 @@
 # Sim 2635: trop origin, w=3, sigma=3, alpha=1e-04, specn = 1e-06, K gradient
+user='Allen'
+if(user=='Allen') {
+  repo_dir = 'C:/Documents and Settings/Hurlbert/species-energy-simulation'
+  sim_dir = 'c:/sencoutput/senc.out.130115'
+  newplot_dir = '//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses'
+  
+}
+
 library(caper)
 library(ape)
+source(paste(repo_dir,'/unzipping_files.r',sep=''))
 
 
 
-sim_dir = 'c:/sencoutput/senc.out.130115'
-newplot_dir = '//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses'
+#Note: This code currently seems to work for the sim/clade #s below, however,
+#      for sim 3365, most clades have far fewer extant species than are
+#      indicated in the Stats file for clade.richness.
+#      Possibly these missing species are all in the edge regions (0,11)?
+
 sim = 2635
 
 stats.output = read.csv(paste(sim_dir,'/SENC_Stats_sim',sim,'.csv',sep=''), header=T)
@@ -18,7 +30,7 @@ all.populations = sim.out$all.populations
 plot(log10(stats.output$clade.origin.time), stats.output$r.env.rich,type="n")
 text(log10(stats.output$clade.origin.time), stats.output$r.env.rich, stats.output$clade.id)
 
-# Explore clade 3011
+# Explore clade 3011; note this is the node ID on sub.phylo, not phylo.out
 clade = 3011
 stats.output[stats.output$clade.id==clade,]
 
@@ -39,6 +51,7 @@ dist.3011 = cophenetic.phylo(phylo.3011) #distances between species
 max.dist = max(dist.3011)
 # Multiple distances will be equal to the max, but peruse the matrix to find two species that are this dist
 # apart, e.g., 4885 and 3217
+dist.3011
 
 # calc most recent common ancestor
 mrca.all = mrca(phylo.out) #takes awhile (e.g. >5 min, <1 hr)
