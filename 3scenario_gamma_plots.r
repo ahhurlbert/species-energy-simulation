@@ -22,15 +22,17 @@ NoLim.te = subset(sim.matrix, w==3 & sigma_E==1 & max.K==40000 & alpha==1e-6 & b
 
 sub.sim = rbind(Kgrad.tr, Kgrad.te, dist.tr, dist.te, NoLim.tr, NoLim.te)
 
-sub.gam = merge(sub.sim[,1:17], rootclade.stats[,c('sim','gamma.stat')], by.x='sim.id', by.y='sim', all.x=T)
+sub.gam = merge(sub.sim[,1:17], rootclade.stats[,c('sim','gamma.stat','BK.env')], by.x='sim.id', by.y='sim', all.x=T)
 sub.gam$scenario = paste(sub.gam$carry.cap,sub.gam$energy.gradient)
 sub.gam$reg.of.origin = as.character(sub.gam$reg.of.origin)
 
-pdf(paste(analysis_dir,'/summaryplots/3scenarios_gamma.pdf',sep=''),height=6,width=6)
-par(mfrow=c(1,1), mar=c(3,4,1,1), oma=c(2,1,1,1), las=1)
+pdf(paste(analysis_dir,'/summaryplots/3scenarios_gamma_BK.pdf',sep=''),height=6,width=6)
+par(mfrow=c(2,1), mar=c(3,4,1,1), oma=c(2,1,1,1), las=1)
 boxplot(sub.gam$gamma.stat ~ sub.gam$reg.of.origin + sub.gam$scenario, ylab="Gamma", xaxt="n",
         col = rep(c('gray50','white'),3))
+boxplot(sub.gam$BK.env ~ sub.gam$reg.of.origin + sub.gam$scenario, ylab="Blomberg's K", xaxt="n",
+        col = rep(c('gray50','white'),3))
 axis(1,c('Time', 'Disturbance','K gradient'),at=c(1.5,3.5,5.5))
-legend("bottomleft",c('temperate origin','tropical origin'), pch=22, pt.bg=c('gray50','white') , pt.cex=2)
+legend("topleft",c('temperate origin','tropical origin'), pch=22, pt.bg=c('gray50','white') , pt.cex=2)
 mtext("Simulation Scenario",1,adj = .55, outer=T)
 dev.off()
