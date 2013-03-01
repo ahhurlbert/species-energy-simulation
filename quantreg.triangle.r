@@ -2,7 +2,7 @@
 # with the assumption that the variation in the y variable is narrow at low values of x
 # and higher for high values of x. Shades the triangle.
 
-quantreg.triangle = function(x, y, upper.quant, lower.quant) {
+quantreg.triangle = function(x, y, upper.quant, lower.quant, color) {
   require(quantreg)
   qr.U = rq(y~x, upper.quant)
   qr.L = rq(y~x, lower.quant)
@@ -15,7 +15,12 @@ quantreg.triangle = function(x, y, upper.quant, lower.quant) {
   y.ints = (slope.U*int.L - slope.L*int.U)/(slope.U - slope.L)
   y.U = slope.U*max(x) + int.U
   y.L = slope.L*max(x) + int.L
-  polygon(c(x.ints, max(x), max(x)), c(y.ints, y.U, y.L), col = rgb(.1, .1, .1, .1))
-  
+  if(x.ints >= min(x)) {
+    polygon(c(x.ints, max(x), max(x)), c(y.ints, y.U, y.L), col = color)
+  } else if (x.ints < min(x)) {
+    y1.U = slope.U*min(x) + int.U
+    y1.L = slope.L*min(x) + int.L
+    polygon(c(min(x), min(x), max(x), max(x)), c(y1.U,y1.L, y.U, y.L), col = color)
+  }
 }
 
