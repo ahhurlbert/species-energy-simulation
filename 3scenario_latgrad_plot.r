@@ -63,7 +63,7 @@ oldgrad.NoLim.te = old.lat.grad(NoLim.te$sim.id, time = 140)
 pdf(paste(analysis_dir,'/summaryplots/3scenarios_lat_grads.pdf',sep=''), height = 4, width = 8)
 par(mfrow=c(1,3), mar = c(4,4,2,1), oma = c(2,1,1,1))
 ## Time scenario
-plot(c(1,10),c(0,max(latgrad.NoLim.tr$spp.rich)),type="n",xlab="Latitude",ylab="Species richness", main="Time")
+plot(c(1,10),c(0,max(latgrad.NoLim.tr$spp.rich)),type="n",xlab="Environmental Bin",ylab="Species Richness", main="Time",cex.axis=1.5)
 #recent gradient
 sapply(NoLim.tr$sim.id, function(x)
        points(11 - latgrad.NoLim.tr[latgrad.NoLim.tr$sim==x,'region'], 
