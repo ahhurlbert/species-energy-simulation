@@ -4,10 +4,9 @@
 #SBATCH -t 30
 #SBATCH -n 3
 #SBATCH -p shared
-#SBATCH --share
 
-srun -n 1 zip senc.out.$1.zip SENC_all.pops_sim$1.csv SENC_params.out_sim$1.csv SENC_phylo_sim$1.tre SENC_time.rich_sim$1.csv sim.$1.out 
+zip senc.out.$1.zip SENC_all.pops_sim$1.csv SENC_params.out_sim$1.csv SENC_phylo_sim$1.tre SENC_time.rich_sim$1.csv sim.$1.out 
 
-srun -n 1 mv senc.out.$1.zip ~/
+mv senc.out.$1.zip ~/
 
 

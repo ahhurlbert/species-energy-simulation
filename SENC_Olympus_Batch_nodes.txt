@@ -4,11 +4,10 @@
 #SBATCH -t 24:0:0
 #SBATCH -n 3
 #SBATCH -p shared
-#SBATCH --share
 
 module load R/2.15.1
 
-srun -n 1 -o sim.$1.out Rscript sims_only_workflow_Olympus.r $1
+Rscript sims_only_workflow_Olympus.r $1 >& sim.$1.out 
 
-srun -n 1 rm temp.extinct.sim.$1.*
+rm temp.extinct.sim.$1.*
 
