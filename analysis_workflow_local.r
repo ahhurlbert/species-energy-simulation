@@ -64,7 +64,7 @@ source('clade.exmpl.figs.r');
 source('extinct.calc.r');
 source('unzipping_files.r');
 
-cl = makeCluster(5);
+cl = makeCluster(2);
 registerDoParallel(cl);
 
 #(3) read in master simulation matrix with chosen parameter combinations;

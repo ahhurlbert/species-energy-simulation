@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
-#sim = commandArgs();
-#sim = as.numeric(sim[length(sim)]);
+sim = commandArgs();
+sim = as.numeric(sim[length(sim)]);
 
 # Choose number of time slices per simulation to analyze
 num.of.time.slices = 1;
@@ -9,15 +9,17 @@ num.of.time.slices = 1;
 min.num.spp = 8;
 
 #New parameter for taking into account which of us is running this code
+
+Allen = 0;
+
 if(Allen==1) {
   setwd('c:/documents and settings/hurlbert/species-energy-simulation')
   Rlib.location = "C:/program files/R/R-2.15.1/library"
   sim_dir = "C:/SENCoutput"
   analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses"
 } else {
-  Rlib.location = "/pic/people/steg815/Rlibs"
-  sim_dir = ............ #wherever all of your zipped output files are
-  analysis_dir = .......... #wherever you want to store the results of these analyses
+  Rlib.location = "//constance/people/steg815/Rlibs"
+  
 }
 
 # Simulation workflow
@@ -52,14 +54,11 @@ sim.matrix$skipped.clades = NA
 sim.matrix$skipped.times = NA
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
-which.sims = 1:max(sim.matrix$sim.id)
 
-for (sim in which.sims) {
-  rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.out', 'output', 'sim.results'))
   output = numeric();
   
   # (5) read in simulation results for specified simulation from the output zip file
-  sim.results = output.unzip(sim_dir,sim)
+  sim.results = output.unzip(getwd(),sim)
   
   if ( !is.null(sim.results) ) {
     all.populations = sim.results$all.populations
@@ -169,7 +168,7 @@ for (sim in which.sims) {
     }; # end timeslice loop
   
     #write all of this output to files
-    write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,".csv",sep=""),quote=F,row.names=F);
+    write.csv(output,paste("SENC_Stats_sim",sim,".csv",sep=""),quote=F,row.names=F);
     analysis.end = date();
     #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
     #print(c(warnings(),sim.start,sim.end,analysis.end));
@@ -178,11 +177,11 @@ for (sim in which.sims) {
     ####################################################
     # Simulation summary plots
     ####################################################
-    lat.grad.time.plot(sim.results, numslices = 10, output.dir = analysis_dir)
+    lat.grad.time.plot(sim.results, numslices = 10, output.dir = getwd())
   
     # clade.origin.corr.plot only if there are some output rows 
     if(!is.null(nrow(output))) {
-      clade.origin.corr.plot(output, params.out, output.dir = analysis_dir)
+      clade.origin.corr.plot(output, params.out, output.dir = getwd())
   
       # Number of rows of output with at least 1 correlation (there are 4 non-correlation cols in corr.results)
       sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = sum(apply(output,1,function(x) sum(is.na(x)) < (ncol(corr.results)-4)))
@@ -191,7 +190,7 @@ for (sim in which.sims) {
     }
   
     # There are currently some bugs in clade.exmpl.figs.
-    # clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_dir)
+    # clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = getwd())
   
     # Add overall summary info
     sim.matrix[sim.matrix$sim.id==sim,'n.regions'] = length(unique(all.populations$region))
@@ -199,7 +198,9 @@ for (sim in which.sims) {
     sim.matrix[sim.matrix$sim.id==sim,'extinct.S'] = length(extinct.species)
     sim.matrix[sim.matrix$sim.id==sim,'skipped.clades'] = skipped.clades # number of clades skipped over for analysis, summed over timeslices
     sim.matrix[sim.matrix$sim.id==sim,'skipped.times'] = skipped.times # number of time slices skipped over for analysis
-  } # end first if (file check)
-} # end sim loop
+    sim.matrix[sim.matrix$sim.id==sim,'BK.reg'] = BK.reg # blomberg's K based on region
+    sim.matrix[sim.matrix$sim.id==sim,'BK.env'] = BK.env # blomberg's K based on environment
 
-write.csv(sim.matrix,paste(analysis_dir,'/sim.matrix.output_',Sys.Date(),'.csv',sep=''),row.names=F)
+    write.csv(sim.matrix[sim.matrix$sim.id==sim,],paste("sim.matrix.output.",sim,".csv",sep=""),quote=F,row.names=F);
+    sim.matrix[sim.matrix$sim.id==sim,]
+  } # end first if (file check)
