@@ -36,14 +36,19 @@ length(to.run)
 
 setwd("//olympus/steg815/senc.output");
 
-foo = list.files(pattern='senc.out.'); head(foo); length(foo);
-foo3 = sub('senc.out.','',foo); head(foo3);
-foo4 = sub('.zip','',foo3); head(foo4);
+setwd("//constance/people/steg815/senc.analysis.out");
+
+foo = list.files(pattern='SENC_Stats_sim'); head(foo); length(foo);
+foo3 = sub('SENC_Stats_sim','',foo); head(foo3);
+foo4 = sub('.csv','',foo3); head(foo4);
 
 sims.run = as.numeric(foo4);
-all.sims = 1:2592;
+all.sims = 3465:4064;
 to.run = all.sims[which(is.element(all.sims,sims.run)==F)];
-write.table(t(to.run),"//olympus/steg815/SENC/sims.to.zip.txt",sep=" ",quote=F,row.names=F,col.names=F);
-write.table(t(2:2592),"sims.to.zip.txt",sep=" ",quote=F,row.names=F,col.names=F);
+length(to.run); head(to.run);
 
-length(to.run)
+not.run.out = read.table('sim.3782.out'); not.run.out;
+
+#write.table(t(to.run),"//olympus/steg815/SENC/sims.to.zip.txt",sep=" ",quote=F,row.names=F,col.names=F);
+#write.table(t(2:2592),"sims.to.zip.txt",sep=" ",quote=F,row.names=F,col.names=F);
+
