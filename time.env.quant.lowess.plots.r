@@ -46,7 +46,32 @@ for (i in 1:3) {
   x = subset(stats.output1, n.regions >= min.num.regions & clade.richness >= min.num.spp.per.clade)
   z = subset(stats.output2, n.regions >= min.num.regions & clade.richness >= min.num.spp.per.clade)
 
+  clade.times.x = seq(min(log10(x$clade.origin.time)),max(log10(x$clade.origin.time)),length=100);
+  
+  x.upper = numeric();
+  x.lower = numeric();
+  
+  for (j in 1:(length(clade.times.x)-1)) {
+    
+    upper.threshold = quantile(x$r.env.rich[log10(x$clade.origin.time) >= clade.times.x[j] & log10(x$clade.origin.time) < clade.times.x[j+1]],probs=upper.quant);
+    upper.ids = which(log10(x$clade.origin.time) >= clade.times.x[j] & log10(x$clade.origin.time) < clade.times.x[j+1] & x$r.env.rich >= upper.threshold)
+    x.upper = rbind(x.upper,x[upper.ids,c('r.env.rich','clade.origin.time')]);
+    
+    lower.threshold = quantile(x$r.env.rich[log10(x$clade.origin.time) >= clade.times.x[j] & log10(x$clade.origin.time) < clade.times.x[j+1]],probs=lower.quant);
+    lower.ids = which(log10(x$clade.origin.time) >= clade.times.x[j] & log10(x$clade.origin.time) < clade.times.x[j+1] & x$r.env.rich <= lower.threshold)
+    x.lower = rbind(x.lower,x[lower.ids,c('r.env.rich','clade.origin.time')]);
+        
+  }
+  
   plot(log10(x$clade.origin.time), x$r.env.rich, type="p",xlab="",ylab="r (Env-Richness)",ylim=c(-1,1))
+  
+  #points(log10(x.upper$clade.origin.time), x.upper$r.env.rich, type="p",col=2,pch=19)
+  points(lowess(log10(x.upper$clade.origin.time), x.upper$r.env.rich,f=0.05), type="l",col=2,lwd=3)
+  
+  #points(log10(x.lower$clade.origin.time), x.lower$r.env.rich, type="p",col=2,pch=19)
+  points(lowess(log10(x.lower$clade.origin.time), x.lower$r.env.rich,f=0.05), type="l",col=4,lwd=3)
+  
+  !!!! nothing done below here
   quantreg.triangle(log10(x$clade.origin.time), x$r.env.rich, upper.quant, lower.quant, col = rgb(.9,.1,.1,.1))
   
   points(log10(z$clade.origin.time), z$r.env.rich, pch = 15, cex=.5, col='red')
