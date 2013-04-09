@@ -89,10 +89,14 @@ oldgrad.Kgrad.te = old.lat.grad(Kgrad.te$sim.id, time = 3000)
 oldgrad.NoLim.tr = old.lat.grad(NoLim.tr$sim.id, time = 140)
 oldgrad.NoLim.te = old.lat.grad(NoLim.te$sim.id, time = 140)
 
-pdf(paste(analysis_dir,'/summaryplots/3scenarios_lat_grads.pdf',sep=''), height = 4, width = 8)
-par(mfrow=c(1,3), mar = c(4,4,2,1), oma = c(2,1,1,1))
+pdf(paste(analysis_dir,'/summaryplots/3scenarios_lat_grads',Sys.Date(),'.pdf',sep=''), height = 3, width = 8)
+par(mfrow=c(1,3), mar = c(2,5,2,0), oma = c(1,0,1,1))
 ## Time scenario
-plot(c(1,10),c(0,max(latgrad.NoLim.tr$spp.rich)),type="n",xlab="Environmental Bin",ylab="Species Richness", main="Time",cex.lab=1.5)
+plot(c(1,10),c(0,1.1*max(latgrad.NoLim.tr$spp.rich)),type="n",xlab="",ylab="Species Richness", 
+     main="Time",cex.lab=1.25, cex.main=1.25, xaxt="n")
+mtext("Tropics",1,adj=.05,line=.5, cex=.8)
+mtext("Temperate",1,adj=.95,line=.5, cex=.8)
+
 #recent gradient
 sapply(NoLim.tr$sim.id, function(x)
        points(11 - latgrad.NoLim.tr[latgrad.NoLim.tr$sim==x,'region'], 
@@ -113,8 +117,11 @@ sapply(NoLim.te$sim.id, function(x)
          type = 'l', lwd=2, col = 'light blue', lty='dashed'))
 
 ## Disturbance scenario
-plot(c(1,10),c(0,max(latgrad.dist.tr$spp.rich)),type="n",xlab="Environmental Bin",
-     ylab="", main="Disturbance",cex.lab=1.5)
+plot(c(1,10),c(0,1.1*max(latgrad.dist.tr$spp.rich)),type="n",xlab="",
+     ylab="", main="Disturbance",cex.lab=1.5, xaxt="n")
+mtext("Tropics",1,adj=.05,line=.5, cex=.8)
+mtext("Temperate",1,adj=.95,line=.5, cex=.8)
+
 #recent gradient
 sapply(dist.tr$sim.id, function(x)
   points(11 - latgrad.dist.tr[latgrad.dist.tr$sim==x,'region'], 
@@ -136,8 +143,11 @@ sapply(dist.te$sim.id, function(x)
          type = 'l', lwd=2, col = 'light blue', lty='dashed'))
 
 ## K gradient scenario
-plot(c(1,10),c(0,max(latgrad.Kgrad.tr$spp.rich)),type="n",xlab="Environmental Bin",
-     ylab="", main="Energetic constraints",cex.lab=1.5)
+plot(c(1,10),c(0,1.1*max(latgrad.Kgrad.tr$spp.rich)),type="n",xlab="",
+     ylab="", main="Energetic constraints",cex.lab=1.5, xaxt="n")
+mtext("Tropics",1,adj=.05,line=.5, cex=.8)
+mtext("Temperate",1,adj=.95,line=.5, cex=.8)
+
 #recent gradient
 sapply(Kgrad.tr$sim.id, function(x)
   points(11 - latgrad.Kgrad.tr[latgrad.Kgrad.tr$sim==x,'region'], 
@@ -159,6 +169,6 @@ sapply(Kgrad.te$sim.id, function(x)
          type = 'l', lwd=2, col = 'light blue', lty='dashed'))
 
 #legend
-legend("topright",c('bin 10 origin, late','bin 1 origin, late','bin 10 origin, early','bin 1 origin, early'), lwd = 1.5,
-       col = c('blue','red','light blue','pink'), lty=c('solid','solid','dashed','dashed'),cex=0.9)
+legend("topright",c('temperate origin','tropical origin','mid-simulation','end of simulation'), lwd = 1.5,
+       col = c('blue','red','gray60','black'), lty=c('solid','solid','dashed','solid'),cex=1)
 dev.off()
