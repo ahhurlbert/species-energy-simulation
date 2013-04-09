@@ -22,7 +22,10 @@ if (Allen == 0) {
   
 sim.matrix = read.csv(paste(repo_dir,'/SENC_Master_Simulation_Matrix.csv',sep=""),header=T)
 
+new=0 # 0 for old plot using only 10 reps, 1 for new plot using all 100 reps
+
 # Scenarios
+if(new) { #old assignment using all 100 reps
 dist.tr = subset(sim.matrix, max.K==22000 & reg.of.origin=='tropical')
 dist.te = subset(sim.matrix, max.K==22000 & reg.of.origin=='temperate')
 Kgrad.tr = subset(sim.matrix, w==3 & sigma_E==1 & max.K==40000 & alpha==1e-6 & beta==1e-4 & disturb_frequency==0
@@ -33,6 +36,16 @@ NoLim.tr = subset(sim.matrix, w==3 & sigma_E==1 & max.K==40000 & alpha==1e-6 & b
                   & reg.of.origin=='tropical' & carry.cap=='off' & energy.gradient=='off' & max.richness==10000)
 NoLim.te = subset(sim.matrix, w==3 & sigma_E==1 & max.K==40000 & alpha==1e-6 & beta==1e-4 & disturb_frequency==0
                   & reg.of.origin=='temperate' & carry.cap=='off' & energy.gradient=='off' & max.richness==10000)
+}
+
+if(new=0) {
+dist.tr = subset(sim.matrix, sim.id %in% 3445:3454)
+dist.te = subset(sim.matrix, sim.id %in% 3455:3464)
+Kgrad.tr = subset(sim.matrix, sim.id %in% 3325:3334)
+Kgrad.te = subset(sim.matrix, sim.id %in% 3345:3354)
+NoLim.tr = subset(sim.matrix, sim.id %in% 3365:3374)
+NoLim.te = subset(sim.matrix, sim.id %in% 3385:3394)
+}
 
 # Function rbinds together latitudinal richness gradient data across specified simulations from the most recent timestep
 recent.lat.grad = function(sim.ids,cut.ends=T) {
