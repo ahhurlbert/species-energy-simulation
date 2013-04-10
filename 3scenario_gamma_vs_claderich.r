@@ -37,6 +37,11 @@ plot(Ttrop$clade.rich, Ttrop$gamma.stat, ylim=range(c(Dtrop$gamma.stat, Ttrop$ga
 points(Dtrop$clade.rich, Dtrop$gamma.stat, pch = 15, col = 'salmon2', cex = cexpt)
 points(Ktrop$clade.rich, Ktrop$gamma.stat, pch=17, col='skyblue', cex = cexpt)
 
+#splines
+points(smooth.spline(Dtrop$clade.rich,Dtrop$gamma.stat,df=5),type='l',col='red',lwd=4)
+points(smooth.spline(Ttrop$clade.rich,Ttrop$gamma.stat,df=5),type='l',col='darkgreen',lwd=4)
+points(smooth.spline(Ktrop$clade.rich,Ktrop$gamma.stat,df=5),type='l',col='darkblue',lwd=4)
+
 legend('bottomleft',c('Disturbance','Time','Energy Gradient'),pch=15:17, col=c('salmon2','olivedrab3','skyblue'))
 
 plot(Ttemp$clade.rich, Ttemp$gamma.stat, ylim=range(c(Dtrop$gamma.stat, Ttrop$gamma.stat, Ktrop$gamma.stat)),
@@ -45,5 +50,11 @@ plot(Ttemp$clade.rich, Ttemp$gamma.stat, ylim=range(c(Dtrop$gamma.stat, Ttrop$ga
 
 points(Dtemp$clade.rich, Dtemp$gamma.stat, pch = 15, col = 'salmon2', cex = cexpt)
 points(Ktemp$clade.rich, Ktemp$gamma.stat, pch=17, col='skyblue', cex = cexpt)
+
+#splines
+points(smooth.spline(Dtemp$clade.rich,Dtemp$gamma.stat,df=5),type='l',col='red',lwd=4)
+points(smooth.spline(Ttemp$clade.rich,Ttemp$gamma.stat,df=5),type='l',col='darkgreen',lwd=4)
+points(smooth.spline(Ktemp$clade.rich,Ktemp$gamma.stat,df=5),type='l',col='darkblue',lwd=4)
+
 
 dev.off()
