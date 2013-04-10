@@ -144,7 +144,7 @@ sapply(dist.te$sim.id, function(x)
 
 ## K gradient scenario
 plot(c(1,10),c(0,1.1*max(latgrad.Kgrad.tr$spp.rich)),type="n",xlab="",
-     ylab="", main="Energy constraints",cex.lab=1.5, xaxt="n")
+     ylab="", main="Energy Gradient",cex.lab=1.5, xaxt="n")
 mtext("Tropics",1,adj=.05,line=.5, cex=.8)
 mtext("Temperate",1,adj=.95,line=.5, cex=.8)
 
