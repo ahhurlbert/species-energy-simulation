@@ -5,7 +5,7 @@ Allen = 0;
 
 if (Allen ==1) {
   
-  sim_dir = "C:/SENCoutput"
+  sim_dir = "C:/SENCoutput/senc_reps_analysis"
   analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/"
   repo_dir = "C:/Documents and Settings/Hurlbert/species-energy-simulation"
 
@@ -34,32 +34,25 @@ simstats3$reg.of.origin = as.character(simstats3$reg.of.origin)
 tropical.shade = rgb(255, 0, 0, alpha=50, maxColorValue=255)
 temperate.shade = rgb(0, 0, 255, alpha=50, maxColorValue=255)
 
-pdf(paste(analysis_dir,'/summaryplots/3scenarios_MRDPSVGam_',Sys.Date(),'.pdf',sep=''),height=4,width=2.75)
-par(mfrow=c(3,1), mar=c(1,4,1,1), oma=c(2,1,1,1), las=1)
+pdf(paste(analysis_dir,'/summaryplots/3scenarios_MRDPSV_',Sys.Date(),'.pdf',sep=''),height=6,width=8)
+par(mfrow=c(2,1), mar=c(1,4,1,1), oma=c(2,1,1,1), las=1)
 
-boxplot(simstats3$gamma.stat ~ simstats3$scenario + simstats3$reg.of.origin, ylab="", xaxt="n",
-        col = c(rep('white',3),rep('gray50',3)),lwd=0.1,cex.axis=0.6)
+boxplot(simstats3$r.MRD.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="MRD-Richness correlation", xaxt="n",
+        col = 'white',lwd=0.1,cex.axis=0.8)
   rect(0, -999, 3.5, 999,col=temperate.shade)
   rect(3.5, -999, 7, 999,col=tropical.shade)
-  boxplot(simstats3$gamma.stat ~ simstats3$scenario + simstats3$reg.of.origin, ylab="Gamma", xaxt="n",
-        col = c(rep('white',3),rep('gray50',3)),add=T,lwd=0.1,cex.lab=0.7,cex.axis=0.6)
+  boxplot(simstats3$r.MRD.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="", xaxt="n", yaxt="n",
+        col = 'white',add=T,lwd=0.1,cex.lab=1,cex.axis=.8)
 
-  mtext("Bin 10 Origin (Temperate)",side=3,adj=0,line=0.5,cex=0.375)
-  mtext("Bin 1 Origin (Tropical)",side=3,adj = 1, line=0.5,cex=0.375)
+mtext("Temperate Origin",side=3,adj=0.2,line=0.5,cex=1)
+mtext("Tropical Origin",side=3,adj = 0.8, line=0.5,cex=1)
 
-boxplot(simstats3$r.MRD.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="", xaxt="n",
-        col = c(rep('white',3),rep('gray50',3)),lwd=0.1,cex.axis=0.6)
+boxplot(simstats3$r.PSV.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="PSV-Richness correlation", xaxt="n",
+        col = 'white',lwd=0.1,cex.axis=0.8)
   rect(0, -999, 3.5, 999,col=temperate.shade)
   rect(3.5, -999, 7, 999,col=tropical.shade)
-  boxplot(simstats3$r.MRD.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="MRD-to-Richness Corr.", xaxt="n",
-        col = c(rep('white',3),rep('gray50',3)),add=T,lwd=0.1,cex.lab=0.7,cex.axis=0.6)
-
-boxplot(simstats3$r.PSV.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="", xaxt="n",
-        col = c(rep('white',3),rep('gray50',3)),lwd=0.1,cex.axis=0.6)
-  rect(0, -999, 3.5, 999,col=temperate.shade)
-  rect(3.5, -999, 7, 999,col=tropical.shade)
-  boxplot(simstats3$r.PSV.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="PSV-to-Richness Corr.", xaxt="n",
-        col = c(rep('white',3),rep('gray50',3)),add=T,lwd=0.1,cex.lab=0.7,cex.axis=0.6)
+  boxplot(simstats3$r.PSV.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="", xaxt="n", yaxt="n",
+        col = 'white',add=T,lwd=0.1,cex.lab=1,cex.axis=0.8)
 
 #boxplot(simstats3$r.env.MRD ~ simstats3$scenario + simstats3$reg.of.origin, ylab="r.env.MRD", xaxt="n",
 #        col = c(rep('white',3),rep('gray50',3)))
@@ -75,6 +68,7 @@ boxplot(simstats3$r.PSV.rich ~ simstats3$scenario + simstats3$reg.of.origin, yla
 #  boxplot(simstats3$r.env.PSV ~ simstats3$scenario + simstats3$reg.of.origin, ylab="r.env.PSV", xaxt="n",
 #        col = c(rep('white',3),rep('gray50',3)),add=T)
 
-axis(1,rep(c('T','D','E.G.'),2),at=c(1:6),cex.axis=0.6)
+axis(1,rep(c('Time','Disturbance',''),2),at=1:6,cex.axis=1)
+mtext(rep('Energetic\nGradient',2), 1,at=c(3,6), line=1.5)
 
 dev.off()
