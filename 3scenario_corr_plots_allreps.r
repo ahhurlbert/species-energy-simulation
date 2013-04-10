@@ -29,11 +29,11 @@ Ktemp = read.csv(paste(sim_dir,'/SENC_Stats_K.sims.temp.csv',sep=''), header=T)
 
 
 pdf(paste(analysis_dir,'/summaryplots/corr_cladeorigin_plots_',Sys.Date(),'.pdf',sep=''), height=6, width = 8)
-par(mfrow=c(2,3), mar = c(2,4,2,1), oma=c(5,1,1,1))
+par(mfrow=c(2,3), mar = c(2,5,2,1), oma=c(4,1,1,1))
 cexpts = 0.5
 #environment-richness plots
 plot(log10(Ttrop$clade.origin.time), Ttrop$r.env.rich, pch=16, col='red',ylim=c(-1,1),xlab="",
-     ylab="Environment-Richness correlation",cex=cexpts, main='Time', cex.lab=1.2)
+     ylab=expression(italic(r)[environment-richness]),cex=cexpts, main='Time', cex.lab=2)
 points(log10(Ttemp$clade.origin.time), Ttemp$r.env.rich, col='blue',cex=cexpts)
 
 plot(log10(Dtrop$clade.origin.time), Dtrop$r.env.rich, pch=16, col='red',ylim=c(-1,1),xlab="",
@@ -46,7 +46,7 @@ points(log10(Ktemp$clade.origin.time), Ktemp$r.env.rich, col='blue',cex=cexpts)
 
 # time-richness plots
 plot(log10(Ttrop$clade.origin.time), Ttrop$r.time.rich, pch=16, col='red',ylim=c(-1,1),xlab="",
-     ylab="Time-Richness correlation",cex=cexpts, cex.lab=1.2)
+     ylab=expression(italic(r)[time-richness]),cex=cexpts, cex.lab=2)
 points(log10(Ttemp$clade.origin.time), Ttemp$r.time.rich, col='blue',cex=cexpts)
 
 legend('bottomleft',c('temperate origin','tropical origin'), pch = c(1,16), col = c('blue','red'), cex=1)
@@ -59,5 +59,5 @@ plot(log10(Ktrop$clade.origin.time), Ktrop$r.time.rich, pch=16, col='red',ylim=c
      ylab="",cex=cexpts)
 points(log10(Ktemp$clade.origin.time), Ktemp$r.time.rich, col='blue',cex=cexpts)
 
-mtext("log10 Time of Clade Origin",1,outer=T, line=2, cex = .8)
+mtext(expression(paste(plain(log)[10]," Time of Clade Origin")),1,outer=T, line=2, cex =1)
 dev.off()
