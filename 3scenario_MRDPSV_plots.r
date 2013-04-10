@@ -69,6 +69,6 @@ boxplot(simstats3$r.PSV.rich ~ simstats3$scenario + simstats3$reg.of.origin, yla
 #        col = c(rep('white',3),rep('gray50',3)),add=T)
 
 axis(1,rep(c('Time','Disturbance',''),2),at=1:6,cex.axis=1)
-mtext(rep('Energetic\nGradient',2), 1,at=c(3,6), line=1.5)
+mtext(rep('Energy\nGradient',2), 1,at=c(3,6), line=1.5)
 
 dev.off()
