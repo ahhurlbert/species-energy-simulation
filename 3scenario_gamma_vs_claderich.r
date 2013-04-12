@@ -27,34 +27,40 @@ Dtemp = read.csv(paste(sim_dir,'/SENC_Stats_D.sims.temp.csv',sep=''), header=T)
 Ttemp = read.csv(paste(sim_dir,'/SENC_Stats_T.sims.temp.csv',sep=''), header=T)
 Ktemp = read.csv(paste(sim_dir,'/SENC_Stats_K.sims.temp.csv',sep=''), header=T)
 
-pdf(paste(analysis_dir,'/summaryplots/3scenarios_gamma_claderich.pdf',sep=''),height=5, width=10)
+Dcol = 'gold2'
+Tcol = 'olivedrab3'
+Kcol = 'mediumorchid2'
+Dline = 'goldenrod3'
+Tline = 'darkgreen'
+Kline = 'mediumorchid4'
+
+pdf(paste(analysis_dir,'/summaryplots/3scenarios_gamma_claderich_',Sys.Date(),'.pdf',sep=''),height=5, width=10)
 par(mfrow=c(1,2), mar = c(4,4,2,1))
 cexpt = .8
 plot(Ttrop$clade.rich, Ttrop$gamma.stat, ylim=range(c(Dtrop$gamma.stat, Ttrop$gamma.stat, Ktrop$gamma.stat)),
-     xlim = c(0,800),pch=16, col='olivedrab3',xlab="Clade Richness",ylab="Gamma", las=1,
+     xlim = c(0,800),pch=16, col=Tcol,xlab="Clade Richness",ylab="Gamma", las=1,
      main='Tropical Origin', cex = cexpt)
 
-points(Dtrop$clade.rich, Dtrop$gamma.stat, pch = 15, col = 'salmon2', cex = cexpt)
-points(Ktrop$clade.rich, Ktrop$gamma.stat, pch=17, col='skyblue', cex = cexpt)
+points(Dtrop$clade.rich, Dtrop$gamma.stat, pch = 15, col = Dcol, cex = cexpt)
+points(Ktrop$clade.rich, Ktrop$gamma.stat, pch=17, col=Kcol, cex = cexpt)
 
 #splines
-points(smooth.spline(Dtrop$clade.rich,Dtrop$gamma.stat,df=5),type='l',col='red',lwd=4)
-points(smooth.spline(Ttrop$clade.rich,Ttrop$gamma.stat,df=5),type='l',col='darkgreen',lwd=4)
-points(smooth.spline(Ktrop$clade.rich,Ktrop$gamma.stat,df=5),type='l',col='darkblue',lwd=4)
+points(smooth.spline(Dtrop$clade.rich,Dtrop$gamma.stat,df=5),type='l',col= Dline,lwd=4)
+points(smooth.spline(Ttrop$clade.rich,Ttrop$gamma.stat,df=5),type='l',col= Tline,lwd=4)
+points(smooth.spline(Ktrop$clade.rich,Ktrop$gamma.stat,df=5),type='l',col= Kline,lwd=4)
 
-legend('bottomleft',c('Disturbance','Time','Energy Gradient'),pch=15:17, col=c('salmon2','olivedrab3','skyblue'))
+legend('bottomleft',c('Time','Disturbance','Energy Gradient'),pch=c(16,15,17), col=c(Tcol,Dcol,Kcol))
 
 plot(Ttemp$clade.rich, Ttemp$gamma.stat, ylim=range(c(Dtrop$gamma.stat, Ttrop$gamma.stat, Ktrop$gamma.stat)),
-     xlim = c(0,800),pch=16, col='olivedrab3',xlab="Clade Richness",ylab="Gamma", las=1, 
+     xlim = c(0,800),pch=16, col= Tcol, xlab="Clade Richness",ylab="Gamma", las=1, 
      main='Temperate Origin', cex = cexpt)
 
-points(Dtemp$clade.rich, Dtemp$gamma.stat, pch = 15, col = 'salmon2', cex = cexpt)
-points(Ktemp$clade.rich, Ktemp$gamma.stat, pch=17, col='skyblue', cex = cexpt)
+points(Dtemp$clade.rich, Dtemp$gamma.stat, pch = 15, col = Dcol, cex = cexpt)
+points(Ktemp$clade.rich, Ktemp$gamma.stat, pch=17, col= Kcol, cex = cexpt)
 
 #splines
-points(smooth.spline(Dtemp$clade.rich,Dtemp$gamma.stat,df=5),type='l',col='red',lwd=4)
-points(smooth.spline(Ttemp$clade.rich,Ttemp$gamma.stat,df=5),type='l',col='darkgreen',lwd=4)
-points(smooth.spline(Ktemp$clade.rich,Ktemp$gamma.stat,df=5),type='l',col='darkblue',lwd=4)
-
+points(smooth.spline(Dtemp$clade.rich,Dtemp$gamma.stat,df=5),type='l',col= Dline,lwd=4)
+points(smooth.spline(Ttemp$clade.rich,Ttemp$gamma.stat,df=5),type='l',col= Tline,lwd=4)
+points(smooth.spline(Ktemp$clade.rich,Ktemp$gamma.stat,df=5),type='l',col= Kline,lwd=4)
 
 dev.off()
