@@ -31,42 +31,22 @@ simstats3 = subset(simstats2, sim %in% which.sims)
 simstats3$scenario = paste(simstats3$carry.cap,simstats3$energy.gradient)
 simstats3$reg.of.origin = as.character(simstats3$reg.of.origin)
 
-tropical.shade = rgb(255, 0, 0, alpha=50, maxColorValue=255)
-temperate.shade = rgb(0, 0, 255, alpha=50, maxColorValue=255)
+tropical.shade = 'red'
+temperate.shade = 'blue'
+
+boxplot.cols = c(rep(temperate.shade,3),rep(tropical.shade,3))
 
 pdf(paste(analysis_dir,'/summaryplots/3scenarios_MRDPSV_',Sys.Date(),'.pdf',sep=''),height=6,width=8)
 par(mfrow=c(2,1), mar=c(1,4,1,1), oma=c(2,1,1,1), las=1)
 
 boxplot(simstats3$r.MRD.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="MRD-Richness correlation", xaxt="n",
-        col = 'white',lwd=0.1,cex.axis=0.8)
-  rect(0, -999, 3.5, 999,col=temperate.shade)
-  rect(3.5, -999, 7, 999,col=tropical.shade)
-  boxplot(simstats3$r.MRD.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="", xaxt="n", yaxt="n",
-        col = 'white',add=T,lwd=0.1,cex.lab=1,cex.axis=.8)
+        col = boxplot.cols, border = boxplot.cols, lwd=1,cex.axis=0.8)
 
 mtext("Temperate Origin",side=3,adj=0.2,line=0.5,cex=1)
 mtext("Tropical Origin",side=3,adj = 0.8, line=0.5,cex=1)
 
 boxplot(simstats3$r.PSV.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="PSV-Richness correlation", xaxt="n",
-        col = 'white',lwd=0.1,cex.axis=0.8)
-  rect(0, -999, 3.5, 999,col=temperate.shade)
-  rect(3.5, -999, 7, 999,col=tropical.shade)
-  boxplot(simstats3$r.PSV.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="", xaxt="n", yaxt="n",
-        col = 'white',add=T,lwd=0.1,cex.lab=1,cex.axis=0.8)
-
-#boxplot(simstats3$r.env.MRD ~ simstats3$scenario + simstats3$reg.of.origin, ylab="r.env.MRD", xaxt="n",
-#        col = c(rep('white',3),rep('gray50',3)))
-#  rect(0, -999, 3.5, 999,col=temperate.shade)
-#  rect(3.5, -999, 7, 999,col=tropical.shade)
-#  boxplot(simstats3$r.env.MRD ~ simstats3$scenario + simstats3$reg.of.origin, ylab="r.env.MRD", xaxt="n",
-#        col = c(rep('white',3),rep('gray50',3)),add=T)
-
-#boxplot(simstats3$r.env.PSV ~ simstats3$scenario + simstats3$reg.of.origin, ylab="r.env.PSV", xaxt="n",
-#        col = c(rep('white',3),rep('gray50',3)))
-#  rect(0, -999, 3.5, 999,col=temperate.shade)
-#  rect(3.5, -999, 7, 999,col=tropical.shade)
-#  boxplot(simstats3$r.env.PSV ~ simstats3$scenario + simstats3$reg.of.origin, ylab="r.env.PSV", xaxt="n",
-#        col = c(rep('white',3),rep('gray50',3)),add=T)
+        col = boxplot.cols, border = boxplot.cols,lwd=1,cex.axis=0.8)
 
 axis(1,rep(c('Time','Disturbance',''),2),at=1:6,cex.axis=1)
 mtext(rep('Energy\nGradient',2), 1,at=c(3,6), line=1.5)
