@@ -37,16 +37,18 @@ temperate.shade = 'blue'
 boxplot.cols = c(rep(temperate.shade,3),rep(tropical.shade,3))
 
 pdf(paste(analysis_dir,'/summaryplots/3scenarios_MRDPSV_',Sys.Date(),'.pdf',sep=''),height=6,width=8)
-par(mfrow=c(2,1), mar=c(1,4,1,1), oma=c(2,1,1,1), las=1)
+par(mfrow=c(2,1), mar=c(1,5,1,1), oma=c(2,1,1,1), las=1)
 
-boxplot(simstats3$r.MRD.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="MRD-Richness correlation", xaxt="n",
-        col = boxplot.cols, border = boxplot.cols, lwd=1,cex.axis=0.8)
+boxplot(simstats3$r.MRD.rich ~ simstats3$scenario + simstats3$reg.of.origin, 
+        ylab=expression(italic(r)[MRD-richness]), xaxt="n",
+        col = boxplot.cols, border = boxplot.cols, lwd=1,cex.axis=0.8, cex.lab = 1.5)
 
 mtext("Temperate Origin",side=3,adj=0.2,line=0.5,cex=1)
 mtext("Tropical Origin",side=3,adj = 0.8, line=0.5,cex=1)
 
-boxplot(simstats3$r.PSV.rich ~ simstats3$scenario + simstats3$reg.of.origin, ylab="PSV-Richness correlation", xaxt="n",
-        col = boxplot.cols, border = boxplot.cols,lwd=1,cex.axis=0.8)
+boxplot(simstats3$r.PSV.rich ~ simstats3$scenario + simstats3$reg.of.origin, 
+        ylab=expression(italic(r)[PSV-richness]), xaxt="n",
+        col = boxplot.cols, border = boxplot.cols,lwd=1,cex.axis=0.8, cex.lab=1.5)
 
 axis(1,rep(c('Time','Disturbance',''),2),at=1:6,cex.axis=1)
 mtext(rep('Energy\nGradient',2), 1,at=c(3,6), line=1.5)
