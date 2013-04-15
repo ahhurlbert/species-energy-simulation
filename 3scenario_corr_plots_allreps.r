@@ -64,3 +64,45 @@ points(log10(Ktemp$clade.origin.time), Ktemp$r.time.rich, col='blue',cex=cexpts)
 
 mtext(expression(paste(plain(log)[10]," Time of Clade Origin")),1,outer=T, line=2, cex = cexlab)
 dev.off()
+
+########################
+
+# Vs clade richness instead of clade age
+
+pdf(paste(analysis_dir,'/summaryplots/corr_claderichness_plots_',Sys.Date(),'.pdf',sep=''), height=6, width = 8)
+par(mfrow=c(2,3), mar = c(2,2,2,1), oma=c(4,5,1,1))
+cexpts = 0.5
+cexlab = 1.5
+cexmain = 2
+#environment-richness plots
+plot(log10(Ttrop$clade.richness), Ttrop$r.env.rich, pch=16, col='red',ylim=c(-1,1),xlab="",
+     ylab= "",cex=cexpts, main='Time', cex.lab=2, cex.main=cexmain)
+points(log10(Ttemp$clade.richness), Ttemp$r.env.rich, col='blue',cex=cexpts)
+mtext(expression(italic(r)[environment-richness]), 2, at = 0.75, outer=T, line=2, cex = cexlab)
+
+plot(log10(Dtrop$clade.richness), Dtrop$r.env.rich, pch=16, col='red',ylim=c(-1,1),xlab="",
+     ylab="",cex=cexpts, main='Disturbance', cex.main=cexmain)
+points(log10(Dtemp$clade.richness), Dtemp$r.env.rich, col='blue',cex=cexpts)
+
+plot(log10(Ktrop$clade.richness), Ktrop$r.env.rich, pch=16, col='red',ylim=c(-1,1),xlab="",
+     ylab="",cex=cexpts, main='Energy Gradient', cex.main=cexmain)
+points(log10(Ktemp$clade.richness), Ktemp$r.env.rich, col='blue',cex=cexpts)
+
+# time-richness plots
+plot(log10(Ttrop$clade.richness), Ttrop$r.time.rich, pch=16, col='red',ylim=c(-1,1),xlab="",
+     ylab= "",cex=cexpts, cex.lab=2)
+points(log10(Ttemp$clade.richness), Ttemp$r.time.rich, col='blue',cex=cexpts)
+mtext(expression(italic(r)[time-richness]), 2, at = 0.25, outer=T, line=2, cex = cexlab)
+legend('bottomleft',c('temperate origin','tropical origin'), pch = c(1,16), col = c('blue','red'), cex=1)
+
+plot(log10(Dtrop$clade.richness), Dtrop$r.time.rich, pch=16, col='red',ylim=c(-1,1),xlab="",
+     ylab="",cex=cexpts)
+points(log10(Dtemp$clade.richness), Dtemp$r.time.rich, col='blue',cex=cexpts)
+
+plot(log10(Ktrop$clade.richness), Ktrop$r.time.rich, pch=16, col='red',ylim=c(-1,1),xlab="",
+     ylab="",cex=cexpts)
+points(log10(Ktemp$clade.richness), Ktemp$r.time.rich, col='blue',cex=cexpts)
+
+mtext(expression(paste(plain(log)[10]," Time of Clade Origin")),1,outer=T, line=2, cex = cexlab)
+dev.off()
+
