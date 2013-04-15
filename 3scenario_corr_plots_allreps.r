@@ -103,6 +103,6 @@ plot(log10(Ktrop$clade.richness), Ktrop$r.time.rich, pch=16, col='red',ylim=c(-1
      ylab="",cex=cexpts)
 points(log10(Ktemp$clade.richness), Ktemp$r.time.rich, col='blue',cex=cexpts)
 
-mtext(expression(paste(plain(log)[10]," Time of Clade Origin")),1,outer=T, line=2, cex = cexlab)
+mtext(expression(paste(plain(log)[10]," Clade Richness")),1,outer=T, line=2, cex = cexlab)
 dev.off()
 
