@@ -19,14 +19,20 @@ if (Allen == 0) {
 }
 
 
-Dtrop = read.csv(paste(sim_dir,'/SENC_Stats_D.sims.trop.csv',sep=''), header=T)
-Ttrop = read.csv(paste(sim_dir,'/SENC_Stats_T.sims.trop.csv',sep=''), header=T)
-Ktrop = read.csv(paste(sim_dir,'/SENC_Stats_K.sims.trop.csv',sep=''), header=T)
+Dtrop.all = read.csv(paste(sim_dir,'/SENC_Stats_D.sims.trop.csv',sep=''), header=T)
+Ttrop.all = read.csv(paste(sim_dir,'/SENC_Stats_T.sims.trop.csv',sep=''), header=T)
+Ktrop.all = read.csv(paste(sim_dir,'/SENC_Stats_K.sims.trop.csv',sep=''), header=T)
 
-Dtemp = read.csv(paste(sim_dir,'/SENC_Stats_D.sims.temp.csv',sep=''), header=T)
-Ttemp = read.csv(paste(sim_dir,'/SENC_Stats_T.sims.temp.csv',sep=''), header=T)
-Ktemp = read.csv(paste(sim_dir,'/SENC_Stats_K.sims.temp.csv',sep=''), header=T)
+Dtemp.all = read.csv(paste(sim_dir,'/SENC_Stats_D.sims.temp.csv',sep=''), header=T)
+Ttemp.all = read.csv(paste(sim_dir,'/SENC_Stats_T.sims.temp.csv',sep=''), header=T)
+Ktemp.all = read.csv(paste(sim_dir,'/SENC_Stats_K.sims.temp.csv',sep=''), header=T)
 
+Dtrop = subset(Dtrop.all, clade.richness >= 30 & n.regions >=5)
+Ttrop = subset(Ttrop.all, clade.richness >= 30 & n.regions >=5)
+Ktrop = subset(Ktrop.all, clade.richness >= 30 & n.regions >=5)
+Dtemp = subset(Dtemp.all, clade.richness >= 30 & n.regions >=5)
+Ttemp = subset(Ttemp.all, clade.richness >= 30 & n.regions >=5)
+Ktemp = subset(Ktemp.all, clade.richness >= 30 & n.regions >=5)
 
 pdf(paste(analysis_dir,'/summaryplots/corr_cladeorigin_plots_',Sys.Date(),'.pdf',sep=''), height=6, width = 8)
 par(mfrow=c(2,3), mar = c(2,2,2,1), oma=c(4,5,1,1))
@@ -93,7 +99,7 @@ plot(log10(Ttrop$clade.richness), Ttrop$r.time.rich, pch=16, col='red',ylim=c(-1
      ylab= "",cex=cexpts, cex.lab=2)
 points(log10(Ttemp$clade.richness), Ttemp$r.time.rich, col='blue',cex=cexpts)
 mtext(expression(italic(r)[time-richness]), 2, at = 0.25, outer=T, line=2, cex = cexlab)
-legend('bottomleft',c('temperate origin','tropical origin'), pch = c(1,16), col = c('blue','red'), cex=1)
+legend('bottomright',c('temperate origin','tropical origin'), pch = c(1,16), col = c('blue','red'), cex=1)
 
 plot(log10(Dtrop$clade.richness), Dtrop$r.time.rich, pch=16, col='red',ylim=c(-1,1),xlab="",
      ylab="",cex=cexpts)
