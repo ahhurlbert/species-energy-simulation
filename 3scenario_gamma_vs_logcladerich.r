@@ -35,12 +35,15 @@ Tline = 'darkgreen'
 Kline = 'mediumorchid4'
 
 pdf(paste(analysis_dir,'/summaryplots/3scenarios_gamma_logcladerich_',Sys.Date(),'.pdf',sep=''),height=5, width=10)
-par(mfrow=c(1,2), mar = c(4,4,2,1))
+par(mfrow=c(1,2), mar = c(4,5,2,1))
 cexpt = .8
+cexlab = 1.5
+cexaxis = 1.25
+cexmain = 1.25
 plot(log10(Ttrop$clade.rich), Ttrop$gamma.stat, ylim=range(c(Dtrop$gamma.stat, Ttrop$gamma.stat, Ktemp$gamma.stat)),
-     xlim = c(.9,4),pch=16, col=Tcol,xlab="Clade Richness",ylab="Gamma", las=1, xaxt="n",
-     main='Tropical Origin', cex = cexpt)
-axis(1,1:4)
+     xlim = c(.9,4),pch=16, col=Tcol,xlab=expression(paste(plain(log)[10]," Clade Richness")),ylab="Gamma", las=1, xaxt="n",
+     main='Tropical Origin', cex = cexpt, cex.lab = cexlab, cex.axis = cexaxis, cex.main = cexmain)
+axis(1,1:4, cex.axis = cexaxis)
 points(log10(Dtrop$clade.rich), Dtrop$gamma.stat, pch = 15, col = Dcol, cex = cexpt)
 points(log10(Ktrop$clade.rich), Ktrop$gamma.stat, pch=17, col=Kcol, cex = cexpt)
 abline(h=0, lty='dashed')
@@ -53,9 +56,9 @@ points(smooth.spline(log10(Ktrop$clade.rich),Ktrop$gamma.stat,df=5),type='l',col
 legend('bottomleft',c('Time','Disturbance','Energy Gradient'),pch=c(16,15,17), col=c(Tcol,Dcol,Kcol))
 
 plot(log10(Ttemp$clade.rich), Ttemp$gamma.stat, ylim=range(c(Dtrop$gamma.stat, Ttrop$gamma.stat, Ktemp$gamma.stat)),
-     xlim = c(0.9,4),pch=16, col= Tcol, xlab="Clade Richness",ylab="Gamma", las=1, xaxt="n",
-     main='Temperate Origin', cex = cexpt)
-axis(1,1:4)
+     xlim = c(0.9,4),pch=16, col= Tcol, xlab=expression(paste(plain(log)[10]," Clade Richness")),ylab="Gamma", las=1, xaxt="n",
+     main='Temperate Origin', cex = cexpt, cex.lab = cexlab, cex.axis = cexaxis, cex.main = cexmain)
+axis(1,1:4, cex.axis=cexaxis)
 points(log10(Dtemp$clade.rich), Dtemp$gamma.stat, pch = 15, col = Dcol, cex = cexpt)
 points(log10(Ktemp$clade.rich), Ktemp$gamma.stat, pch=17, col= Kcol, cex = cexpt)
 abline(h=0, lty='dashed')
