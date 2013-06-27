@@ -64,7 +64,7 @@ source('clade.exmpl.figs.r');
 source('extinct.calc.r');
 source('unzipping_files.r');
 
-cl = makeCluster(2);
+cl = makeCluster(3);
 registerDoParallel(cl);
 
 #(3) read in master simulation matrix with chosen parameter combinations;
@@ -80,8 +80,11 @@ sim.matrix$BK.env = NA
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 if (partial.analysis == 0) {which.sims = 1:max(sim.matrix$sim.id)};
-if (partial.analysis == 1) {which.sims = c(3353:3354,3392:3394)}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
+if (partial.analysis == 1) {which.sims = c(sim.matrix$sim.id[sim.matrix$carry.cap == 'on' & sim.matrix$energy.gradient == 'on' & sim.matrix$sim.id > 3464])}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
 
+trop.orig.extreme = 3;
+temp.orig.extreme = 8;
+pre.equil.time = 5459;
 
 foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar% {
 
@@ -96,21 +99,19 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
     time.richness = sim.results$time.richness
     phylo.out = sim.results$phylo.out
     params.out = sim.results$params.out
-  
+    
+    if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'tropical' ) { extreme.bin = trop.orig.extreme };
+    if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'temperate' ) { extreme.bin = temp.orig.extreme };
+    
+    if (time.richness$spp.rich[time.richness$time == pre.equil.time & time.richness$region == extreme.bin] > 5) {
   
     max.time.actual = max(time.richness$time);
-    # If just a single timeslice, then use the end of the simulation, otherwise space them equally
+    # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally
     if (num.of.time.slices==1) {
-      timeslices = max.time.actual
+      timeslices = pre.equil.time
     } else {
       timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0));
     }
-  
-    # Some species may be extant globally (extant==1) but in our boundary regions (0,11) only;
-    # we need to eliminate species that are not extant within regions 1-10 (which is all that is
-    # reflected in the all.populations dataframe)
-    extant.ornot = aggregate(all.populations$extant,by=list(all.populations$spp.name),sum)
-    extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
   
     skipped.clades = 0
     skipped.times = ""
@@ -118,6 +119,15 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
       # vector of species in existence at time t
       sub.species = as.character(unique(subset(all.populations,time.of.sp.origin <= t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
     
+      # Some species may be extant globally (extant==1) but in our boundary regions (0,11) only;
+      # we need to eliminate species that are not extant within regions 1-10 (which is all that is
+      # reflected in the all.populations dataframe)
+      time.slice.populations = all.populations;
+      time.slice.populations$extant = 0;
+      time.slice.populations$extant[time.slice.populations$time.of.origin <= t & time.slice.populations$time.of.extinction > t] = 1
+      extant.ornot = aggregate(time.slice.populations$extant,by=list(time.slice.populations$spp.name),sum)
+      extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
+      
       # FIXME:
       # Add more explanatory comments justifying why we don't need to consider species that existed
       # at time t but went extinct before the present.
@@ -199,7 +209,7 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
     }; # end timeslice loop
   
     #write all of this output to files
-    write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,".csv",sep=""),quote=F,row.names=F);
+    write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F);
     analysis.end = date();
     #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
     #print(c(warnings(),sim.start,sim.end,analysis.end));
@@ -232,8 +242,9 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
     sim.matrix[sim.matrix$sim.id==sim,'BK.reg'] = BK.reg # blomberg's K based on region
     sim.matrix[sim.matrix$sim.id==sim,'BK.env'] = BK.env # blomberg's K based on environment
 
-    write.csv(sim.matrix[sim.matrix$sim.id==sim,],paste(analysis_dir,"/sim.matrix.output.",sim,".csv",sep=""),quote=F,row.names=F);
+    write.csv(sim.matrix[sim.matrix$sim.id==sim,],paste(analysis_dir,"/sim.matrix.output.",sim,"_time",t,".csv",sep=""),quote=F,row.names=F);
     sim.matrix[sim.matrix$sim.id==sim,]
+    } else {print(sim)} # end second if (richness check for defined, extreme bin)
   } # end first if (file check)
 } # end sim loop
 

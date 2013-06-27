@@ -1,3 +1,10 @@
+### find sims that have run through the analysis pipeline
+
+setwd("C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204");
+foo = list.files(pattern='SENC_Stats_sim'); head(foo); length(foo);
+foo2 = grep('time5459',foo);
+150 - length(foo2); # number of sims yet to analyze
+
 ### find sims that still need data analysis
 ### to be used when the analysis workflow does not finish
 
