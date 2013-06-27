@@ -38,7 +38,7 @@ NoLim.te = subset(sim.matrix, w==3 & sigma_E==1 & max.K==40000 & alpha==1e-6 & b
                   & reg.of.origin=='temperate' & carry.cap=='off' & energy.gradient=='off' & max.richness==10000)
 }
 
-if(new=0) {
+if(new==0) {
 dist.tr = subset(sim.matrix, sim.id %in% 3445:3454)
 dist.te = subset(sim.matrix, sim.id %in% 3455:3464)
 Kgrad.tr = subset(sim.matrix, sim.id %in% 3325:3334)
@@ -84,13 +84,16 @@ latgrad.NoLim.te = recent.lat.grad(NoLim.te$sim.id)
 
 oldgrad.dist.tr = old.lat.grad(dist.tr$sim.id, time = 2000)
 oldgrad.dist.te = old.lat.grad(dist.te$sim.id, time = 2000)
-oldgrad.Kgrad.tr = old.lat.grad(Kgrad.tr$sim.id, time = 3000)
-oldgrad.Kgrad.te = old.lat.grad(Kgrad.te$sim.id, time = 3000)
+oldgrad.Kgrad.tr = old.lat.grad(Kgrad.tr$sim.id, time = 5459)
+oldgrad.Kgrad.te = old.lat.grad(Kgrad.te$sim.id, time = 5459)
 oldgrad.NoLim.tr = old.lat.grad(NoLim.tr$sim.id, time = 140)
 oldgrad.NoLim.te = old.lat.grad(NoLim.te$sim.id, time = 140)
 
-pdf(paste(analysis_dir,'/summaryplots/3scenarios_lat_grads',Sys.Date(),'.pdf',sep=''), height = 3, width = 8)
-par(mfrow=c(1,3), mar = c(2,5,2,0), oma = c(1,0,1,1))
+plot.disturbance = 0; # toggle to turn disturbance scenario on or off
+
+if (plot.disturbance == 1) {pdf(paste(analysis_dir,'/summaryplots/3scenarios_lat_grads',Sys.Date(),'.pdf',sep=''), height = 3, width = 8) ; par(mfrow=c(1,3), mar = c(2,5,2,0), oma = c(1,0,1,1))}
+if (plot.disturbance == 0) {pdf(paste(analysis_dir,'/summaryplots/3scenarios_lat_grads',Sys.Date(),'.pdf',sep=''), height = 3, width = 7) ; par(mfrow=c(1,2), mar = c(2,5,2,0), oma = c(1,0,1,1))}
+
 ## Time scenario
 plot(c(1,10),c(0,1.1*max(latgrad.NoLim.tr$spp.rich)),type="n",xlab="",ylab="Species Richness", 
      main="Time",cex.lab=1.25, cex.main=1.25, xaxt="n")
@@ -115,6 +118,8 @@ sapply(NoLim.te$sim.id, function(x)
   points(11 - oldgrad.NoLim.te[oldgrad.NoLim.te$sim==x,'region'], 
          oldgrad.NoLim.te[oldgrad.NoLim.te$sim==x,'spp.rich'], 
          type = 'l', lwd=2, col = 'light blue', lty='dashed'))
+
+if (plot.disturbance == 1) {
 
 ## Disturbance scenario
 plot(c(1,10),c(0,1.1*max(latgrad.dist.tr$spp.rich)),type="n",xlab="",
@@ -141,6 +146,8 @@ sapply(dist.te$sim.id, function(x)
   points(11 - oldgrad.dist.te[oldgrad.dist.te$sim==x,'region'], 
          oldgrad.dist.te[oldgrad.dist.te$sim==x,'spp.rich'], 
          type = 'l', lwd=2, col = 'light blue', lty='dashed'))
+
+} # close if statement related to plotting disturbance scenario
 
 ## K gradient scenario
 plot(c(1,10),c(0,1.1*max(latgrad.Kgrad.tr$spp.rich)),type="n",xlab="",
@@ -170,5 +177,5 @@ sapply(Kgrad.te$sim.id, function(x)
 
 #legend
 legend("topright",c('temperate origin','tropical origin','mid-simulation','end of simulation'), lwd = 1.5,
-       col = c('blue','red','gray60','black'), lty=c('solid','solid','dashed','solid'),cex=1)
+       col = c('blue','red','gray60','black'), lty=c('solid','solid','dashed','solid'),cex=0.5)
 dev.off()

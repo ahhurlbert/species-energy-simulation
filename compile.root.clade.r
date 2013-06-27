@@ -15,15 +15,17 @@ if (Allen == 0) {
   
   file_dir = 'C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204'
   filetext = "SENC_Stats_sim"
+  slicetext = "_time"
   
 }
 
 
 # get a list of the proper files, pull out the root clade of each and store together in a df
 
-compile.firstlines = function(file_dir, filetext) {
+compile.firstlines = function(file_dir, filetext, time.slice) {
   files = list.files(file_dir)
   stats.files = files[grep(filetext,files)]
+  if (time.slice == TRUE) {stats.files = stats.files[grep(slicetext,stats.files)]}
   simstats.finaltime = c()
   for (i in stats.files) {
     stats = read.csv(paste(file_dir,'/',i,sep=''), header=T)
@@ -47,7 +49,12 @@ compile.firstlines = function(file_dir, filetext) {
   return(simstats.finaltime)
 }
 
-root.comp = compile.firstlines(file_dir=file_dir,filetext=filetext);
+time.slice = T;
+root.comp = compile.firstlines(file_dir=file_dir,filetext=filetext,time.slice=time.slice);
 head(root.comp); dim(root.comp); range(root.comp$sim);
 
-write.csv(root.comp,paste(file_dir,"/rootclade_stats_sims",min(root.comp$sim),"-",max(root.comp$sim),".csv",sep=""),quote=F,row.names=F)
+if (time.slice == F) {write.csv(root.comp,paste(file_dir,"/rootclade_stats_sims",min(root.comp$sim),"-",max(root.comp$sim),".csv",sep=""),quote=F,row.names=F)};
+if (time.slice == T) {write.csv(root.comp,paste(file_dir,"/rootclade_slice_stats_sims",min(root.comp$sim),"-",max(root.comp$sim),".csv",sep=""),quote=F,row.names=F)};
+
+
+

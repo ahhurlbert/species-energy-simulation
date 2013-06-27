@@ -22,17 +22,27 @@ if (Allen == 0) {
 which.sims = c(3465:4064); length(which.sims);
 
 #rootclade.stats = compile.firstlines(sim_dir,"SENC_Stats_sim")
-simstats = read.csv(paste(analysis_dir,"/rootclade_stats_sims2925-4064.csv",sep=""), header=T)
+simstats = read.csv(paste(analysis_dir,"/rootclade_stats_sims2925-4064.csv",sep=""), header=T);
+simstats$timeslice = 'no';
+slicestats = read.csv(paste(analysis_dir,"/rootclade_slice_stats_sims3665-3861.csv",sep=""), header=T);
+slicestats$timeslice = 'yes';
+simstats = rbind(simstats,slicestats);
+
 sim.matrix = read.csv(paste(repo_dir,'/SENC_Master_Simulation_Matrix.csv',sep=""),header=T)
 
 simstats2 = merge(simstats, sim.matrix[,c(1,3:10,15,16)],by.x='sim',by.y='sim.id',all.x=T)
 simstats3 = subset(simstats2, sim %in% which.sims)
 
-simstats3$scenario = paste(simstats3$carry.cap,simstats3$energy.gradient)
+simstats3$scenario = paste(simstats3$carry.cap,simstats3$energy.gradient,simstats3$timeslice)
 simstats3$reg.of.origin = as.character(simstats3$reg.of.origin)
 
 tropical.shade = 'red'
 temperate.shade = 'blue'
+
+plot.disturbance = 0;
+
+if(plot.disturbance == 1) {simstats3 = subset(simstats3,simstats3$scenario != 'on on yes')}
+if(plot.disturbance == 0) {simstats3 = subset(simstats3,simstats3$scenario != 'on off no')}
 
 boxplot.cols = c(rep(temperate.shade,3),rep(tropical.shade,3))
 
@@ -50,7 +60,15 @@ boxplot(simstats3$r.PSV.rich ~ simstats3$scenario + simstats3$reg.of.origin,
         ylab=expression(italic(r)[PSV-richness]), xaxt="n",
         col = boxplot.cols, border = boxplot.cols,lwd=1,cex.axis=0.8, cex.lab=1.5)
 
-axis(1,rep(c('Time','Disturbance',''),2),at=1:6,cex.axis=1)
-mtext(rep('Energy\nGradient',2), 1,at=c(3,6), line=1.5)
+if (plot.disturbance == 0) {
+axis(1,rep(c('Time','','Pre-Equilibrium'),2),at=1:6,cex.axis=1)
+mtext(rep('Energy\nGradient',2), 1,at=c(2,5), line=1.5)
+};
+
+if (plot.disturbance == 1) {
+  
+  # would need to remake this
+  
+};
 
 dev.off()
