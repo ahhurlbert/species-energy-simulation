@@ -4,7 +4,7 @@
 #sim = as.numeric(sim[length(sim)]);
 
 # Choose number of time slices per simulation to analyze
-num.of.time.slices = 1;
+num.of.time.slices = 10;
 # Set minimum number of species in a clade needed to proceed with analysis
 min.num.spp = 8;
 
@@ -81,6 +81,8 @@ sim.matrix$BK.env = NA
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 if (partial.analysis == 0) {which.sims = 1:max(sim.matrix$sim.id)};
 if (partial.analysis == 1) {which.sims = c(sim.matrix$sim.id[sim.matrix$carry.cap == 'on' & sim.matrix$energy.gradient == 'on' & sim.matrix$sim.id > 3464])}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
+
+which.sims = which.sims[1];
 
 trop.orig.extreme = 3;
 temp.orig.extreme = 8;
@@ -209,7 +211,8 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
     }; # end timeslice loop
   
     #write all of this output to files
-    write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F);
+    if (num.of.time.slices==1) {write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices > 1) {write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,"_mult_times.csv",sep=""),quote=F,row.names=F)};
     analysis.end = date();
     #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
     #print(c(warnings(),sim.start,sim.end,analysis.end));
