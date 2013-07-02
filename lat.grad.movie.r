@@ -16,7 +16,7 @@ sim.matrix = read.csv(paste(github_dir,'/SENC_Master_Simulation_Matrix.csv',sep=
 # Function that shows a time lapse movie of the development of the latitudinal gradient in species richness.
 # Arguments include the simID, sim.matrix, directory in which simulation files are stored, 
 # temporal resolution and duration of the movie, and whether the sim files need to be unzipped or not.
-lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F) {
+lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F, plot.pdf=F) {
   
   if(unzip) {
     sim.out = output.unzip(sim_dir, sim)
@@ -32,7 +32,11 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
   max.rich = max(table(all.populations[all.populations$time.of.extinction > 30000,'region']))
   
   reg.rich.thru.time = data.frame(time=NA, region=NA, total.rich=NA)
-  par(mfrow = c(2,1), mar = c(4,4,2,1), mgp = c(2.5,1,0))
+  if(plot.pdf) {
+    pdf(paste(sim_dir,'/movie_sim',sim,'_timestep',time.step,'.pdf',sep=''), height=8, width=8)
+  }
+  par(mfrow = c(2,1), mar = c(4,4,1,1), mgp = c(2.5,1,0))
+  
   for (t in timeslices) {
     
     all.pops = subset(all.populations, time.of.origin < t & time.of.extinction > t)
@@ -40,10 +44,11 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
     names(all.reg.rich) = c('region','total.rich')
     all.reg.rich$region = as.numeric(as.character(all.reg.rich$region))
     Sys.sleep(0)
-    plot(11 - all.reg.rich$region, log10(all.reg.rich$total.rich), type='b', lwd = 4, cex = .5, col = 'red',
+    plot(all.reg.rich$region, log10(all.reg.rich$total.rich), type='b', lwd = 4, cex = .5, col = 'red',
          xlim = c(0,11), ylim=c(0, log10(max.rich)+.5), xlab="Latitude",ylab = "log10 Species richness",
          main=paste(params[1,3],"origin; K", params[1,8], "; w =",params[1,4],"; sigma = ",params[1,7]))
-    text(10, log10(max.rich)+.5, paste("t =", t))
+    text(10, log10(max.rich)+.3, paste("t =", t))
+    mtext(c("Temperate","Tropics"),1,at=c(1,10),line=2.5)
     
     reg.rich.thru.time = rbind(reg.rich.thru.time, cbind(time=rep(t,nrow(all.reg.rich)), all.reg.rich))
     
@@ -61,8 +66,21 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
     
     for (i in 1:100000) {}
   }
+  if(plot.pdf) {dev.off()}
 }
 
-# Example for plotting movie for sim 2635
-lat.grad.movie(2945,sim.matrix, sim_dir, 50,time.max=30000)
+# Example for plotting movie for sim 3345
+lat.grad.movie(3345, sim.matrix, sim_dir, time.step=1000, time.max=30000, plot.pdf=T)
 
+#This creates a multipage pdf when plot.pdf=T. To convert this to a gif animation, install ImageMagick and GhostScript,
+#both freely available.
+
+shell("convert -delay 50 -density 150 movie_sim3325_timestep1000.pdf movie_sim3325_timestep1000.gif")
+
+# -delay specifies the delay between frames in 1/100 s
+# -density specifies the dpi
+
+# Note that the current working directory must be where the pdf file was saved.
+# Also, if this command only converts the first page of the pdf to a gif, then 
+# edit the delegates.xml file associated with ImageMagick, and change
+# "pngalpha" to "pnmraw".
