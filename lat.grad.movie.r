@@ -79,6 +79,7 @@ shell("convert -delay 50 -density 150 movie_sim3325_timestep1000.pdf movie_sim33
 
 # -delay specifies the delay between frames in 1/100 s
 # -density specifies the dpi
+# on a MacOS, use the command 'system' rather than 'shell'
 
 # Note that the current working directory must be where the pdf file was saved.
 # Also, if this command only converts the first page of the pdf to a gif, then 
