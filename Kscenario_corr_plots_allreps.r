@@ -48,6 +48,13 @@ points(log10(Ktemp$clade.richness), Ktemp$r.env.rich, col='blue',cex=cexpts)
 abline(h=0,lty='dashed')
 mtext(expression(paste(plain(log)[10]," Clade Richness")),1,outer=F, line=3, cex = cexlab)
 mtext("(b)",3,at=1,cex=2)
+
+#extra tick marks showing % of max richness
+pcts = c(.9,.3,.1,.03,.01)
+par(mgp=c(-3,0,0))
+axis(1,at=log10(pcts*max(Ktrop$clade.richness)), labels=F,tck= .01)
+text(log10(pcts*max(Ktrop$clade.richness)), rep(-1,length(pcts)), paste(pcts*100,"%",sep=""))
+
 dev.off()
 
 
