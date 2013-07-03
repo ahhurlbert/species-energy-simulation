@@ -73,7 +73,7 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
 lat.grad.movie(3345, sim.matrix, sim_dir, time.step=1000, time.max=30000, plot.pdf=T)
 
 #This creates a multipage pdf when plot.pdf=T. To convert this to a gif animation, install ImageMagick and GhostScript,
-#both freely available.
+#both freely available. After they are installed, the following command will work.
 
 shell("convert -delay 50 -density 150 movie_sim3325_timestep1000.pdf movie_sim3325_timestep1000.gif")
 
