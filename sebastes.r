@@ -67,3 +67,55 @@ cor(output2)
 #restricting analysis to north of Point Conception
 output3 = output2[output2$lat >= 34,]
 cor(output3)
+
+#Gamma plot
+
+Allen = 1;
+
+if (Allen ==1) {
+  
+  sim_dir = "C:/SENCoutput/senc_reps_analysis"
+  analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/"
+  repo_dir = "C:/Documents and Settings/Hurlbert/species-energy-simulation"
+  
+}
+
+if (Allen == 0) {
+  
+  sim_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204"
+  analysis_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204"
+  repo_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation"  
+  
+}
+
+Ttrop = read.csv(paste(sim_dir,'/SENC_Stats_T.sims.trop.csv',sep=''), header=T)
+Ktrop = read.csv(paste(sim_dir,'/SENC_Stats_K.sims.trop.csv',sep=''), header=T)
+Ktrop.slice = read.csv(paste(sim_dir,'/SENC_Stats_K.slice.sims.trop.csv',sep=''), header=T)
+
+Ktemp = read.csv(paste(sim_dir,'/SENC_Stats_K.sims.temp.csv',sep=''), header=T)
+Ktemp.slice = read.csv(paste(sim_dir,'/SENC_Stats_K.slice.sims.temp.csv',sep=''), header=T)
+
+Tline = 'olivedrab3'
+Kline = 'mediumorchid2'
+Kline.slice = 'goldenrod2'
+
+#Sebastes phylogeny has 99 species, so pull out clades for each scenario of roughly the same size
+Ttrop99 = subset(Ttrop, clade.richness > 90 & clade.richness < 110)
+Ktrop99 = subset(Ktrop, clade.richness > 90 & clade.richness < 110)
+Ktrop.slice99 = subset(Ktrop.slice, clade.richness > 90 & clade.richness < 110)
+Ktemp99 = subset(Ktemp, clade.richness > 90 & clade.richness < 110)
+Ktemp.slice99 = subset(Ktemp.slice, clade.richness > 90 & clade.richness < 110)
+
+pdf(paste(analysis_dir, '/sebastes/sebastes_gamma.pdf', sep=''), height = 6, width = 8)
+plot(density(Ttrop99$gamma.stat), col=Tline, main="", xlab="Gamma", lwd=3, xlim = c(-8,2))
+points(density(Ktrop99$gamma.stat), type='l',col=Kline, lty='dotted',lwd=3)
+points(density(Ktemp99$gamma.stat), type='l',col=Kline, lwd=3)
+abline(v = gammaStat(phy), lwd=2, lty='dashed')
+legend("topleft",c('no zero-sum constraint','zero-sum w/ tropical origin', 'zero-sum w/ temperate origin', 'observed gamma'),
+       col = c(Tline, Kline, Kline, 'black'), lty = c('solid', 'dotted', 'solid', 'dashed'), lwd=3)
+dev.off()
+
+
+#points(density(Ktrop.slice99$gamma.stat), col=Kline.slice, lty='dotted', lwd=2)
+#points(density(Ktemp.slice99$gamma.stat), col=Kline.slice, lwd=2)
+
