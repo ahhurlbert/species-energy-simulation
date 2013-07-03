@@ -10,13 +10,15 @@ setwd('//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/
 require(ape)
 require(plyr)
 require(picante)
+require(caper) #for clade.members()
 
 sebastes = read.csv('sebastes_data_for_allen.csv',header=T)
 phy = read.tree('Sebastes_tree_Ingram2011PRSB.phy')
 
 lat = min(sebastes$min_latitude, na.rm=T):max(sebastes$max_latitude, na.rm=T)
 
-
+##############################################################################
+# MRD-PSV-Richness analyses
 richness = sapply(lat, function(x) nrow(sebastes[sebastes$min_latitude <= x & sebastes$max_latitude >= x, ]))
 
 phylo.bl1 <- compute.brlen(phy, 1)
@@ -68,6 +70,7 @@ cor(output2)
 output3 = output2[output2$lat >= 34,]
 cor(output3)
 
+############################################################################
 #Gamma plot
 
 Allen = 1;
@@ -119,3 +122,53 @@ dev.off()
 #points(density(Ktrop.slice99$gamma.stat), col=Kline.slice, lty='dotted', lwd=2)
 #points(density(Ktemp.slice99$gamma.stat), col=Kline.slice, lwd=2)
 
+#############################################################################
+#Plotting depth range on phylogeny
+sebastes$mean_depth = apply(sebastes[,c('min_common_depth','max_common_depth')], 1, function(x) mean(x, na.rm=T))
+depth.col = colorRampPalette(colors()[c(405,431,616,619,566)]) #dark blue = deep, light blue = shallow
+
+plot(phy)
+#reflect continuous depth
+tiplabels(pch=15,col = depth.col(100)[floor(100*sebastes$mean_depth/max(sebastes$mean_depth, na.rm=T))], adj=4, cex=1.25)
+#reflect categorical shallow/deep
+depth.threshold = 180
+sebastes$shde.col[sebastes$mean_depth < depth.threshold] = colors()[405]
+sebastes$shde.col[sebastes$mean_depth >= depth.threshold] = colors()[566]
+tiplabels(pch=15,col = sebastes$shde.col, adj=4.2, cex=1.25)  
+
+
+##############################################################################
+# Subclade correlations
+
+#Drop non-NEP species (with no latitude data)
+nonNEPsp = as.character(sebastes[is.na(sebastes$min_latitude), 'X'])
+NEPphy = drop.tip(phy,nonNEPsp)
+min.num.spp = 5
+
+lat.corr.output = c()
+for (c in (NEPphy$Nnode+2):max(NEPphy$edge)) {
+  
+  #pull out list of species names belonging to each subclade
+  sub.clade = clade.members(c, NEPphy, tip.labels=T)
+  sub.populations = subset(sebastes, X %in% sub.clade);
+  
+  sub.richness = sapply(lat, function(x) nrow(sub.populations[sub.populations$min_latitude <= x & sub.populations$max_latitude >= x, ]))
+  if(length(sub.clade) >= min.num.spp) {
+    lat.corr = cor(lat[sub.richness>0], sub.richness[sub.richness>0])
+    lat.corr2 = cor(lat[sub.richness>0 & lat >= 34], sub.richness[sub.richness > 0 & lat >=34])
+    lat.corr.output = rbind(lat.corr.output, c(c, length(sub.clade), lat.corr, lat.corr2))
+  }
+}
+lat.corr.output = data.frame(lat.corr.output)
+names(lat.corr.output) = c('cladeID','clade.richness','r.lat.rich','r.lat.rich34')  
+# Correlations calculated from entire gradient (Alaska-to Baja), and for the gradient
+# north of 34N (Alaska-Point Conception)
+
+pdf(paste(analysis_dir,'/sebastes/sebastes_corrplot.pdf',sep=''),height=6,width=6)
+par(mar=c(4,4,1,1))
+plot(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich, ylim = c(-1,1), 
+     xlab = expression(paste(plain(log)[10]," Clade Richness")),ylab = 'Latitude-richness correlation')
+points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich34, pch=17)
+abline(h=0,lty='dashed')
+legend("topright", c('Entire gradient','North of 34N'), pch = c(1,17))
+dev.off()
