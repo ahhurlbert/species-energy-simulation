@@ -15,16 +15,21 @@ require(caper) #for clade.members()
 sebastes = read.csv('sebastes_data_for_allen.csv',header=T)
 phy = read.tree('Sebastes_tree_Ingram2011PRSB.phy')
 
+#Drop non-NEP species (with no latitude data)
+nonNEPsp = as.character(sebastes[is.na(sebastes$min_latitude), 'X'])
+NEPphy = drop.tip(phy,nonNEPsp)
+
+
 lat = min(sebastes$min_latitude, na.rm=T):max(sebastes$max_latitude, na.rm=T)
 
 ##############################################################################
 # MRD-PSV-Richness analyses
-richness = sapply(lat, function(x) nrow(sebastes[sebastes$min_latitude <= x & sebastes$max_latitude >= x, ]))
+richness = sapply(lat, function(x) nrow(subset(sebastes, min_latitude <= x & max_latitude >= x)))
 
-phylo.bl1 <- compute.brlen(phy, 1)
+phylo.bl1 <- compute.brlen(NEPphy, 1)
 all.dist <- dist.nodes(phylo.bl1)
-root.dist <- all.dist[length(phy$tip.label)+1, 1:length(phy$tip.label)]
-tips.to.root <- data.frame(spp.name=phy$tip.label,root.dist)
+root.dist <- all.dist[length(NEPphy$tip.label)+1, 1:length(NEPphy$tip.label)]
+tips.to.root <- data.frame(spp.name=NEPphy$tip.label,root.dist)
 
 output = c()
 for (i in lat) {
@@ -49,18 +54,6 @@ for (i in lat) {
 output2 = data.frame(cbind(output, richness))
 names(output2) = c('lat','MRD','PSV','S')
 
-pdf('sebastes_MRD-PSV_corrs.pdf',height=6,width=8)
-plot(lat,richness)
-text(45,52,"Entire gradient:\nMRD-S = 0.47\nPSV-S = -0.14")
-text(45,40,"North of 34N:\nMRD-S = 0.94\nPSV-S = -0.27")
-par(new=T)
-plot(lat, output2$MRD, col='blue',xaxt="n",yaxt="n",ylab="", pch=16)
-par(new=T)
-plot(lat,output2$PSV, col='red',xaxt="n",yaxt="n",ylab="",pch=16)
-legend("topright",c('richness','MRD','PSV'),pch=c(1,16,16),col=c('black','blue','red'))
-dev.off()
-
-
 # For Energy Gradient temperate origin,
 #   MRD-S correlation predicted to be positive 
 #   PSV-S correlation predicted to be negative
@@ -69,6 +62,23 @@ cor(output2)
 #restricting analysis to north of Point Conception
 output3 = output2[output2$lat >= 34,]
 cor(output3)
+
+
+
+pdf('sebastes_MRD-PSV_corrs.pdf',height=6,width=8)
+plot(lat,richness)
+text(42, 18, paste("Entire gradient:\nMRD-S = ", round(cor(output2$MRD,output2$S),2),
+    "\nPSV-S = ", round(cor(output2$PSV,output2$S),2), sep = ""))
+text(42, 8, paste("North of 34N:\nMRD-S = ", round(cor(output3$MRD,output3$S),2),
+    "\nPSV-S = ", round(cor(output3$PSV,output3$S),2), sep = ""))
+par(new=T)
+plot(lat, output2$MRD, col='blue',xaxt="n",yaxt="n",ylab="", pch=16)
+par(new=T)
+plot(lat,output2$PSV, col='red',xaxt="n",yaxt="n",ylab="",pch=16)
+legend("topright",c('richness','MRD','PSV'),pch=c(1,16,16),col=c('black','blue','red'))
+dev.off()
+
+
 
 ############################################################################
 #Gamma plot
@@ -102,20 +112,24 @@ Tline = 'olivedrab3'
 Kline = 'mediumorchid2'
 Kline.slice = 'goldenrod2'
 
-#Sebastes phylogeny has 99 species, so pull out clades for each scenario of roughly the same size
-Ttrop99 = subset(Ttrop, clade.richness > 90 & clade.richness < 110)
-Ktrop99 = subset(Ktrop, clade.richness > 90 & clade.richness < 110)
-Ktrop.slice99 = subset(Ktrop.slice, clade.richness > 90 & clade.richness < 110)
-Ktemp99 = subset(Ktemp, clade.richness > 90 & clade.richness < 110)
-Ktemp.slice99 = subset(Ktemp.slice, clade.richness > 90 & clade.richness < 110)
+#Sebastes phylogeny has 99 species (only 66 in NEP), so pull out clades for each scenario of roughly the same size
+rich=66
+
+Ttrop99 = subset(Ttrop, clade.richness > .9*rich & clade.richness < 1.1*rich)
+Ktrop99 = subset(Ktrop, clade.richness > .9*rich & clade.richness < 1.1*rich)
+Ktrop.slice99 = subset(Ktrop.slice, clade.richness > .9*rich & clade.richness < 1.1*rich)
+Ktemp99 = subset(Ktemp, clade.richness > .9*rich & clade.richness < 1.1*rich)
+Ktemp.slice99 = subset(Ktemp.slice, clade.richness > .9*rich & clade.richness < 1.1*rich)
 
 pdf(paste(analysis_dir, '/sebastes/sebastes_gamma.pdf', sep=''), height = 6, width = 8)
 plot(density(Ttrop99$gamma.stat), col=Tline, main="", xlab="Gamma", lwd=3, xlim = c(-8,2))
 points(density(Ktrop99$gamma.stat), type='l',col=Kline, lty='dotted',lwd=3)
 points(density(Ktemp99$gamma.stat), type='l',col=Kline, lwd=3)
-abline(v = gammaStat(phy), lwd=2, lty='dashed')
+abline(v = gammaStat(NEPphy), lwd=2, lty='dashed')
 legend("topleft",c('no zero-sum constraint','zero-sum w/ tropical origin', 'zero-sum w/ temperate origin', 'observed gamma'),
        col = c(Tline, Kline, Kline, 'black'), lty = c('solid', 'dotted', 'solid', 'dashed'), lwd=3)
+points(density(Ktrop.slice99$gamma.stat), type= 'l', col=Kline.slice, lty='dotted', lwd=2)
+points(density(Ktemp.slice99$gamma.stat), type = 'l', col=Kline.slice, lwd=2)
 dev.off()
 
 
@@ -140,9 +154,6 @@ tiplabels(pch=15,col = sebastes$shde.col, adj=4.2, cex=1.25)
 ##############################################################################
 # Subclade correlations
 
-#Drop non-NEP species (with no latitude data)
-nonNEPsp = as.character(sebastes[is.na(sebastes$min_latitude), 'X'])
-NEPphy = drop.tip(phy,nonNEPsp)
 min.num.spp = 5
 
 lat.corr.output = c()
@@ -156,11 +167,12 @@ for (c in (NEPphy$Nnode+2):max(NEPphy$edge)) {
   if(length(sub.clade) >= min.num.spp) {
     lat.corr = cor(lat[sub.richness>0], sub.richness[sub.richness>0])
     lat.corr2 = cor(lat[sub.richness>0 & lat >= 34], sub.richness[sub.richness > 0 & lat >=34])
-    lat.corr.output = rbind(lat.corr.output, c(c, length(sub.clade), lat.corr, lat.corr2))
+    lat.corr3 = cor(lat[sub.richness>0 & lat < 34], sub.richness[sub.richness > 0 & lat < 34])
+    lat.corr.output = rbind(lat.corr.output, c(c, length(sub.clade), lat.corr, lat.corr2, lat.corr3))
   }
 }
 lat.corr.output = data.frame(lat.corr.output)
-names(lat.corr.output) = c('cladeID','clade.richness','r.lat.rich','r.lat.rich34')  
+names(lat.corr.output) = c('cladeID','clade.richness','r.lat.rich','r.lat.rich.gte34','r.lat.rich.lt34')  
 # Correlations calculated from entire gradient (Alaska-to Baja), and for the gradient
 # north of 34N (Alaska-Point Conception)
 
@@ -168,7 +180,8 @@ pdf(paste(analysis_dir,'/sebastes/sebastes_corrplot.pdf',sep=''),height=6,width=
 par(mar=c(4,4,1,1))
 plot(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich, ylim = c(-1,1), 
      xlab = expression(paste(plain(log)[10]," Clade Richness")),ylab = 'Latitude-richness correlation')
-points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich34, pch=17)
+points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich.gte34, pch=17)
+points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich.lt34, pch=15, col = 'red')
 abline(h=0,lty='dashed')
-legend("topright", c('Entire gradient','North of 34N'), pch = c(1,17))
+legend(1.6,.5, c('Entire gradient','North of 34N','South of 34N'), pch = c(1,17,15), col = c('black','black','red'))
 dev.off()
