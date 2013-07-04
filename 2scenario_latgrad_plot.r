@@ -118,7 +118,7 @@ legend("topright",c('temperate origin','tropical origin','mid-simulation','end o
 
 ## Time scenario
 plot(c(1,10),c(0,1.1*max(latgrad.NoLim.tr$spp.rich)),type="n",xlab="",ylab="", 
-     main="No Zero-Sum Constraint",cex.lab=1.25, cex.main=1.25, xaxt="n")
+     main="No Zero-Sum Constraint",cex.lab=1.25, xaxt="n")
 mtext("Tropics",1,adj=.05,line=.5, cex=1.25)
 mtext("Temperate",1,adj=.95,line=.5, cex=1.25)
 mtext("(b)", 3, at=-1.5, line = 1.25, cex=2)
