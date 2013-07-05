@@ -71,8 +71,8 @@ points(smooth.spline(log10(Ktrop.slice$clade.rich),Ktrop.slice$gamma.stat,df=5),
 points(smooth.spline(log10(Ttrop$clade.rich),Ttrop$gamma.stat,df=5),type='l',col= Tline,lwd=4)
 points(smooth.spline(log10(Ktrop$clade.rich),Ktrop$gamma.stat,df=5),type='l',col= Kline,lwd=4)
   
-legend('bottomleft',c('Time','Pre-Equilibrium','Energy Gradient'),
-       pch = c(16,15,17), col = c(Tcol, Kcol.slice, Kcol), bty = "n", cex = cexlegend)
+legend('bottomleft',c('Energy gradient','No zero sum','Pre-equilibrium'),
+       pch = c(17,16,15), col = c(Kcol, Tcol, Kcol.slice), bty = "n", cex = cexlegend)
 mtext("(a)", 2, at = 1, cex = cexabc, outer = T, las = 1, line = .5)
 
 #Insets with cartoon phylogenies
