@@ -71,18 +71,22 @@ cexabc = 2.5
 pch.temp = 18
 
 #Vs clade origin time (negative the r.env.rich is equal to the richness-latitude correlation)
-plot(log10(Ktrop$clade.origin.time), -Ktrop$r.env.rich, pch=16, col='red',ylim=c(-1,1),
-     xlab = expression(paste(plain(log)[10]," Time of Clade Origin")),
-     ylab = "", cex = cexpts, main = '', cex.lab = cexlab, cex.axis = cexaxis, cex.main=cexmain, las=1)
-points(log10(Ktemp$clade.origin.time), -Ktemp$r.env.rich, col = 'blue', pch = pch.temp, cex = cexpts)
+# plotting complement of x-axis (hence, difference from max value)
+plot(max(log10(Ktrop$clade.origin.time)) - log10(Ktrop$clade.origin.time), -Ktrop$r.env.rich, xaxt = "n",
+     xlab = expression(paste(plain(log)[10]," Clade origin time")), pch=16, col='red',ylim=c(-1,1),
+     ylab = "", cex = cexpts, main = '', cex.lab = cexlab, cex.axis = cexaxis, las=1)
+points(max(log10(Ktrop$clade.origin.time)) - log10(Ktemp$clade.origin.time), -Ktemp$r.env.rich, 
+           col = 'blue', pch = pch.temp, cex = cexpts)
+axis(1, at = 0:4, labels = 4:0, cex.axis = cexaxis)
+mtext(c("recent","old"), 1, at = c(0,4), line = 4, cex = 1.5)
 abline(h = 0, lty = 'dashed')
-legend('topleft',c('temperate origin','tropical origin'), pch = c(pch.temp, 16), col = c('blue','red'), cex = cexleg)
+legend('topright',c('temperate origin','tropical origin'), pch = c(pch.temp, 16), col = c('blue','red'), cex = cexleg)
 mtext("(a)", 2, at = 1, cex = cexabc, outer = T, las = 1, line = 5)
 
 #Vs clade richness
 plot(log10(Ktrop$clade.richness), -Ktrop$r.env.rich, pch = 16, col = 'red', ylim = c(-1,1),
-     xlab = expression(paste(plain(log)[10]," Clade Richness")), ylab = "",
-     cex = cexpts, main = '', cex.lab = cexlab, cex.axis = cexaxis, cex.main = cexmain, las = 1)
+     xlab = expression(paste(plain(log)[10]," Clade richness")), ylab = "",
+     cex = cexpts, main = '', cex.lab = cexlab, cex.axis = cexaxis, las = 1)
 points(log10(Ktemp$clade.richness), -Ktemp$r.env.rich, col = 'blue', pch = pch.temp, cex = cexpts)
 abline(h = 0,lty = 'dashed')
 mtext("Latitude-richness correlation", 2, outer=T, cex = cexaxis, line = 3)
@@ -96,7 +100,7 @@ mtext("(b)", 2, outer=T, at = .67, cex = cexabc, las = 1, line = 5)
 
 #Sebastes vs clade richness
 plot(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich, ylim = c(-1,1), las=1, cex.axis = cexaxis, cex.lab = cexlab,
-     xlab = expression(paste(plain(log)[10]," Clade Richness")), ylab = 'Latitude-richness correlation', pch = 16, cex = cexpts.seb)
+     xlab = expression(paste(plain(log)[10]," Clade richness")), ylab = 'Latitude-richness correlation', pch = 16, cex = cexpts.seb)
 points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich.gte34, pch = 1, cex = cexpts.seb)
 #points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich.lt34, pch=2, cex = cexpts)
 abline(h=0,lty='dashed')
