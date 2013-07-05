@@ -48,15 +48,19 @@ Tline = 'darkgreen'
 Kline = 'mediumorchid4'
 Kline.slice = 'goldenrod3'
 
-pdf(paste(analysis_dir,'/summaryplots/3scenarios_gamma_sim_and_empirical_',Sys.Date(),'.pdf',sep=''),height=5, width=15)
-par(mfrow=c(1,3), mar = c(8,8,4,1), mgp = c(5.5, 2, 0))
-cexpt = 1
+pdf(paste(analysis_dir,'/summaryplots/3scenarios_gamma_sim_and_empirical_',Sys.Date(),'.pdf',sep=''), height = 15, width = 7)
+par(mfrow=c(3,1), mar = c(6.5,8,2,1), mgp = c(5.5, 1.5, 0), oma = c(1, 5, 1, 1))
+
+#cexaxis = 2
+
+cexpt = 2
 cexlab = 3
 cexaxis = 2.25
-cexlegend = 2
+cexlegend = 2.5
+cexabc = 2.5
 
 plot(log10(Ttrop$clade.rich), Ttrop$gamma.stat, xlim = c(0.9,4), ylim = c(-20,5), pch=16, col=Tcol,
-     xlab=expression(paste(plain(log)[10]," Clade Richness")), ylab="Gamma", las=1, 
+     xlab=expression(paste(plain(log)[10]," Clade Richness")), ylab = "Gamma", las = 1, 
      xaxt="n", main='', cex = cexpt, cex.lab = cexlab, cex.axis = cexaxis, cex.main = cexmain)
 axis(1,1:4, cex.axis=cexaxis)
 points(log10(Ktrop$clade.rich), Ktrop$gamma.stat, pch=17, col=Kcol, cex = cexpt)
@@ -69,34 +73,32 @@ points(smooth.spline(log10(Ktrop$clade.rich),Ktrop$gamma.stat,df=5),type='l',col
   
 legend('bottomleft',c('Time','Pre-Equilibrium','Energy Gradient'),
        pch = c(16,15,17), col = c(Tcol, Kcol.slice, Kcol), bty = "n", cex = cexlegend)
-mtext("(a)", 3, at = 0.6, line = 1, cex = cexlab)
+mtext("(a)", 2, at = 1, cex = cexabc, outer = T, las = 1, line = .5)
 
 #Insets with cartoon phylogenies
 posgamma = read.tree(paste(repo_dir,'/posgamma.tre',sep=''))
 neggamma = read.tree(paste(repo_dir,'/neggamma.tre',sep=''))
-par(new=T)
-par(fig = c(.2,.33,.5,.98))
+par(new = T, fig = c(.65,1,.85,.99))
 plot(posgamma, edge.width=3)
-par(new=T)
-par(fig = c(.2,.33,.02,.5))
+par(new = T, fig = c(.65,1,.68,.82))
 plot(neggamma, edge.width=3)
   
 par(new=T)
-par(fig = c(.33,.67,0,1))
+par(fig = c(0, 1, 0.33, .67))
   
 plot(log10(Ttemp$clade.rich), Ttemp$gamma.stat, ylim = c(-20,5), xlim = c(0.9,4), pch=16, col= Tcol, 
-     xlab=expression(paste(plain(log)[10]," Clade Richness")),ylab="Gamma", las=1, xaxt="n",
+     xlab=expression(paste(plain(log)[10]," Clade Richness")), ylab = "Gamma", las = 1, xaxt = "n",
      main='', cex = cexpt, cex.lab = cexlab, cex.axis = cexaxis, cex.main = cexmain)
-axis(1,1:4, cex.axis=cexaxis)
-points(log10(Ktemp$clade.rich), Ktemp$gamma.stat, pch=17, col= Kcol, cex = cexpt)
+axis(1, 1:4, cex.axis = cexaxis)
+points(log10(Ktemp$clade.rich), Ktemp$gamma.stat, pch = 17, col = Kcol, cex = cexpt)
 points(log10(Ktemp.slice$clade.rich), Ktemp.slice$gamma.stat, pch = 15, col = Kcol.slice, cex = cexpt)
   
 #splines
-points(smooth.spline(log10(Ktemp.slice$clade.rich),Ktemp.slice$gamma.stat,df=5),type='l',col= Kline.slice,lwd=4)
-points(smooth.spline(log10(Ttemp$clade.rich),Ttemp$gamma.stat,df=5),type='l',col= Tline,lwd=4)
-points(smooth.spline(log10(Ktemp$clade.rich),Ktemp$gamma.stat,df=5),type='l',col= Kline,lwd=4)
+points(smooth.spline(log10(Ktemp.slice$clade.rich), Ktemp.slice$gamma.stat, df = 5), type = 'l', col = Kline.slice, lwd=4)
+points(smooth.spline(log10(Ttemp$clade.rich), Ttemp$gamma.stat, df = 5), type = 'l', col = Tline, lwd=4)
+points(smooth.spline(log10(Ktemp$clade.rich), Ktemp$gamma.stat, df = 5), type = 'l', col = Kline, lwd=4)
   
-mtext("(b)", 3, at = 0.6, line = 1, cex = cexlab)
+mtext("(b)", 2, at = 0.67, cex = cexabc, outer = T, las = 1, line = .5)
 
 #Empirical data
 #Sebastes phylogeny has 99 species (only 66 in NEP), so pull out clades for each scenario of roughly the same size
@@ -109,7 +111,7 @@ Ktemp99 = subset(Ktemp, clade.richness > .9*rich & clade.richness < 1.1*rich)
 Ktemp.slice99 = subset(Ktemp.slice, clade.richness > .9*rich & clade.richness < 1.1*rich)
   
 par(new=T)
-par(fig = c(.67,1,0,1))
+par(fig = c(0, 1, 0, 0.33))
 
 plot(density(Ttrop99$gamma.stat), col=Tcol, main="", xlab="Gamma", lwd=5, las=1,
      xlim = c(-8,2), cex.lab = cexlab, cex.axis = cexaxis)
@@ -121,5 +123,5 @@ abline(v = gammaStat(NEPphy), lwd=3)
 legend("topleft",c('tropical', 'temperate'),
        col = 'gray50', lty = c('dashed', 'solid'), lwd=4, bty = "n", cex = cexlegend)
 
-mtext("(c)", 3, at = -9, line = 1, cex = cexlab)
+mtext("(c)", 2, at = 0.33, cex = cexabc, outer = T, las = 1, line = .5)
 dev.off()
