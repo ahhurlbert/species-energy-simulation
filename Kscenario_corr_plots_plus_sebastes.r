@@ -105,4 +105,13 @@ mtext("(c)", 2, at = 0.33, outer = T, cex = cexabc, las = 1, line = 5)
 
 dev.off()
 
+###############
+# Clade richness vs time of clade origin, to help interpret above patterns
 
+pdf(paste(analysis_dir,'/summaryplots/cladeRich_vs_origintime_',Sys.Date(),'.pdf',sep=''), height=6, width = 7)
+par(mar=c(5,5,1,1))
+plot(log10(Ktrop$clade.origin.time),log10(Ktrop$clade.richness), pch=16, col='red', cex.lab = 2,
+     xlab = expression(paste(plain(log)[10]," Clade origin time")), 
+     ylab = expression(paste(plain(log)[10]," Clade richness")))
+points(log10(Ktemp$clade.origin.time),log10(Ktemp$clade.richness),pch=18,col='blue')
+dev.off()
