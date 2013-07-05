@@ -40,7 +40,7 @@ for (i in lat) {
   MRD <- mean(MRD.ini$root.dist)
   
   #PSV
-  Vmatrix = vcv(phy, corr=F)
+  Vmatrix = vcv(NEPphy, corr=F)
   psvs = matrix(NA, ncol=2)
   
   index = row.names(Vmatrix) %in% species$X
