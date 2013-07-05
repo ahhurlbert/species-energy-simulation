@@ -81,12 +81,12 @@ oldgrad.Kgrad.te = old.lat.grad(Kgrad.te$sim.id, time = 5459)
 oldgrad.NoLim.tr = old.lat.grad(NoLim.tr$sim.id, time = 140)
 oldgrad.NoLim.te = old.lat.grad(NoLim.te$sim.id, time = 140)
 
-pdf(paste(analysis_dir,'/summaryplots/2scenarios_lat_grads',Sys.Date(),'.pdf',sep=''), height = 4, width = 8)
+pdf(paste(analysis_dir,'/summaryplots/2scenarios_lat_grads_',Sys.Date(),'.pdf',sep=''), height = 4, width = 8)
 par(mfrow=c(1,2), mar = c(2,5,2,0), oma = c(1,0,1,1))
 
 ## K gradient scenario
 plot(c(1,10),c(0,1.1*max(latgrad.Kgrad.tr$spp.rich)),type="n",xlab="",
-     ylab="Species Richness", main="Zero-Sum Energy Gradient",cex.lab=1.5, xaxt="n")
+     ylab="Species Richness", main="Zero-sum energy gradient",cex.lab=1.5, xaxt="n")
 mtext("Tropics",1,adj=.05,line=.5, cex=1.25)
 mtext("Temperate",1,adj=.95,line=.5, cex=1.25)
 mtext("(a)", 3, at=-1.5, line = 1.25, cex = 2)
@@ -112,13 +112,13 @@ sapply(Kgrad.te$sim.id, function(x)
          type = 'l', lwd=2, col = 'light blue', lty='dashed'))
 
 #legend
-legend("topright",c('temperate origin','tropical origin','mid-simulation','end of simulation'), lwd = 1.5,
-       col = c('blue','red','gray60','black'), lty=c('solid','solid','dashed','solid'),cex=.9)
+legend("topright",c('temperate origin','tropical origin','pre-equilibrium'), lwd = 1.5,
+       col = c('blue','red','gray60'), lty=c('solid','solid','dashed'), cex = 1)
 
 
 ## Time scenario
 plot(c(1,10),c(0,1.1*max(latgrad.NoLim.tr$spp.rich)),type="n",xlab="",ylab="", 
-     main="No Zero-Sum Constraint",cex.lab=1.25, xaxt="n")
+     main="No zero-sum constraint",cex.lab=1.25, xaxt="n")
 mtext("Tropics",1,adj=.05,line=.5, cex=1.25)
 mtext("Temperate",1,adj=.95,line=.5, cex=1.25)
 mtext("(b)", 3, at=-1.5, line = 1.25, cex=2)
@@ -133,13 +133,13 @@ sapply(NoLim.te$sim.id, function(x)
          latgrad.NoLim.te[latgrad.NoLim.te$sim==x,'spp.rich'], 
          type = 'l', lwd=2, col = 'blue'))
 #old gradient
-sapply(NoLim.tr$sim.id, function(x)
-  points(11 - oldgrad.NoLim.tr[oldgrad.NoLim.tr$sim==x,'region'], 
-         oldgrad.NoLim.tr[oldgrad.NoLim.tr$sim==x,'spp.rich'], 
-         type = 'l', lwd=2, col = 'pink', lty='dashed'))
-sapply(NoLim.te$sim.id, function(x)
-  points(11 - oldgrad.NoLim.te[oldgrad.NoLim.te$sim==x,'region'], 
-         oldgrad.NoLim.te[oldgrad.NoLim.te$sim==x,'spp.rich'], 
-         type = 'l', lwd=2, col = 'light blue', lty='dashed'))
+#sapply(NoLim.tr$sim.id, function(x)
+#  points(11 - oldgrad.NoLim.tr[oldgrad.NoLim.tr$sim==x,'region'], 
+#         oldgrad.NoLim.tr[oldgrad.NoLim.tr$sim==x,'spp.rich'], 
+#         type = 'l', lwd=2, col = 'pink', lty='dashed'))
+#sapply(NoLim.te$sim.id, function(x)
+#  points(11 - oldgrad.NoLim.te[oldgrad.NoLim.te$sim==x,'region'], 
+#         oldgrad.NoLim.te[oldgrad.NoLim.te$sim==x,'spp.rich'], 
+#         type = 'l', lwd=2, col = 'light blue', lty='dashed'))
 
 dev.off()
