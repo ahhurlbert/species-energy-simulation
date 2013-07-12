@@ -58,6 +58,7 @@ cexlab = 3
 cexaxis = 2.25
 cexlegend = 2.5
 cexabc = 2.5
+cexmain = 2.5
 
 plot(log10(Ttrop$clade.rich), Ttrop$gamma.stat, xlim = c(0.9,4), ylim = c(-20,5), pch=16, col=Tcol,
      xlab=expression(paste(plain(log)[10]," Clade Richness")), ylab = "Gamma", las = 1, 
