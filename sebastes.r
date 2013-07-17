@@ -58,10 +58,13 @@ for (i in lat) {
 output2 = data.frame(cbind(output, richness))
 names(output2) = c('lat','MRD','PSV','S')
 
+output2 = merge(output2, npp.1dg, by.x='lat', by.y='latitude', all.x=T)
+output2 = merge(output2, npp.2dg, by.x='lat', by.y='latitude', all.x=T)
+
 # For Energy Gradient temperate origin,
 #   MRD-S correlation predicted to be positive 
 #   PSV-S correlation predicted to be negative
-cor(output2)
+cor(output2, use = "pairwise.complete.obs")
 
 #restricting analysis to north of Point Conception
 output3 = output2[output2$lat >= 34,]
