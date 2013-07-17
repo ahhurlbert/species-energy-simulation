@@ -22,6 +22,10 @@ NEPphy = drop.tip(phy,nonNEPsp)
 
 lat = min(sebastes$min_latitude, na.rm=T):max(sebastes$max_latitude, na.rm=T)
 
+# Marine NPP data
+npp.1dg = read.csv('pacificnppvslatitude_1dg.csv', header=T)
+npp.2dg = read.csv('pacificnppvslatitude_2dg.csv', header=T)
+
 ##############################################################################
 # MRD-PSV-Richness analyses
 richness = sapply(lat, function(x) nrow(subset(sebastes, min_latitude <= x & max_latitude >= x)))
@@ -65,17 +69,25 @@ cor(output3)
 
 
 
-pdf('sebastes_MRD-PSV_corrs.pdf',height=6,width=8)
-plot(lat,richness)
-text(42, 18, paste("Entire gradient:\nMRD-S = ", round(cor(output2$MRD,output2$S),2),
+pdf(paste('sebastes_MRD-PSV_corrs_',Sys.Date(),'.pdf',sep=''),height=6,width=8)
+par(mar = c(5,5,1,5))
+plot(lat,richness, type = 'l', lwd = 3, xlab = "Latitude", ylab = "Species richness")
+text(39, 5, paste("Entire gradient:\nMRD-S = ", round(cor(output2$MRD,output2$S),2),
     "\nPSV-S = ", round(cor(output2$PSV,output2$S),2), sep = ""))
-text(42, 8, paste("North of 34N:\nMRD-S = ", round(cor(output3$MRD,output3$S),2),
+text(55, 5, paste("North of 34N:\nMRD-S = ", round(cor(output3$MRD,output3$S),2),
     "\nPSV-S = ", round(cor(output3$PSV,output3$S),2), sep = ""))
 par(new=T)
-plot(lat, output2$MRD, col='blue',xaxt="n",yaxt="n",ylab="", pch=16)
+plot(lat, output2$MRD, col='blue',xaxt="n",yaxt="n",ylab="", xlab = "", pch = 16)
 par(new=T)
-plot(lat,output2$PSV, col='red',xaxt="n",yaxt="n",ylab="",pch=16)
-legend("topright",c('richness','MRD','PSV'),pch=c(1,16,16),col=c('black','blue','red'))
+plot(lat,output2$PSV, col='red',xaxt="n",yaxt="n",ylab="", xlab = "", pch = 16)
+par(new=T)
+plot(npp.2dg$lat, npp.2dg$npp, type='l', col='green', xlim = c(min(lat),max(lat)),
+     xaxt="n", yaxt="n", lwd = 2, xlab = "", ylab="")
+axis(4)
+mtext(expression(paste("NPP (mg C ", m^-2, d^-1,")", sep=" ")),4, line = 3)
+legend("topright",c('richness','MRD','PSV','NPP'),lty = c('solid','dotted','dotted','solid'),
+       col=c('black','blue','red','green'), seg.len = 1, lwd = 3)
+rect(20,250,34,650, col = rgb(.9,.9,.9,.4), border=NA)
 dev.off()
 
 
