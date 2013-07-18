@@ -76,13 +76,13 @@ cor(output3)
 pdf(paste('sebastes_MRD-PSV_corrs_',Sys.Date(),'.pdf',sep=''),height=6,width=8)
 par(mar = c(5,5,1,5))
 plot(lat,richness, type = 'l', lwd = 3, xlab = "Latitude", ylab = "Species richness")
-text(50, 52, paste("Entire gradient:\nMRD-S = ", round(cor(output2$MRD,output2$S),2),
-    "\nPSV-S = ", round(cor(output2$PSV,output2$S),2), sep = ""))
-text(39, 6, paste("North of 34N:\nMRD-S = ", round(cor(output3$MRD,output3$S),2),
-    "\nPSV-S = ", round(cor(output3$PSV,output3$S),2), sep = ""))
+#text(50, 52, paste("Entire gradient:\nMRD-S = ", round(cor(output2$MRD,output2$S),2),
+#    "\nPSV-S = ", round(cor(output2$PSV,output2$S),2), sep = ""))
+#text(39, 6, paste("North of 34N:\nMRD-S = ", round(cor(output3$MRD,output3$S),2),
+#    "\nPSV-S = ", round(cor(output3$PSV,output3$S),2), sep = ""))
 rect(20,-1,34,60, col = rgb(.9,.9,.9,.4), border=NA)
-points(34,2, pch = 16)
-arrows(34, 2, 48, 2, lwd = 2, length = .2)
+#points(34,2, pch = 16)
+#arrows(34, 2, 48, 2, lwd = 2, length = .2)
 par(new=T)
 plot(lat, output2$MRD, col='blue',xaxt="n",yaxt="n",ylab="", xlab = "", pch = 16)
 par(new=T)
