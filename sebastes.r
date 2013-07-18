@@ -226,13 +226,13 @@ for (c in (NEPphy$Nnode+2):max(NEPphy$edge)) {
 npp.corr.output = data.frame(npp.corr.output)
 names(npp.corr.output) = c('cladeID','clade.richness','r.npp.rich','r.npp.rich.gte34','r.npp.rich.lt34')  
 
-pdf(paste(analysis_dir,'/sebastes/sebastes_NPPcorrplot.pdf',sep=''),height=6,width=6)
-par(mar=c(4,4,1,1))
+pdf(paste(analysis_dir,'/sebastes_NPPcorrplot.pdf',sep=''),height=6,width=8)
+par(mar=c(4,4,1,1), cex = 1.5)
 plot(log10(npp.corr.output$clade.richness), npp.corr.output$r.npp.rich, ylim = c(-1,1), 
-     xlab = expression(paste(plain(log)[10]," Clade Richness")),ylab = 'NPP-richness correlation')
-points(log10(npp.corr.output$clade.richness), npp.corr.output$r.npp.rich.gte34, pch=17)
-points(log10(npp.corr.output$clade.richness), npp.corr.output$r.npp.rich.lt34, pch=15, col = 'red')
+     xlab = expression(paste(plain(log)[10]," Clade Richness")),ylab = 'NPP-richness correlation', pch=16)
+points(log10(npp.corr.output$clade.richness), npp.corr.output$r.npp.rich.gte34, pch=1)
+points(log10(npp.corr.output$clade.richness), npp.corr.output$r.npp.rich.lt34, pch=1, col = 'red')
 abline(h=0,lty='dashed')
-legend(1.6,.5, c('Entire gradient','North of 34N','South of 34N'), pch = c(1,17,15), col = c('black','black','red'))
+legend('bottomright', c('Entire gradient','North of 34N','South of 34N'), pch = c(16,1,1), col = c('black','black','red'))
 dev.off()
 
