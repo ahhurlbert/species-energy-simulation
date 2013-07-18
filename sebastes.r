@@ -203,3 +203,36 @@ points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich.lt34, p
 abline(h=0,lty='dashed')
 legend(1.6,.5, c('Entire gradient','North of 34N','South of 34N'), pch = c(1,17,15), col = c('black','black','red'))
 dev.off()
+
+
+# As above, but looking at NPP-richness correlations instead of latitude-richness
+lat2 = 23:60 #no NPP data north of 60 deg in this case
+npp = npp.1d.ma$npp[order(npp.1d.ma$lat)]
+npp.corr.output = c()
+for (c in (NEPphy$Nnode+2):max(NEPphy$edge)) {
+  
+  #pull out list of species names belonging to each subclade
+  sub.clade = clade.members(c, NEPphy, tip.labels=T)
+  sub.populations = subset(sebastes, X %in% sub.clade);
+  
+  sub.richness = sapply(lat2, function(x) nrow(sub.populations[sub.populations$min_latitude <= x & sub.populations$max_latitude >= x, ]))
+  if(length(sub.clade) >= min.num.spp) {
+    npp.corr = cor(npp[sub.richness>0], sub.richness[sub.richness>0])
+    npp.corr2 = cor(npp[sub.richness>0 & lat2 >= 34], sub.richness[sub.richness > 0 & lat2 >=34])
+    npp.corr3 = cor(npp[sub.richness>0 & lat2 < 34], sub.richness[sub.richness > 0 & lat2 < 34])
+    npp.corr.output = rbind(npp.corr.output, c(c, length(sub.clade), npp.corr, npp.corr2, npp.corr3))
+  }
+}
+npp.corr.output = data.frame(npp.corr.output)
+names(npp.corr.output) = c('cladeID','clade.richness','r.npp.rich','r.npp.rich.gte34','r.npp.rich.lt34')  
+
+pdf(paste(analysis_dir,'/sebastes/sebastes_NPPcorrplot.pdf',sep=''),height=6,width=6)
+par(mar=c(4,4,1,1))
+plot(log10(npp.corr.output$clade.richness), npp.corr.output$r.npp.rich, ylim = c(-1,1), 
+     xlab = expression(paste(plain(log)[10]," Clade Richness")),ylab = 'NPP-richness correlation')
+points(log10(npp.corr.output$clade.richness), npp.corr.output$r.npp.rich.gte34, pch=17)
+points(log10(npp.corr.output$clade.richness), npp.corr.output$r.npp.rich.lt34, pch=15, col = 'red')
+abline(h=0,lty='dashed')
+legend(1.6,.5, c('Entire gradient','North of 34N','South of 34N'), pch = c(1,17,15), col = c('black','black','red'))
+dev.off()
+
