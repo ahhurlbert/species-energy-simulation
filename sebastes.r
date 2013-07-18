@@ -159,14 +159,19 @@ dev.off()
 sebastes$mean_depth = apply(sebastes[,c('min_common_depth','max_common_depth')], 1, function(x) mean(x, na.rm=T))
 depth.col = colorRampPalette(colors()[c(405,431,616,619,566)]) #dark blue = deep, light blue = shallow
 
+sebastes$mean_lat = apply(sebastes[,c('min_latitude','max_latitude')], 1, function(x) mean(x, na.rm=T))
+lat.col = colorRampPalette(c('red','orange','yellow','green')) #red = low latitude, green = high
+
 plot(phy)
 #reflect continuous depth
-tiplabels(pch=15,col = depth.col(100)[floor(100*sebastes$mean_depth/max(sebastes$mean_depth, na.rm=T))], adj=4, cex=1.25)
+tiplabels(pch=15,col = depth.col(100)[floor(100*sebastes$mean_depth/max(sebastes$mean_depth, na.rm=T))], adj=3.8, cex=1.25)
 #reflect categorical shallow/deep
 depth.threshold = 180
 sebastes$shde.col[sebastes$mean_depth < depth.threshold] = colors()[405]
 sebastes$shde.col[sebastes$mean_depth >= depth.threshold] = colors()[566]
-tiplabels(pch=15,col = sebastes$shde.col, adj=4.2, cex=1.25)  
+tiplabels(pch=15,col = sebastes$shde.col, adj=4, cex=1.25)  
+#reflect latitude
+tiplabels(pch=15,col = lat.col(100)[floor(100*sebastes$mean_lat/max(sebastes$mean_lat, na.rm=T))], adj=4.2, cex=1.25)
 
 
 ##############################################################################
