@@ -80,6 +80,7 @@ text(50, 52, paste("Entire gradient:\nMRD-S = ", round(cor(output2$MRD,output2$S
     "\nPSV-S = ", round(cor(output2$PSV,output2$S),2), sep = ""))
 text(39, 6, paste("North of 34N:\nMRD-S = ", round(cor(output3$MRD,output3$S),2),
     "\nPSV-S = ", round(cor(output3$PSV,output3$S),2), sep = ""))
+rect(20,-1,34,60, col = rgb(.9,.9,.9,.4), border=NA)
 points(34,2, pch = 16)
 arrows(34, 2, 48, 2, lwd = 2, length = .2)
 par(new=T)
@@ -93,7 +94,6 @@ axis(4)
 mtext(expression(paste("NPP (mg C ", m^-2, d^-1,")", sep=" ")),4, line = 3)
 legend("topright",c('richness','MRD','PSV','NPP'),lty = c('solid','dotted','dotted','solid'),
        col=c('black','blue','red','green'), seg.len = 1, lwd = 3)
-rect(20,250,34,750, col = rgb(.9,.9,.9,.4), border=NA)
 dev.off()
 
 
@@ -199,14 +199,14 @@ names(lat.corr.output) = c('cladeID','clade.richness','r.lat.rich','r.lat.rich.g
 # Correlations calculated from entire gradient (Alaska-to Baja), and for the gradient
 # north of 34N (Alaska-Point Conception)
 
-pdf(paste(analysis_dir,'/sebastes/sebastes_corrplot.pdf',sep=''),height=6,width=6)
-par(mar=c(4,4,1,1))
-plot(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich, ylim = c(-1,1), 
+pdf(paste(analysis_dir,'/sebastes/sebastes_corrplot.pdf',sep=''),height=6,width=8)
+par(mar=c(4,4,1,1), pch = 1.5)
+plot(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich, ylim = c(-1,1), pch = 16,
      xlab = expression(paste(plain(log)[10]," Clade Richness")),ylab = 'Latitude-richness correlation')
-points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich.gte34, pch=17)
-points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich.lt34, pch=15, col = 'red')
+points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich.gte34, pch=1)
+points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich.lt34, pch=1, col = 'red')
 abline(h=0,lty='dashed')
-legend(1.6,.5, c('Entire gradient','North of 34N','South of 34N'), pch = c(1,17,15), col = c('black','black','red'))
+legend(1.6,.5, c('Entire gradient','North of 34N','South of 34N'), pch = c(16,1,1), col = c('black','black','red'))
 dev.off()
 
 
