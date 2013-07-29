@@ -89,9 +89,13 @@ plot(max(log10(Ktrop$clade.origin.time)) - log10(Ktrop$clade.origin.time), -Ktro
 points(max(log10(Ktrop$clade.origin.time)) - log10(Ktemp$clade.origin.time), -Ktemp$r.env.rich, 
            col = 'blue', pch = pch.temp, cex = cexpts)
 points(max(log10(Ktrop$clade.origin.time)) - log10(stats$clade.origin.time[stats$clade.id == 3157]),
-       -stats$r.env.rich[stats$clade.id == 3157], pch = 17, col = col.3157, cex = 2.5*cexpts)
+       -stats$r.env.rich[stats$clade.id == 3157], pch = 17, col = 'white', cex = 2.5*cexpts)
 points(max(log10(Ktrop$clade.origin.time)) - log10(stats$clade.origin.time[stats$clade.id == 2486]),
-       -stats$r.env.rich[stats$clade.id == 2486], pch = 17, col = col.2486, cex = 2.5*cexpts)
+       -stats$r.env.rich[stats$clade.id == 2486], pch = 17, col = 'white', cex = 2.5*cexpts)
+points(max(log10(Ktrop$clade.origin.time)) - log10(stats$clade.origin.time[stats$clade.id == 2486]),
+       -stats$r.env.rich[stats$clade.id == 2486], pch = 17, col = col.2486, cex = 2*cexpts)
+points(max(log10(Ktrop$clade.origin.time)) - log10(stats$clade.origin.time[stats$clade.id == 3157]),
+       -stats$r.env.rich[stats$clade.id == 3157], pch = 17, col = col.3157, cex = 2*cexpts)
 axis(1, at = 0:4, labels = 4:0, cex.axis = cexaxis)
 mtext(c("recent","old"), 1, at = c(0,4), line = 3, cex = 1.5)
 mtext(expression(italic(r)[latitude-richness]), 2, cex = cexlab, line = 5)
@@ -105,9 +109,13 @@ plot(log10(Ktrop$clade.richness), -Ktrop$r.env.rich, pch = 16, col = 'red', ylim
      cex = cexpts, main = '', cex.lab = cexlab, cex.axis = cexaxis, las = 1)
 points(log10(Ktemp$clade.richness), -Ktemp$r.env.rich, col = 'blue', pch = pch.temp, cex = cexpts)
 points(log10(stats$clade.richness[stats$clade.id == 3157]),
-       -stats$r.env.rich[stats$clade.id == 3157], pch = 17, col = col.3157, cex = 2.5*cexpts)
+       -stats$r.env.rich[stats$clade.id == 3157], pch = 17, col = 'white', cex = 2.5*cexpts)
 points(log10(stats$clade.richness[stats$clade.id == 2486]),
-       -stats$r.env.rich[stats$clade.id == 2486], pch = 17, col = col.2486, cex = 2.5*cexpts)
+       -stats$r.env.rich[stats$clade.id == 2486], pch = 17, col = 'white', cex = 2.5*cexpts)
+points(log10(stats$clade.richness[stats$clade.id == 2486]),
+       -stats$r.env.rich[stats$clade.id == 2486], pch = 17, col = col.2486, cex = 2*cexpts)
+points(log10(stats$clade.richness[stats$clade.id == 3157]),
+       -stats$r.env.rich[stats$clade.id == 3157], pch = 17, col = col.3157, cex = 2*cexpts)
 abline(h = 0,lty = 'dashed')
 mtext("(b)", 2, outer=F, at = 1.3, cex = cexabc, las = 1, line = 5)
 mtext(expression(italic(r)[latitude-richness]), 2, cex = cexlab, line = 5)
