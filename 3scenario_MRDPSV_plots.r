@@ -19,6 +19,8 @@ if (Allen == 0) {
   
 }
 
+library(ape);
+
 # Sebastes data
 # MRD-PSV-Richness analyses
 phy = read.tree(paste(repo_dir,'/Sebastes_tree_Ingram2011PRSB.phy',sep=''))
