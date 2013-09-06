@@ -25,6 +25,19 @@ chmod u+x SENC_Olympus_zipping_unix.sh
 
 ./SENC_Olympus_zipping_unix.sh
 
+## for sim analysis
+
+cd senc.analysis/ 
+
+tr '\r' '\n' < SENC_Olympus_Batch_analysis.txt > SENC_Olympus_Batch_analysis_unix.txt
+
+tr '\r' '\n' < SENC_Olympus_Execute_analysis.sh > SENC_Olympus_Execute_analysis_unix.sh
+
+chmod u+x SENC_Olympus_Execute_analysis_unix.sh
+
+./SENC_Olympus_Execute_analysis_unix.sh
+
+
 
 
 ## for zipping files for easy transport

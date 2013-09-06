@@ -1,0 +1,12 @@
+#!/bin/csh
+
+#SBATCH -A jcstegen
+#SBATCH -t 24:0:0
+#SBATCH -n 3
+#SBATCH -p shared
+
+module load R/2.15.1
+
+Rscript analysis_workflow_Olympus.r $1 >& sim.analysis.$1.out 
+
+

@@ -4,7 +4,7 @@ sim = commandArgs();
 sim = as.numeric(sim[length(sim)]);
 
 # Choose number of time slices per simulation to analyze
-num.of.time.slices = 1;
+num.of.time.slices = 2;
 # Set minimum number of species in a clade needed to proceed with analysis
 min.num.spp = 8;
 
@@ -18,7 +18,7 @@ if(Allen==1) {
   sim_dir = "C:/SENCoutput"
   analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses"
 } else {
-  Rlib.location = "//constance/people/steg815/Rlibs"
+  Rlib.location = "/pic/people/steg815/Rlibs"
   
 }
 
@@ -111,8 +111,9 @@ sim.matrix$skipped.times = NA
         sub.phylo = collapse.singles(timeSliceTree(sub.phylo,sliceTime=(max.time.actual - t),plot=F,drop.extinct = T));
         num.of.spp = length(sub.phylo$tip.label);
       
-        for (c in (num.of.spp+1):max(sub.phylo$edge)) {
-        
+        #for (c in (num.of.spp+1):max(sub.phylo$edge)) { # use this if wanting all clades
+        for (c in (num.of.spp+1)) { # use this if wanting only the root clade
+
           #pull out list of species names belonging to each subclade
           sub.clade = clade.members(c, sub.phylo, tip.labels=T)
           subset.populations = subset(all.populations, spp.name %in% as.numeric(sub.clade));
@@ -169,6 +170,8 @@ sim.matrix$skipped.times = NA
   
     #write all of this output to files
     write.csv(output,paste("SENC_Stats_sim",sim,".csv",sep=""),quote=F,row.names=F);
+    if (num.of.time.slices==1) {write.csv(output,paste("SENC_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices > 1) {write.csv(output,paste("SENC_Stats_sim",sim,"_mult_times.csv",sep=""),quote=F,row.names=F)};
     analysis.end = date();
     #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
     #print(c(warnings(),sim.start,sim.end,analysis.end));

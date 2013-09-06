@@ -4,7 +4,7 @@
 #sim = as.numeric(sim[length(sim)]);
 
 # Choose number of time slices per simulation to analyze
-num.of.time.slices = 10;
+num.of.time.slices = 100;
 # Set minimum number of species in a clade needed to proceed with analysis
 min.num.spp = 8;
 
@@ -80,9 +80,10 @@ sim.matrix$BK.env = NA
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 if (partial.analysis == 0) {which.sims = 1:max(sim.matrix$sim.id)};
-if (partial.analysis == 1) {which.sims = c(sim.matrix$sim.id[sim.matrix$carry.cap == 'on' & sim.matrix$energy.gradient == 'on' & sim.matrix$sim.id > 3464])}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
+#if (partial.analysis == 1) {which.sims = c(sim.matrix$sim.id[sim.matrix$carry.cap == 'on' & sim.matrix$energy.gradient == 'on' & sim.matrix$sim.id > 3464])}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
+if (partial.analysis == 1) {which.sims = 4065:4067}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
 
-which.sims = which.sims[1];
+which.sims = which.sims;
 
 trop.orig.extreme = 3;
 temp.orig.extreme = 8;
@@ -105,7 +106,7 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
     if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'tropical' ) { extreme.bin = trop.orig.extreme };
     if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'temperate' ) { extreme.bin = temp.orig.extreme };
     
-    if (time.richness$spp.rich[time.richness$time == pre.equil.time & time.richness$region == extreme.bin] > 5) {
+    #if (time.richness$spp.rich[time.richness$time == pre.equil.time & time.richness$region == extreme.bin] > 5) {
   
     max.time.actual = max(time.richness$time);
     # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally
@@ -154,8 +155,9 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
         sub.phylo = collapse.singles(timeSliceTree(sub.phylo,sliceTime=(max.time.actual - t),plot=F,drop.extinct = T));
         num.of.spp = length(sub.phylo$tip.label);
       
-        for (c in (num.of.spp+1):max(sub.phylo$edge)) {
-        
+        #for (c in (num.of.spp+1):max(sub.phylo$edge)) {
+        for (c in (num.of.spp+1)) {
+            
           #pull out list of species names belonging to each subclade
           sub.clade = clade.members(c, sub.phylo, tip.labels=T)
           subset.populations = subset(all.populations, spp.name %in% as.numeric(sub.clade));
@@ -247,7 +249,7 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
 
     write.csv(sim.matrix[sim.matrix$sim.id==sim,],paste(analysis_dir,"/sim.matrix.output.",sim,"_time",t,".csv",sep=""),quote=F,row.names=F);
     sim.matrix[sim.matrix$sim.id==sim,]
-    } else {print(sim)} # end second if (richness check for defined, extreme bin)
+    #} else {print(sim)} # end second if (richness check for defined, extreme bin)
   } # end first if (file check)
 } # end sim loop
 
