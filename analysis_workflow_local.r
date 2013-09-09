@@ -64,7 +64,7 @@ source('clade.exmpl.figs.r');
 source('extinct.calc.r');
 source('unzipping_files.r');
 
-cl = makeCluster(3);
+cl = makeCluster(2);
 registerDoParallel(cl);
 
 #(3) read in master simulation matrix with chosen parameter combinations;
@@ -81,7 +81,7 @@ sim.matrix$BK.env = NA
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 if (partial.analysis == 0) {which.sims = 1:max(sim.matrix$sim.id)};
 #if (partial.analysis == 1) {which.sims = c(sim.matrix$sim.id[sim.matrix$carry.cap == 'on' & sim.matrix$energy.gradient == 'on' & sim.matrix$sim.id > 3464])}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
-if (partial.analysis == 1) {which.sims = 4065:4067}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
+if (partial.analysis == 1) {which.sims = c(4065:4067,4075:4077)}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
 
 which.sims = which.sims;
 
