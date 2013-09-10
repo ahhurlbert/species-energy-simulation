@@ -3,7 +3,7 @@
 #(1) specify parameter space to explore
 reg.of.origin = c('tropical','temperate'); # ancestor's region of origin, can be 'temperate' or 'tropical' or can vary between 0 and the 'num.of.bins', with 1 being temperate and the num.of.bins - 1 being tropical
 w = c(3); # standard deviation of environmental niche function
-alpha = c(0.000001); # per-individual mutation probability
+alpha = c(0.0000001,0.00000001,0.000000001); # per-individual mutation probability
 alpha.to.beta = c(100); # muliplier (on alpha) to determine per-individual dispersal probability
 sigma_E = c(1); # standard deviation of gaussian function from which mutant environmental optima are drawn
 carry.cap = c('on'); # toggle to turn individual carrying capacity 'on' or 'off'
