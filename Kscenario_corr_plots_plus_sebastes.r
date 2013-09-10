@@ -104,7 +104,7 @@ legend('topright',c('temperate origin','tropical origin'), pch = c(pch.temp, 16)
 mtext("(a)", 2, at = 1.4, cex = cexabc, outer = F, las = 1, line = 5)
 
 #Vs clade richness
-plot(log10(Ktrop$clade.richness), -Ktrop$r.env.rich, pch = 16, col = 'red', ylim = c(-1,1),
+plot(log10(Ktrop$clade.richness), -Ktrop$r.env.rich, pch = 16, col = 'red', ylim = c(-1.15,1),
      xlab = expression(paste(plain(log)[10]," Clade richness")), ylab = "",
      cex = cexpts, main = '', cex.lab = cexlab, cex.axis = cexaxis, las = 1)
 points(log10(Ktemp$clade.richness), -Ktemp$r.env.rich, col = 'blue', pch = pch.temp, cex = cexpts)
@@ -119,6 +119,11 @@ points(log10(stats$clade.richness[stats$clade.id == 3157]),
 abline(h = 0,lty = 'dashed')
 mtext("(b)", 2, outer=F, at = 1.3, cex = cexabc, las = 1, line = 5)
 mtext(expression(italic(r)[latitude-richness]), 2, cex = cexlab, line = 5)
+
+#extra tick marks showing % of max richness
+pcts = c(.75,.25,.1)
+axis(1,at=log10(pcts*max(Ktrop$clade.richness)), labels=F,tck= .01)
+text(log10(pcts*max(Ktrop$clade.richness)), rep(-1.12,length(pcts)), paste(pcts*100,"%",sep=""), cex = 1.5) 
 
 #Plot example richness and opportunity gradients for two examples
 lat.bin = 11 - c3157$region
