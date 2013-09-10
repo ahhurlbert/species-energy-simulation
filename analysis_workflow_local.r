@@ -4,7 +4,12 @@
 #sim = as.numeric(sim[length(sim)]);
 
 # Choose number of time slices per simulation to analyze
-num.of.time.slices = 100;
+num.of.time.slices = -999; # use -999 if you want to define specific time slices
+which.time.slices = c(5000,10000,30000,60000,100000);
+
+# choose root only or all clades
+root.only = 0 # 0 means all clades, 1 means just the root
+
 # Set minimum number of species in a clade needed to proceed with analysis
 min.num.spp = 8;
 
@@ -81,7 +86,7 @@ sim.matrix$BK.env = NA
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 if (partial.analysis == 0) {which.sims = 1:max(sim.matrix$sim.id)};
 #if (partial.analysis == 1) {which.sims = c(sim.matrix$sim.id[sim.matrix$carry.cap == 'on' & sim.matrix$energy.gradient == 'on' & sim.matrix$sim.id > 3464])}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
-if (partial.analysis == 1) {which.sims = c(4065:4067,4075:4077)}; # which.sims = c(read.csv(paste(analysis_dir,"/sims.to.analyze.csv",sep=""))$x)
+if (partial.analysis == 1) {which.sims = c(4065)};
 
 which.sims = which.sims;
 
@@ -113,8 +118,12 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
     if (num.of.time.slices==1) {
       timeslices = pre.equil.time
     } else {
-      timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0));
-    }
+      if ( num.of.time.slices == -999  ) {
+        timeslices = which.time.slices
+      } else {
+        timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0));
+        }
+      }
   
     skipped.clades = 0
     skipped.times = ""
@@ -155,8 +164,9 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
         sub.phylo = collapse.singles(timeSliceTree(sub.phylo,sliceTime=(max.time.actual - t),plot=F,drop.extinct = T));
         num.of.spp = length(sub.phylo$tip.label);
       
-        #for (c in (num.of.spp+1):max(sub.phylo$edge)) {
-        for (c in (num.of.spp+1)) {
+        if (root.only == 1) { sub.clade.loop.end = (num.of.spp+1) }
+        if (root.only == 0) { sub.clade.loop.end = max(sub.phylo$edge) }
+          for (c in (num.of.spp+1):sub.clade.loop.end) {
             
           #pull out list of species names belonging to each subclade
           sub.clade = clade.members(c, sub.phylo, tip.labels=T)
@@ -206,15 +216,16 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
             output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
                                          clade.richness = length(unique(sub.populations$spp.name)), 
                                          BK.env = BK.env , BK.reg = BK.reg))
-            print(paste(sim,c,t,date(),length(sub.clade.phylo$tip.label),sep="   "));
+            print(paste(sim,sub.clade.loop.end,c,t,date(),length(sub.clade.phylo$tip.label),sep="   "));
           } # end third else
         } # end sub clade for loop
       } # end second else
     }; # end timeslice loop
   
     #write all of this output to files
-    if (num.of.time.slices==1) {write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices == 1) {write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
     if (num.of.time.slices > 1) {write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,"_mult_times.csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices == -999) {write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,"_specific_times.csv",sep=""),quote=F,row.names=F)};
     analysis.end = date();
     #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
     #print(c(warnings(),sim.start,sim.end,analysis.end));
