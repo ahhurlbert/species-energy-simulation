@@ -21,7 +21,7 @@ if(Allen==1) {
   analysis_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204" #wherever you want to store the results of these analyses
 }
 
-trop.sims = c(4065:4072,4074)
+trop.sims = 4065:4074
 temp.sims = 4075:4084
 
 sim.matrix = read.csv("SENC_Master_Simulation_Matrix.csv",header=T);
@@ -57,7 +57,7 @@ trop.metrics.sd = data.frame(apply(trop.metrics, 2:3, function(x) var(x)^.5))
 # Plot 4 metrics over the course of the simulation: global richness, the latitude-richness correlation, 
 # gamma, and the MRD-richness correlation. Means +/- 2 SD are shown.
 pdf(paste(analysis_dir,'/metrics_thru_time_',Sys.Date(),'.pdf',sep=""), height = 6, width = 8)
-par(mfrow = c(2, 2), mar = c(3, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+par(mfrow = c(2, 2), mar = c(3, 6, 1, 1), oma = c(3, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 y.labels = c('Global richness', expression(italic(r)[latitude-richness]), expression(gamma), expression(italic(r)[MRD-richness]))
 metric.names = c('global.richness','r.lat.rich', 'gamma.stat','r.MRD.rich')
 for (j in 1:4) {
@@ -77,5 +77,5 @@ for (j in 1:4) {
   points(temp.metrics.mean$time/1000, temp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3)
   if(curr.metric == 'gamma.stat') { abline(h = 0, lty = 'dashed')}
 } 
-mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 2)                                      
+mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 1.5)                                      
 dev.off()
