@@ -8,15 +8,16 @@ foo2 = grep('time5459',foo);
 ### find sims that still need data analysis
 ### to be used when the analysis workflow does not finish
 
-setwd("C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/senc.output");
-foo = list.files(pattern='SENC_Stats_sim'); head(foo); length(foo);
+setwd("//constance/people/steg815/senc.analysis");
+foo = list.files(pattern='specific_times.csv'); head(foo); length(foo);
 foo3 = sub('SENC_Stats_sim','',foo); head(foo3);
-sims.analyzed = as.numeric(sub('.csv','',foo3)); head(sims.analyzed);
+sims.analyzed = as.numeric(sub('_specific_times.csv','',foo3)); head(sims.analyzed);
 
-all.sims = 1:2592;
+all.sims = 3465:3664;
 
 to.analyze = all.sims[which(is.element(all.sims,sims.analyzed)==F)];
-write.csv(to.analyze,"sims.to.analyze.csv",quote=F,row.names=F);
+to.analyze 
+#write.csv(to.analyze,"sims.to.analyze.csv",quote=F,row.names=F);
 
 ### confirm all files are in specific folder
 
