@@ -4,11 +4,11 @@ sim = commandArgs();
 sim = as.numeric(sim[length(sim)]);
 
 # Choose number of time slices per simulation to analyze
-num.of.time.slices = -999; # use -999 if you want to define specific time slices
+num.of.time.slices = 100; # use -999 if you want to define specific time slices
 which.time.slices = c(5000,10000,15000,30000,60000,100000);
 
 # choose root only or all clades
-root.only = 0 # 0 means all clades, 1 means just the root
+root.only = 1 # 0 means all clades, 1 means just the root
 
 # Set minimum number of species in a clade needed to proceed with analysis
 min.num.spp = 8;
@@ -194,7 +194,8 @@ pre.equil.time = 5459;
     
     #write all of this output to files
     if (num.of.time.slices == 1) {write.csv(output,paste("SENC_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
-    if (num.of.time.slices > 1) {write.csv(output,paste("SENC_Stats_sim",sim,"_mult_times.csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices > 1 & root.only == 0) {write.csv(output,paste("SENC_Stats_sim",sim,"_mult_times_all_clades.csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices > 1 & root.only == 1) {write.csv(output,paste("SENC_Stats_sim",sim,"_mult_times_root_only.csv",sep=""),quote=F,row.names=F)};
     if (num.of.time.slices == -999) {write.csv(output,paste("SENC_Stats_sim",sim,"_specific_times.csv",sep=""),quote=F,row.names=F)};
     analysis.end = date();
     #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
