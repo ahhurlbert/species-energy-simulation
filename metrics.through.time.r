@@ -81,7 +81,7 @@ Ttrop.metrics.sd = data.frame(apply(Ttrop.metrics, 1:2, function(x) calc.meanSD(
 
 
 # Plot 4 metrics over the course of the simulation: global richness, the latitude-richness correlation, 
-# gamma, and the MRD-richness correlation. Means +/- 2 SD are shown.
+# gamma, and the MRD-richness correlation. Other metrics can be specified below.
 pdf(paste(analysis_dir,'/metrics_thru_time_inc_Tscenario',Sys.Date(),'.pdf',sep=""), height = 6, width = 8)
 par(mfrow = c(2, 2), mar = c(3, 6, 1, 1), oma = c(3, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 metric.names = c('global.richness','r.lat.rich', 'gamma.stat','r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
