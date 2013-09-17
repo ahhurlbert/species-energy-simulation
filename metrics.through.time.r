@@ -52,18 +52,33 @@ trop.metrics = metric.abind(trop.sims, scenario = "K")
 Ttemp.metrics = metric.abind(Ttemp.sims, scenario = "T")
 Ttrop.metrics = metric.abind(Ttrop.sims, scenario = "T")
 
+#Function for calculating mean or SD for simulations with a minimum number of non-NA values at a given time step
+calc.meanSD = function(x, stat = 'mean', min.num.nonNA = 10) {
+  if (stat == 'mean') {
+    if(sum(!is.na(x)) >= min.num.nonNA) {
+      mean(x, na.rm = T)
+    } else { NA }
+  } else if (stat == 'sd') {
+    if(sum(!is.na(x)) >= min.num.nonNA) {
+      var(x, na.rm = T)^0.5
+    } else { NA }
+  }
+}
 
-temp.metrics.mean = data.frame(apply(temp.metrics, 1:2, mean))
-temp.metrics.sd = data.frame(apply(temp.metrics, 1:2, function(x) var(x)^.5))
+min.num.datapts = 10
 
-trop.metrics.mean = data.frame(apply(trop.metrics, 1:2, mean))
-trop.metrics.sd = data.frame(apply(trop.metrics, 1:2, function(x) var(x)^.5))
+temp.metrics.mean = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+temp.metrics.sd = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
 
-Ttemp.metrics.mean = data.frame(apply(Ttemp.metrics, 1:2, mean))
-Ttemp.metrics.sd = data.frame(apply(Ttemp.metrics, 1:2, function(x) var(x)^.5))
+trop.metrics.mean = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+trop.metrics.sd = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
 
-Ttrop.metrics.mean = data.frame(apply(Ttrop.metrics, 1:2, mean))
-Ttrop.metrics.sd = data.frame(apply(Ttrop.metrics, 1:2, function(x) var(x)^.5))
+Ttemp.metrics.mean = data.frame(apply(Ttemp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+Ttemp.metrics.sd = data.frame(apply(Ttemp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+
+Ttrop.metrics.mean = data.frame(apply(Ttrop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+Ttrop.metrics.sd = data.frame(apply(Ttrop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+
 
 # Plot 4 metrics over the course of the simulation: global richness, the latitude-richness correlation, 
 # gamma, and the MRD-richness correlation. Means +/- 2 SD are shown.
