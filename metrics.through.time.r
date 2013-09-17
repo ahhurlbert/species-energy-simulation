@@ -69,14 +69,14 @@ Ttrop.metrics.sd = data.frame(apply(Ttrop.metrics, 1:2, function(x) var(x)^.5))
 # gamma, and the MRD-richness correlation. Means +/- 2 SD are shown.
 pdf(paste(analysis_dir,'/metrics_thru_time_inc_Tscenario',Sys.Date(),'.pdf',sep=""), height = 6, width = 8)
 par(mfrow = c(2, 2), mar = c(3, 6, 1, 1), oma = c(3, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
-metric.names = c('global.richness','r.lat.rich', 'gamma.stat','r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich'),
+metric.names = c('global.richness','r.lat.rich', 'gamma.stat','r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
 metric.labels = c('Global richness', expression(italic(r)[latitude-richness]), 
                   expression(gamma), expression(italic(r)[env-PSV]),
                   expression(italic(r)[env-MRD]), expression(italic(r)[MRD-richness]),
                   expression(italic(r)[PSV-richness]))
 
 # Specify variables to plot here, and width of error bars
-names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','r.env.PSV')
+names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','r.MRD.rich')
 error = 2 # error bars in SD units (+/-)
 for (j in 1:4) {
   curr.metric = names4plotting[j]
