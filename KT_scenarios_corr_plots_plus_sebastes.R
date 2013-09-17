@@ -187,7 +187,7 @@ mtext(expression(paste(plain(log)[10]," Clade richness")), 2, cex = 2, line = 4.
 #Sebastes vs clade richness
 seb.col1 = 'olivedrab3'
 seb.col2 = 'darkgreen'
-plot(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich, ylim = c(-1,1), las=1, cex.axis = cexaxis, cex.lab = cexlab,
+plot(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich, ylim = c(-1.15,1), las=1, cex.axis = cexaxis, cex.lab = cexlab,
      xlab = expression(paste(plain(log)[10]," Clade richness")), ylab = "", cex = cexpts.seb, col = seb.col1, pch = 16)
 points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich.gte34, pch = 16, cex = cexpts.seb, col = seb.col2)
 #points(log10(lat.corr.output$clade.richness), lat.corr.output$r.lat.rich.lt34, pch=2, cex = cexpts)
@@ -195,4 +195,10 @@ abline(h=0,lty='dashed')
 legend("topright", c('Entire gradient','North of 34N'), pch = c(16, 16), cex = cexleg, col = c(seb.col1, seb.col2))
 mtext("(f)", 2, outer = F, at = 1.3, cex = cexabc, las = 1, line = 5)
 mtext(expression(italic(r)[latitude-richness]), 2, cex = cexlab, line = 5)
+
+#extra tick marks showing % of max richness
+pcts = c(.75,.25,.1)
+axis(1,at=log10(pcts*max(lat.corr.output$clade.richness)), labels=F,tck= .01)
+text(log10(pcts*max(lat.corr.output$clade.richness)), rep(-1.12,length(pcts)), paste(pcts*100,"%",sep=""), cex = 1.75) 
+
 dev.off()
