@@ -183,7 +183,6 @@ mtext("Tropics",1,adj=.05,line=1.5, cex=1.5)
 mtext("Temperate",1,adj=.95,line=1.5, cex=1.5)
 mtext(expression(paste(plain(log)[10]," Clade richness")), 2, cex = 2, line = 4.5)
 
-
 #Sebastes vs clade richness
 seb.col1 = 'olivedrab3'
 seb.col2 = 'darkgreen'
