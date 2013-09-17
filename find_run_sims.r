@@ -9,9 +9,9 @@ foo2 = grep('time5459',foo);
 ### to be used when the analysis workflow does not finish
 
 setwd("//constance/people/steg815/senc.analysis");
-foo = list.files(pattern='specific_times.csv'); head(foo); length(foo);
+foo = list.files(pattern='_time_seq_root_only.csv'); head(foo); length(foo);
 foo3 = sub('SENC_Stats_sim','',foo); head(foo3);
-sims.analyzed = as.numeric(sub('_specific_times.csv','',foo3)); head(sims.analyzed);
+sims.analyzed = as.numeric(sub('_time_seq_root_only.csv_specific_times.csv','',foo3)); head(sims.analyzed);
 
 all.sims = 3465:3664;
 

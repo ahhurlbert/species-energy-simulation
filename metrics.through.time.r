@@ -3,7 +3,7 @@ require(abind)
 
 
 
-Allen = 0;
+Allen = 1;
 
 #New parameter for taking into account which of us is running this code
 if(Allen==1) {
@@ -32,7 +32,7 @@ metric.abind = function(sims, scenario = "K") {
     if (scenario == "K") {
       temp = read.csv(paste(sim_dir,"/SENC_Stats_sim",i,"_mult_times.csv",sep=""),header=T)
     } else if (scenario == "T") {
-      temp = read.csv(paste(sim_dir,"/SENC_Stats_sim",i,"_mult_times_root_only.csv",sep=""),header=T)
+      temp = read.csv(paste(sim_dir,"/SENC_Stats_sim",i,"_time_seq_root_only.csv",sep=""),header=T)
     }
     temp$r.lat.rich = -temp$r.env.rich
     # There is no output for timesteps in which no correlations could be calculated
