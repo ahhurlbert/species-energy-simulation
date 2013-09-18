@@ -3,7 +3,7 @@ require(abind)
 
 
 
-Allen = 1;
+Allen = 0;
 
 #New parameter for taking into account which of us is running this code
 if(Allen==1) {
@@ -17,16 +17,25 @@ if(Allen==1) {
 }
 
 #Energy gradient sims
+# currently has 10 sims
 trop.sims = 4065:4074
 temp.sims = 4075:4084
 
 #No energy gradient sims
-Ttrop.sims = 3465:3474
-Ttemp.sims = 3565:3574
+# currently has 100 sims
+Ttrop.sims = 3465:3564
+Ttemp.sims = 3565:3664
+
+# next 5 lines are temporary
+run.sims = list.files(path = "//constance/people/steg815/senc.analysis", pattern='_time_seq_root_only.csv');
+run.sims = sub('SENC_Stats_sim','',run.sims);
+run.sims = as.numeric(sub('_time_seq_root_only.csv','',run.sims)); head(run.sims);
+Ttrop.sims = run.sims[run.sims <= 3564]; length(Ttrop.sims);
+Ttemp.sims = run.sims[run.sims >= 3565]; length(Ttemp.sims);
 
 sim.matrix = read.csv("SENC_Master_Simulation_Matrix.csv",header=T);
 
-metric.abind = function(sims, scenario = "K") {
+metric.abind = function(sims, scenario = "K", min.n.regions = 4, min.richness = 30) {
   metrics = matrix(NA, nrow = 100, ncol = 28)
   for (i in sims) {
     if (scenario == "K") {
@@ -41,16 +50,22 @@ metric.abind = function(sims, scenario = "K") {
       temp.top = data.frame(matrix(NA, nrow = 100 - nrow(temp), ncol = 28))
       names(temp.top) = names(temp)
       temp = rbind(temp.top, temp)
+      temp[which(temp$n.regions < min.n.regions),] = NA
+      temp[which(temp$global.richness < min.richness),] = NA
+      print(range(temp$global.richness,na.rm=T))
     }
     metrics = abind(metrics, temp, along = 3)
   }
   return(metrics[,,-1]) #don't include the first slice of NAs
 }
 
-temp.metrics = metric.abind(temp.sims, scenario = "K")
-trop.metrics = metric.abind(trop.sims, scenario = "K")
-Ttemp.metrics = metric.abind(Ttemp.sims, scenario = "T")
-Ttrop.metrics = metric.abind(Ttrop.sims, scenario = "T")
+min.num.regions = 4
+min.global.richness = 30
+
+temp.metrics = metric.abind(temp.sims, scenario = "K", min.n.regions = min.num.regions, min.richness = min.global.richness)
+trop.metrics = metric.abind(trop.sims, scenario = "K", min.n.regions = min.num.regions, min.richness = min.global.richness)
+Ttemp.metrics = metric.abind(Ttemp.sims, scenario = "T", min.n.regions = min.num.regions, min.richness = min.global.richness)
+Ttrop.metrics = metric.abind(Ttrop.sims, scenario = "T", min.n.regions = min.num.regions, min.richness = min.global.richness)
 
 #Function for calculating mean or SD for simulations with a minimum number of non-NA values at a given time step
 calc.meanSD = function(x, stat = 'mean', min.num.nonNA = 10) {
@@ -91,7 +106,8 @@ metric.labels = c('Global richness', expression(italic(r)[latitude-richness]),
                   expression(italic(r)[PSV-richness]))
 
 # Specify variables to plot here, and width of error bars
-names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','r.MRD.rich')
+#names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','r.PSV.rich')
+names4plotting = c('r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
 error = 2 # error bars in SD units (+/-)
 for (j in 1:4) {
   curr.metric = names4plotting[j]

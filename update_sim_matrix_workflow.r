@@ -3,16 +3,16 @@
 #(1) specify parameter space to explore
 reg.of.origin = c('tropical','temperate'); # ancestor's region of origin, can be 'temperate' or 'tropical' or can vary between 0 and the 'num.of.bins', with 1 being temperate and the num.of.bins - 1 being tropical
 w = c(3); # standard deviation of environmental niche function
-alpha = c(0.0000001); # per-individual mutation probability
+alpha = c(0.000001); # per-individual mutation probability
 alpha.to.beta = c(100); # muliplier (on alpha) to determine per-individual dispersal probability
 sigma_E = c(1); # standard deviation of gaussian function from which mutant environmental optima are drawn
 carry.cap = c('on'); # toggle to turn individual carrying capacity 'on' or 'off'
 energy.gradient = c('on'); # toggle to turn a gradient in the number of individuals 'on' or 'off'
 max.K = c(40000); # maximum individuals carry capacity in the region of highest abundance
 num.of.bins = c(11); # one less than the actual number of bins, starting with bin #0. The two ends will be trimmed out at the end for analyses.
-max.time = c(200000,400000); # simulation time steps
+max.time = c(100000); # simulation time steps
 max.richness = c(10000); # maximum total richness of the system
-replicates = 1:10; # number of replicates for each param combination
+replicates = 11:100; # number of replicates for each param combination
 disturb_frequency = c(0); # number of time steps between disturbance events
 temperate_disturb_intensity = c(0); # fraction of individuals lost during a disturbance event in the temperate zone
 tropical_disturb_intensity = c(0); # fraction of individuals lost during a disturbance event in the tropical zone
