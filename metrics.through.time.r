@@ -24,7 +24,7 @@ temp.sims = 4075:4084
 #No energy gradient sims
 # currently has 100 sims
 Ttrop.sims = 3465:3564
-Ttemp.sims = 3565:3664
+Ttemp.sims = c(3565:3646,3648:3664)
 
 # next 5 lines are temporary
 #run.sims = list.files(path = "//constance/people/steg815/senc.analysis", pattern='_time_seq_root_only.csv');
@@ -59,13 +59,38 @@ metric.abind = function(sims, scenario = "K", min.n.regions = 4, min.richness = 
   return(metrics[,,-1]) #don't include the first slice of NAs
 }
 
-min.num.regions = 4
+metric.abind.new = function(sims, scenario = "K", min.div.regions = 4, min.richness = 30) {
+  metrics = matrix(NA, nrow = 100, ncol = 29)
+  for (i in sims) {
+    if (scenario == "K") {
+      temp = read.csv(paste(sim_dir,"/NEW_Stats_sim",i,"_mult_times.csv",sep=""),header=T)
+    } else if (scenario == "T") {
+      temp = read.csv(paste(sim_dir,"/NEW_Stats_sim",i,"_time_seq_root_only.csv",sep=""),header=T)
+    }
+    temp$r.lat.rich = -temp$r.env.rich
+    # There is no output for timesteps in which no correlations could be calculated
+    # so we add the relevant number of rows of data with NA's in that case
+    if (nrow(temp) < 100) {
+      temp.top = data.frame(matrix(NA, nrow = 100 - nrow(temp), ncol = 29))
+      names(temp.top) = names(temp)
+      temp = rbind(temp.top, temp)
+      temp[which(temp$n.div.regions < min.div.regions),] = NA
+      temp[which(temp$global.richness < min.richness),] = NA
+      print(c(i,range(temp$global.richness,na.rm=T),range(temp$n.div.regions,na.rm=T)))
+    }
+    metrics = abind(metrics, temp, along = 3)
+  }
+  return(metrics[,,-1]) #don't include the first slice of NAs
+}
+
+min.num.regions = 5
+min.num.div.regions = 5
 min.global.richness = 30
 
 temp.metrics = metric.abind(temp.sims, scenario = "K", min.n.regions = min.num.regions, min.richness = min.global.richness)
 trop.metrics = metric.abind(trop.sims, scenario = "K", min.n.regions = min.num.regions, min.richness = min.global.richness)
-Ttemp.metrics = metric.abind(Ttemp.sims, scenario = "T", min.n.regions = min.num.regions, min.richness = min.global.richness)
-Ttrop.metrics = metric.abind(Ttrop.sims, scenario = "T", min.n.regions = min.num.regions, min.richness = min.global.richness)
+Ttemp.metrics = metric.abind.new(Ttemp.sims, scenario = "T", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
+Ttrop.metrics = metric.abind.new(Ttrop.sims, scenario = "T", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
 
 #Function for calculating mean or SD for simulations with a minimum number of non-NA values at a given time step
 calc.meanSD = function(x, stat = 'mean', min.num.nonNA = 10) {
@@ -82,11 +107,11 @@ calc.meanSD = function(x, stat = 'mean', min.num.nonNA = 10) {
 
 min.num.datapts = 10
 
-temp.metrics.mean = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapt)))
-temp.metrics.sd = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapt)))
+temp.metrics.mean = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+temp.metrics.sd = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
 
-trop.metrics.mean = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapt)))
-trop.metrics.sd = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapt)))
+trop.metrics.mean = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+trop.metrics.sd = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
 
 Ttemp.metrics.mean = data.frame(apply(Ttemp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
 Ttemp.metrics.sd = data.frame(apply(Ttemp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
@@ -97,7 +122,7 @@ Ttrop.metrics.sd = data.frame(apply(Ttrop.metrics, 1:2, function(x) calc.meanSD(
 
 # Plot 4 metrics over the course of the simulation: global richness, the latitude-richness correlation, 
 # gamma, and the MRD-richness correlation. Means +/- 2 SD are shown.
-pdf(paste(analysis_dir,'/metrics_thru_time_inc_Tscenario',Sys.Date(),'.pdf',sep=""), height = 6, width = 8)
+pdf(paste(analysis_dir,'/metrics_thru_time_inc_Tscenario',Sys.Date(),'_',min.num.regions,'.pdf',sep=""), height = 6, width = 8)
 par(mfrow = c(2, 2), mar = c(3, 6, 1, 1), oma = c(3, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 metric.names = c('global.richness','r.lat.rich', 'gamma.stat','r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
 metric.labels = c('Global richness', expression(italic(r)[latitude-richness]), 
@@ -150,7 +175,8 @@ dev.off()
 
 ## Plot histograms of metrics, putting all 4 scenarios on each panel and different panels had different metrics
 
-par(mfrow = c(2, 2), mar = c(3, 6, 1, 1), oma = c(3, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+#par(mfrow = c(2, 2), mar = c(3, 6, 1, 1), oma = c(3, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+par(mfrow = c(2, 2), cex.lab = 2, cex.axis = 1.3,mar = c(5, 6, 1, 1),oma = c(3, 0, 0, 0),las=1,mgp = c(4,1,0))
 
 metric.names = c('global.richness','r.lat.rich', 'gamma.stat','r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
 metric.labels = c('Global richness', expression(italic(r)[latitude-richness]), 
@@ -166,7 +192,7 @@ for (j in 1:4) {
   Ttemp.hist = density(Ttemp.metrics[, curr.metric,],na.rm=T); Ttemp.hist$y = Ttemp.hist$y / max(Ttemp.hist$y,rm.na=T);
   trop.hist = density(trop.metrics[, curr.metric,],na.rm=T); trop.hist$y = trop.hist$y / max(trop.hist$y,rm.na=T);
   temp.hist = density(temp.metrics[, curr.metric,],na.rm=T); temp.hist$y = temp.hist$y / max(temp.hist$y,rm.na=T);
-  max(c(Ttrop.hist$y,Ttemp.hist$y,trop.hist$y,temp.hist$y))
+  #max(c(Ttrop.hist$y,Ttemp.hist$y,trop.hist$y,temp.hist$y))
   
   plot(Ttrop.hist,xlim=c(-1,1),xlab = metric.labels[metric.names == curr.metric],main="",ylim=c(0,1),typ="n")
   points(Ttrop.hist,type = 'l', col = 'red', lwd = 3, lty = 'dashed')
