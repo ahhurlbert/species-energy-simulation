@@ -27,11 +27,11 @@ Ttrop.sims = 3465:3564
 Ttemp.sims = 3565:3664
 
 # next 5 lines are temporary
-run.sims = list.files(path = "//constance/people/steg815/senc.analysis", pattern='_time_seq_root_only.csv');
-run.sims = sub('SENC_Stats_sim','',run.sims);
-run.sims = as.numeric(sub('_time_seq_root_only.csv','',run.sims)); head(run.sims);
-Ttrop.sims = run.sims[run.sims <= 3564]; length(Ttrop.sims);
-Ttemp.sims = run.sims[run.sims >= 3565]; length(Ttemp.sims);
+#run.sims = list.files(path = "//constance/people/steg815/senc.analysis", pattern='_time_seq_root_only.csv');
+#run.sims = sub('SENC_Stats_sim','',run.sims);
+#run.sims = as.numeric(sub('_time_seq_root_only.csv','',run.sims)); head(run.sims);
+#Ttrop.sims = run.sims[run.sims <= 3564]; length(Ttrop.sims);
+#Ttemp.sims = run.sims[run.sims >= 3565]; length(Ttemp.sims);
 
 sim.matrix = read.csv("SENC_Master_Simulation_Matrix.csv",header=T);
 
@@ -82,11 +82,11 @@ calc.meanSD = function(x, stat = 'mean', min.num.nonNA = 10) {
 
 min.num.datapts = 10
 
-temp.metrics.mean = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
-temp.metrics.sd = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+temp.metrics.mean = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapt)))
+temp.metrics.sd = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapt)))
 
-trop.metrics.mean = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
-trop.metrics.sd = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+trop.metrics.mean = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapt)))
+trop.metrics.sd = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapt)))
 
 Ttemp.metrics.mean = data.frame(apply(Ttemp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
 Ttemp.metrics.sd = data.frame(apply(Ttemp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
@@ -147,3 +147,38 @@ for (j in 1:4) {
 } 
 mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 1.5)                                      
 dev.off()
+
+## Plot histograms of metrics, putting all 4 scenarios on each panel and different panels had different metrics
+
+par(mfrow = c(2, 2), mar = c(3, 6, 1, 1), oma = c(3, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+
+metric.names = c('global.richness','r.lat.rich', 'gamma.stat','r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
+metric.labels = c('Global richness', expression(italic(r)[latitude-richness]), 
+                  expression(gamma), expression(italic(r)[env-PSV]),
+                  expression(italic(r)[env-MRD]), expression(italic(r)[MRD-richness]),
+                  expression(italic(r)[PSV-richness]))
+
+
+names4plotting = c('r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
+for (j in 1:4) {
+  curr.metric = names4plotting[j]
+  Ttrop.hist = density(Ttrop.metrics[, curr.metric,],na.rm=T); Ttrop.hist$y = Ttrop.hist$y / max(Ttrop.hist$y,rm.na=T);
+  Ttemp.hist = density(Ttemp.metrics[, curr.metric,],na.rm=T); Ttemp.hist$y = Ttemp.hist$y / max(Ttemp.hist$y,rm.na=T);
+  trop.hist = density(trop.metrics[, curr.metric,],na.rm=T); trop.hist$y = trop.hist$y / max(trop.hist$y,rm.na=T);
+  temp.hist = density(temp.metrics[, curr.metric,],na.rm=T); temp.hist$y = temp.hist$y / max(temp.hist$y,rm.na=T);
+  max(c(Ttrop.hist$y,Ttemp.hist$y,trop.hist$y,temp.hist$y))
+  
+  plot(Ttrop.hist,xlim=c(-1,1),xlab = metric.labels[metric.names == curr.metric],main="",ylim=c(0,1),typ="n")
+  points(Ttrop.hist,type = 'l', col = 'red', lwd = 3, lty = 'dashed')
+  points(Ttemp.hist,type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
+  points(trop.hist,type = 'l', col = 'red', lwd = 3, lty = 1)
+  points(temp.hist,type = 'l', col = 'blue', lwd = 3, lty = 1)
+  
+}
+
+# just finding sims with odd metric values
+for (i in 1:100) {
+  
+  print(Ttemp.metrics[which.min(Ttemp.metrics[,curr.metric,i]),c('sim',curr.metric),i])
+    
+}
