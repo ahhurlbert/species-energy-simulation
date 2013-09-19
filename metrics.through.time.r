@@ -123,7 +123,7 @@ Ttrop.metrics.sd = data.frame(apply(Ttrop.metrics, 1:2, function(x) calc.meanSD(
 # Plot 4 metrics over the course of the simulation: global richness, the latitude-richness correlation, 
 # gamma, and the MRD-richness correlation. Means +/- 2 SD are shown.
 pdf(paste(analysis_dir,'/metrics_thru_time_inc_Tscenario',Sys.Date(),'_',min.num.regions,'.pdf',sep=""), height = 6, width = 8)
-par(mfrow = c(2, 2), mar = c(3, 6, 1, 1), oma = c(3, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 metric.names = c('global.richness','r.lat.rich', 'gamma.stat','r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
 metric.labels = c('Global richness', expression(italic(r)[latitude-richness]), 
                   expression(gamma), expression(italic(r)[env-PSV]),
@@ -131,13 +131,14 @@ metric.labels = c('Global richness', expression(italic(r)[latitude-richness]),
                   expression(italic(r)[PSV-richness]))
 
 # Specify variables to plot here, and width of error bars
-#names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','r.PSV.rich')
-names4plotting = c('r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
+names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','r.MRD.rich')
+#names4plotting = c('r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
 error = 2 # error bars in SD units (+/-)
 for (j in 1:4) {
   curr.metric = names4plotting[j]
   plot(trop.metrics.mean$time/1000, trop.metrics.mean[, curr.metric], xlim = c(0, max(trop.metrics.mean$time/1000)), 
-       ylim = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ]), na.rm= T), type = "n",
+       ylim = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ], 
+                      Ttrop.metrics[, curr.metric, ], Ttemp.metrics[, curr.metric, ]), na.rm= T), type = "n",
        ylab = metric.labels[metric.names == curr.metric], xlab = "")
   polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
           c(trop.metrics.mean[, curr.metric] - error*trop.metrics.sd[, curr.metric], 
@@ -152,9 +153,10 @@ for (j in 1:4) {
   
   par(new = T)
   
-  plot(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, curr.metric], 
-       #xlim = c(0, max(Ttrop.metrics.mean$time, na.rm = T) - min(Ttrop.metrics.mean$time, na.rm = T)), 
-       ylim = range(c(Ttrop.metrics[, curr.metric, ], Ttemp.metrics[, curr.metric, ]), na.rm= T), type = "n",
+  plot(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, curr.metric], 
+       xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - min(Ttemp.metrics.mean$time, na.rm = T)), 
+       ylim = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ], 
+                      Ttrop.metrics[, curr.metric, ], Ttemp.metrics[, curr.metric, ]), na.rm= T), type = "n",
        ylab = "", xlab = "", yaxt = "n", xaxt = "n")
   polygon(c(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), rev(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T))), 
           c(Ttrop.metrics.mean[, curr.metric] - error*Ttrop.metrics.sd[, curr.metric], 
@@ -166,11 +168,13 @@ for (j in 1:4) {
           col = rgb(0, 0, .8, .3), border = NA)
   points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, curr.metric], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
   points(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), Ttemp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
-  
+  alt.x.vals = c(80, 120, 160, 200)
+  mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
   
   if(curr.metric == 'gamma.stat') { abline(h = 0, lty = 'dashed')}
 } 
-mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 1.5)                                      
+mtext("Time (x1000, Energy Gradient)", 1, outer=T, cex = 1.75, line = 1.5) 
+mtext("Time (No Energy Gradient)", 1, outer = T, cex = 1.75, line = 3.5, col = 'gray50')
 dev.off()
 
 ## Plot histograms of metrics, putting all 4 scenarios on each panel and different panels had different metrics
