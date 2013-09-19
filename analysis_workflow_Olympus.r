@@ -4,8 +4,9 @@ sim = commandArgs();
 sim = as.numeric(sim[length(sim)]);
 
 # Choose number of time slices per simulation to analyze
-num.of.time.slices = 100; # use -999 if you want to define specific time slices
-which.time.slices = c(5000,10000,15000,30000,60000,100000);
+num.of.time.slices = -999; # use -999 if you want to define specific time slices
+which.time.slices = -999;
+time.sequence = seq(2,100,by = 2);
 
 # choose root only or all clades
 root.only = 1 # 0 means all clades, 1 means just the root
@@ -85,15 +86,10 @@ pre.equil.time = 5459;
     
     max.time.actual = max(time.richness$time);
     # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally
-    if (num.of.time.slices==1) {
-      timeslices = pre.equil.time
-    } else {
-      if ( num.of.time.slices == -999  ) {
-        timeslices = which.time.slices
-      } else {
-        timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0));
-      }
-    }
+    if (num.of.time.slices == 1) { timeslices = pre.equil.time};
+    if (which.time.slices != -999  ) { timeslices = which.time.slices };
+    if (num.of.time.slices > 1) {timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0))};
+    if (time.sequence[1] != -999) {timeslices = subset(time.sequence,time.sequence <= max(time.richness$time))};
     
     skipped.clades = 0
     skipped.times = ""
@@ -165,7 +161,8 @@ pre.equil.time = 5459;
             extinction = extinct.calc(subset.populations, timeslice=t)
             reg.summary2 = merge(reg.summary,extinction[,c('region','extinction.rate')],by='region')
             
-            corr.results = xregion.analysis(reg.summary2)
+            corr.results = cbind(xregion.analysis(reg.summary2),length(reg.summary$region[reg.summary$richness > 1]))
+            colnames(corr.results)[ncol(corr.results)] = 'n.div.regions'
             
             #Pybus & Harvey (2000)'s gamma statistic
             Gamma.stat = gammaStat(sub.clade.phylo)
@@ -193,10 +190,14 @@ pre.equil.time = 5459;
     }; # end timeslice loop
     
     #write all of this output to files
-    if (num.of.time.slices == 1) {write.csv(output,paste("SENC_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
-    if (num.of.time.slices > 1 & root.only == 0) {write.csv(output,paste("SENC_Stats_sim",sim,"_mult_times_all_clades.csv",sep=""),quote=F,row.names=F)};
-    if (num.of.time.slices > 1 & root.only == 1) {write.csv(output,paste("SENC_Stats_sim",sim,"_mult_times_root_only.csv",sep=""),quote=F,row.names=F)};
-    if (num.of.time.slices == -999) {write.csv(output,paste("SENC_Stats_sim",sim,"_specific_times.csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices > 1 & root.only == 0) {write.csv(output,paste("NEW_Stats_sim",sim,"_mult_times_all_clades.csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices > 1 & root.only == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_mult_times_root_only.csv",sep=""),quote=F,row.names=F)};
+    if (which.time.slices != -999 & root.only == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_specific_times_root_only.csv",sep=""),quote=F,row.names=F)};
+    if (which.time.slices != -999 & root.only == 0) {write.csv(output,paste("NEW_Stats_sim",sim,"_specific_times_all_clades.csv",sep=""),quote=F,row.names=F)};
+    if (time.sequence != -999 & root.only == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_time_seq_root_only.csv",sep=""),quote=F,row.names=F)};
+    if (time.sequence != -999 & root.only == 0) {write.csv(output,paste("NEW_Stats_sim",sim,"_time_seq_all_clades.csv",sep=""),quote=F,row.names=F)};
+    
     analysis.end = date();
     #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
     #print(c(warnings(),sim.start,sim.end,analysis.end));
