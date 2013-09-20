@@ -8,12 +8,12 @@ foo2 = grep('time5459',foo);
 ### find sims that still need data analysis
 ### to be used when the analysis workflow does not finish
 
-setwd("//constance/people/steg815/senc.analysis");
-foo = list.files(pattern='_time_seq_root_only.csv'); head(foo); length(foo);
-foo3 = sub('SENC_Stats_sim','',foo); head(foo3);
-sims.analyzed = as.numeric(sub('_time_seq_root_only.csv','',foo3)); head(sims.analyzed);
+setwd("//constance/people/steg815/senc.sims.130904");
+foo = list.files(pattern='_all.pops_'); head(foo); length(foo);
+foo3 = sub('SENC_all.pops_sim','',foo); head(foo3);
+sims.analyzed = as.numeric(sub('.csv','',foo3)); head(sims.analyzed);
 
-all.sims = 3465:3664;
+all.sims = 4185:4364;
 
 to.analyze = all.sims[which(is.element(all.sims,sims.analyzed)==F)];
 to.analyze 
