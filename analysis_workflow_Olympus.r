@@ -6,7 +6,7 @@ sim = as.numeric(sim[length(sim)]);
 # Choose number of time slices per simulation to analyze
 num.of.time.slices = -999; # use -999 if you want to define specific time slices
 which.time.slices = -999;
-time.sequence = seq(2,100,by = 2);
+time.sequence = seq(1000,100000,length=100);
 
 # choose root only or all clades
 root.only = 1 # 0 means all clades, 1 means just the root
@@ -161,8 +161,20 @@ pre.equil.time = 5459;
             extinction = extinct.calc(subset.populations, timeslice=t)
             reg.summary2 = merge(reg.summary,extinction[,c('region','extinction.rate')],by='region')
             
-            corr.results = cbind(xregion.analysis(reg.summary2),length(reg.summary$region[reg.summary$richness > 1]))
-            colnames(corr.results)[ncol(corr.results)] = 'n.div.regions'
+            MRD.range = max(reg.summary$MRD,na.rm = T) - min(reg.summary$MRD,na.rm = T)
+            MRD.mean = mean(reg.summary$MRD,na.rm = T)
+            MRD.var = var(reg.summary$MRD,na.rm = T)
+            MRD.rich.slope = summary(lm(reg.summary$MRD ~ reg.summary$richness))$coef[2,1]
+            MRD.env.slope = summary(lm(reg.summary$MRD ~ reg.summary$reg.env))$coef[2,1]
+            PSV.range = max(reg.summary$PSV,na.rm = T) - min(reg.summary$PSV,na.rm = T)
+            PSV.mean = mean(reg.summary$PSV,na.rm = T)
+            PSV.var = var(reg.summary$PSV,na.rm = T)
+            PSV.rich.slope = summary(lm(reg.summary$PSV ~ reg.summary$richness))$coef[2,1]
+            PSV.env.slope = summary(lm(reg.summary$PSV ~ reg.summary$reg.env))$coef[2,1]
+            n.div.regions = length(reg.summary$region[reg.summary$richness > 1])
+            
+            corr.results = cbind(xregion.analysis(reg.summary2),MRD.range,MRD.mean,MRD.var,MRD.rich.slope,MRD.env.slope,
+                                 PSV.range,PSV.mean,PSV.var,PSV.rich.slope,PSV.env.slope,n.div.regions)
             
             #Pybus & Harvey (2000)'s gamma statistic
             Gamma.stat = gammaStat(sub.clade.phylo)
