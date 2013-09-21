@@ -6,7 +6,8 @@ sim = as.numeric(sim[length(sim)]);
 # Choose number of time slices per simulation to analyze
 num.of.time.slices = -999; # use -999 if you want to define specific time slices
 which.time.slices = -999;
-time.sequence = seq(1000,100000,length=100);
+time.sequence = seq(2,300,by=2); # for time scenario sims
+#time.sequence = seq(1000,100000,length=100); # for energy gradient sims
 
 # choose root only or all clades
 root.only = 1 # 0 means all clades, 1 means just the root
@@ -164,13 +165,13 @@ pre.equil.time = 5459;
             MRD.range = max(reg.summary$MRD,na.rm = T) - min(reg.summary$MRD,na.rm = T)
             MRD.mean = mean(reg.summary$MRD,na.rm = T)
             MRD.var = var(reg.summary$MRD,na.rm = T)
-            MRD.rich.slope = summary(lm(reg.summary$MRD ~ reg.summary$richness))$coef[2,1]
-            MRD.env.slope = summary(lm(reg.summary$MRD ~ reg.summary$reg.env))$coef[2,1]
+            MRD.rich.slope = lm(reg.summary$MRD ~ reg.summary$richness)$coefficients[2]
+            MRD.env.slope = lm(reg.summary$MRD ~ reg.summary$reg.env)$coefficients[2]
             PSV.range = max(reg.summary$PSV,na.rm = T) - min(reg.summary$PSV,na.rm = T)
             PSV.mean = mean(reg.summary$PSV,na.rm = T)
             PSV.var = var(reg.summary$PSV,na.rm = T)
-            PSV.rich.slope = summary(lm(reg.summary$PSV ~ reg.summary$richness))$coef[2,1]
-            PSV.env.slope = summary(lm(reg.summary$PSV ~ reg.summary$reg.env))$coef[2,1]
+            PSV.rich.slope = lm(reg.summary$PSV ~ reg.summary$richness)$coefficients[2]
+            PSV.env.slope = lm(reg.summary$PSV ~ reg.summary$reg.env)$coefficients[2]
             n.div.regions = length(reg.summary$region[reg.summary$richness > 1])
             
             corr.results = cbind(xregion.analysis(reg.summary2),MRD.range,MRD.mean,MRD.var,MRD.rich.slope,MRD.env.slope,
