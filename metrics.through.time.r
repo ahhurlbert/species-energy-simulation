@@ -50,9 +50,13 @@ metric.abind = function(sims, scenario = "K", min.n.regions = 4, min.richness = 
       temp.top = data.frame(matrix(NA, nrow = 100 - nrow(temp), ncol = 28))
       names(temp.top) = names(temp)
       temp = rbind(temp.top, temp)
+    }
+    # Only include metrics in analysis if simulation meets minimum region and richness criteria
+    if (min(temp$n.regions, na.rm = T) < min.n.regions) {
       temp[which(temp$n.regions < min.n.regions),] = NA
+    }
+    if (min(temp$global.richness, na.rm = T) < min.richness) {
       temp[which(temp$global.richness < min.richness),] = NA
-      print(range(temp$global.richness,na.rm=T))
     }
     metrics = abind(metrics, temp, along = 3)
   }
@@ -60,25 +64,30 @@ metric.abind = function(sims, scenario = "K", min.n.regions = 4, min.richness = 
 }
 
 metric.abind.new = function(sims, scenario = "K", min.div.regions = 4, min.richness = 30) {
-  metrics = matrix(NA, nrow = 100, ncol = 29)
+  metrics = matrix(NA, nrow = 100, ncol = 39)
   for (i in sims) {
-    if (scenario == "K") {
-      temp = read.csv(paste(sim_dir,"/NEW_Stats_sim",i,"_mult_times.csv",sep=""),header=T)
-    } else if (scenario == "T") {
+    #if (scenario == "K") {
+    #  temp = read.csv(paste(sim_dir,"/NEW_Stats_sim",i,"_mult_times.csv",sep=""),header=T)
+    #} else if (scenario == "T") {
       temp = read.csv(paste(sim_dir,"/NEW_Stats_sim",i,"_time_seq_root_only.csv",sep=""),header=T)
-    }
+    #}
     temp$r.lat.rich = -temp$r.env.rich
     # There is no output for timesteps in which no correlations could be calculated
     # so we add the relevant number of rows of data with NA's in that case
     if (nrow(temp) < 100) {
-      temp.top = data.frame(matrix(NA, nrow = 100 - nrow(temp), ncol = 29))
+      temp.top = data.frame(matrix(NA, nrow = 100 - nrow(temp), ncol = 39))
       names(temp.top) = names(temp)
       temp = rbind(temp.top, temp)
+    }
+    # Only include metrics in analysis if simulation meets minimum region and richness criteria
+    if (min(temp$n.div.regions, na.rm = T) < min.div.regions) {
       temp[which(temp$n.div.regions < min.div.regions),] = NA
+    }
+    if (min(temp$global.richness, na.rm = T) < min.richness) {
       temp[which(temp$global.richness < min.richness),] = NA
-      print(c(i,range(temp$global.richness,na.rm=T),range(temp$n.div.regions,na.rm=T)))
     }
     metrics = abind(metrics, temp, along = 3)
+    #print(c(i,range(temp$global.richness,na.rm=T),range(temp$n.div.regions,na.rm=T)))
   }
   return(metrics[,,-1]) #don't include the first slice of NAs
 }
@@ -87,8 +96,8 @@ min.num.regions = 5
 min.num.div.regions = 5
 min.global.richness = 30
 
-temp.metrics = metric.abind(temp.sims, scenario = "K", min.n.regions = min.num.regions, min.richness = min.global.richness)
-trop.metrics = metric.abind(trop.sims, scenario = "K", min.n.regions = min.num.regions, min.richness = min.global.richness)
+temp.metrics = metric.abind.new(temp.sims, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
+trop.metrics = metric.abind.new(trop.sims, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
 Ttemp.metrics = metric.abind.new(Ttemp.sims, scenario = "T", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
 Ttrop.metrics = metric.abind.new(Ttrop.sims, scenario = "T", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
 
@@ -119,20 +128,40 @@ Ttemp.metrics.sd = data.frame(apply(Ttemp.metrics, 1:2, function(x) calc.meanSD(
 Ttrop.metrics.mean = data.frame(apply(Ttrop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
 Ttrop.metrics.sd = data.frame(apply(Ttrop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
 
+metric.names = c('global.richness',
+                 'r.lat.rich', 
+                 'gamma.stat',
+                 'r.env.PSV', 
+                 'r.env.MRD', 
+                 'r.MRD.rich',
+                 'r.PSV.rich',
+                 'MRD.rich.slope',
+                 'MRD.env.slope',
+                 'PSV.rich.slope',
+                 'PSV.env.slope'
+)
+metric.labels = c('Global richness', 
+                  expression(italic(r)[latitude-richness]), 
+                  expression(gamma), 
+                  expression(italic(r)[env-PSV]),
+                  expression(italic(r)[env-MRD]), 
+                  expression(italic(r)[MRD-richness]),
+                  expression(italic(r)[PSV-richness]),
+                  'MRD-Richness slope',
+                  'MRD-Environment slope',
+                  'PSV-Richness slope',
+                  'PSV-Environment slope')
+
 
 # Plot 4 metrics over the course of the simulation: global richness, the latitude-richness correlation, 
 # gamma, and the MRD-richness correlation. Means +/- 2 SD are shown.
 pdf(paste(analysis_dir,'/metrics_thru_time_inc_Tscenario',Sys.Date(),'_',min.num.regions,'.pdf',sep=""), height = 6, width = 8)
 par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
-metric.names = c('global.richness','r.lat.rich', 'gamma.stat','r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
-metric.labels = c('Global richness', expression(italic(r)[latitude-richness]), 
-                  expression(gamma), expression(italic(r)[env-PSV]),
-                  expression(italic(r)[env-MRD]), expression(italic(r)[MRD-richness]),
-                  expression(italic(r)[PSV-richness]))
 
 # Specify variables to plot here, and width of error bars
-names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','r.MRD.rich')
+names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','MRD.rich.slope')
 #names4plotting = c('r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
+#names4plotting = c('MRD.rich.slope', 'MRD.env.slope','PSV.rich.slope','PSV.env.slope')
 error = 2 # error bars in SD units (+/-)
 for (j in 1:4) {
   curr.metric = names4plotting[j]
