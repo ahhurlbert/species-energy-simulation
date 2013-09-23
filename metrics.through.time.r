@@ -17,9 +17,9 @@ if(Allen==1) {
 }
 
 #Energy gradient sims
-# currently has 10 sims
-trop.sims = 4065:4074
-temp.sims = 4075:4084
+# currently has 100 sims
+trop.sims = c(4065:4074, 4185:4274)
+temp.sims = c(4075:4084, 4275:4364)
 
 #No energy gradient sims
 # currently has 100 sims
