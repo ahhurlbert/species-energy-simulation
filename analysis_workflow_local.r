@@ -5,7 +5,9 @@
 
 # Choose number of time slices per simulation to analyze
 num.of.time.slices = -999; # use -999 if you want to define specific time slices
-which.time.slices = c(5000,10000,30000,60000,100000);
+which.time.slices = -999;
+time.sequence = seq(2,300,by=2); # for time scenario sims
+#time.sequence = seq(1000,100000,length=100); # for energy gradient sims
 
 # choose root only or all clades
 root.only = 0 # 0 means all clades, 1 means just the root
