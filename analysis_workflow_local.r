@@ -87,15 +87,25 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
   rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.out', 'output', 'sim.results'))
   output = numeric();
   
-  # (5) read in simulation results for specified simulation from the output zip file
-  sim.results = output.unzip(sim_dir,sim)
+  # (5) read in simulation results for specified simulation from the output zip file 
+  # -- (the final version should delete the code in the first if statement and assume a zip file exists)
+  if(already.unzipped == 1) {
+    all.populations = read.csv(paste(sim_dir,'/SENC_all.pops_sim',sim,'.csv',sep=''), header=T)
+    time.richness = read.csv(paste(sim_dir,'/SENC_time.rich_sim',sim,'.csv',sep=''), header=T)
+    phylo.out = read.csv(paste(sim_dir,'/SENC_phylo_sim',sim,'.tre',sep=''))
+    params.out = read.csv(paste(sim_dir,'/SENC_params.out_sim',sim,'.csv',sep=''), header=T)
+  } else if (already.unzipped == 0) {
+    sim.results = output.unzip(sim_dir,sim)  
+    if ( !is.null(sim.results) ) {
+      all.populations = sim.results$all.populations
+      time.richness = sim.results$time.richness
+      phylo.out = sim.results$phylo.out
+      params.out = sim.results$params.out
+    }
+  }
   
-  if ( !is.null(sim.results) ) {
-    all.populations = sim.results$all.populations
-    time.richness = sim.results$time.richness
-    phylo.out = sim.results$phylo.out
-    params.out = sim.results$params.out
-    
+  
+      
     if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'tropical' ) { extreme.bin = trop.orig.extreme };
     if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'temperate' ) { extreme.bin = temp.orig.extreme };
     
