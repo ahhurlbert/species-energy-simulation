@@ -35,6 +35,7 @@ Ttemp.sims = c(3565:3646,3648:3664)
 
 sim.matrix = read.csv("SENC_Master_Simulation_Matrix.csv",header=T);
 
+# The 'metric.abind' function is currently obsolete. Use or modify the 'metric.abind.new' function
 metric.abind = function(sims, scenario = "K", min.n.regions = 4, min.richness = 30) {
   metrics = matrix(NA, nrow = 100, ncol = 28)
   for (i in sims) {
@@ -138,8 +139,12 @@ metric.names = c('global.richness',
                  'MRD.rich.slope',
                  'MRD.env.slope',
                  'PSV.rich.slope',
-                 'PSV.env.slope'
-)
+                 'PSV.env.slope',
+                 'MRD.range',
+                 'PSV.range',
+                 'MRD.mean',
+                 'PSV.mean')df
+
 metric.labels = c('Global richness', 
                   expression(italic(r)[latitude-richness]), 
                   expression(gamma), 
@@ -150,7 +155,11 @@ metric.labels = c('Global richness',
                   'MRD-Richness slope',
                   'MRD-Environment slope',
                   'PSV-Richness slope',
-                  'PSV-Environment slope')
+                  'PSV-Environment slope',
+                  'MRD range',
+                  'PSV range',
+                  'Mean MRD',
+                  'Mean PSV')
 
 
 # Plot 4 metrics over the course of the simulation: global richness, the latitude-richness correlation, 
@@ -159,9 +168,9 @@ pdf(paste(analysis_dir,'/metrics_thru_time_inc_Tscenario',Sys.Date(),'_',min.num
 par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 # Specify variables to plot here, and width of error bars
-names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','MRD.rich.slope')
+#names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','MRD.rich.slope')
 #names4plotting = c('r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
-#names4plotting = c('MRD.rich.slope', 'MRD.env.slope','PSV.rich.slope','PSV.env.slope')
+names4plotting = c('MRD.rich.slope', 'MRD.range','MRD.mean','PSV.mean')
 error = 2 # error bars in SD units (+/-)
 for (j in 1:4) {
   curr.metric = names4plotting[j]
@@ -197,7 +206,7 @@ for (j in 1:4) {
           col = rgb(0, 0, .8, .3), border = NA)
   points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, curr.metric], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
   points(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), Ttemp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
-  alt.x.vals = c(80, 120, 160, 200)
+  alt.x.vals = c(120, 140, 160, 180)
   mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
   
   if(curr.metric == 'gamma.stat') { abline(h = 0, lty = 'dashed')}
