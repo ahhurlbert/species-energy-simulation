@@ -13,12 +13,12 @@ time.sequence = seq(2,300,by=2); # for time scenario sims
 #time.sequence = seq(1000,100000,length=100); # for energy gradient sims
 
 # choose root only or all clades
-root.only = 0 # 0 means all clades, 1 means just the root
+root.only = 1 # 0 means all clades, 1 means just the root
 
 # Set minimum number of species in a clade needed to proceed with analysis
 min.num.spp = 8;
 
-Allen = 0;
+Allen = 1;
 partial.analysis = 1; # toggle to determine whether we're looking at all sims or just some
 
 #New parameter for taking into account which of us is running this code
@@ -111,7 +111,7 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
   } else {
     if (which.time.slices != -999 & num.of.time.slices == - 999) { timeslices = which.time.slices };
     if (which.time.slices == -999 & num.of.time.slices > 1) {timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0))};
-    if (time.sequence[1] != -999) {timeslices = subset(time.sequence, time.sequence <= max.time.actual))};
+    if (time.sequence[1] != -999) {timeslices = subset(time.sequence, time.sequence <= max.time.actual)};
   }
 
   skipped.clades = 0
