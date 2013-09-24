@@ -80,7 +80,6 @@ which.sims = which.sims;
 
 trop.orig.extreme = 3;
 temp.orig.extreme = 8;
-pre.equil.time = 5459;
 
 foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar% {
 
@@ -109,12 +108,10 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
     if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'tropical' ) { extreme.bin = trop.orig.extreme };
     if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'temperate' ) { extreme.bin = temp.orig.extreme };
     
-    #if (time.richness$spp.rich[time.richness$time == pre.equil.time & time.richness$region == extreme.bin] > 5) {
-  
     max.time.actual = max(time.richness$time);
     # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally
     if (num.of.time.slices==1) {
-      timeslices = pre.equil.time
+      timeslices = max.time.actual
     } else {
       if ( num.of.time.slices == -999  ) {
         timeslices = which.time.slices
