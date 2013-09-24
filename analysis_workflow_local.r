@@ -5,7 +5,10 @@
 
 # Choose number of time slices per simulation to analyze
 num.of.time.slices = -999; # use -999 if you want to define specific time slices
+# which.time.slices is (apparently) only for specifying particular, unevenly spaced time slices;
+# if not being used it should be set to -999
 which.time.slices = -999;
+# time.sequence is (apparently) for when the time slices occur for a regular interval; set to -999 if not being used
 time.sequence = seq(2,300,by=2); # for time scenario sims
 #time.sequence = seq(1000,100000,length=100); # for energy gradient sims
 
@@ -102,12 +105,16 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
   }
   
     max.time.actual = max(time.richness$time);
-  # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally
-  if (num.of.time.slices == 1) { timeslices = max.time.actual }
-  if (which.time.slices != -999  ) { timeslices = which.time.slices };
-  if (num.of.time.slices > 1) {timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0))};
-  if (time.sequence[1] != -999) {timeslices = subset(time.sequence,time.sequence <= max(time.richness$time))};
-   
+  # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally (which.time.slices == -999)
+  # or use specified vector in which.time.slices
+  if (num.of.time.slices == 1) { 
+    timeslices = max.time.actual 
+  } else {
+    if (which.time.slices != -999 & num.of.time.slices == - 999) { timeslices = which.time.slices };
+    if (which.time.slices == -999 & num.of.time.slices > 1) {timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0))};
+    if (time.sequence[1] != -999) {timeslices = subset(time.sequence, time.sequence <= max.time.actual))};
+  }
+  
     skipped.clades = 0
     skipped.times = ""
     for (t in timeslices) {
