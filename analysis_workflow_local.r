@@ -241,25 +241,6 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
     #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
     #print(c(warnings(),sim.start,sim.end,analysis.end));
   
-  
-    ####################################################
-    # Simulation summary plots
-    ####################################################
-    lat.grad.time.plot(sim.results, numslices = 10, output.dir = analysis_dir)
-  
-    # clade.origin.corr.plot only if there are some output rows 
-    if(!is.null(nrow(output))) {
-      clade.origin.corr.plot(output, params.out, output.dir = analysis_dir)
-  
-      # Number of rows of output with at least 1 correlation (there are 4 non-correlation cols in corr.results)
-      sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = sum(apply(output,1,function(x) sum(is.na(x)) < (ncol(corr.results)-4)))
-    } else {
-      sim.matrix[sim.matrix$sim.id==sim,'output.rows'] = 0
-    }
-  
-    # There are currently some bugs in clade.exmpl.figs.
-    # clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_dir)
-  
     # Add overall summary info
     sim.matrix[sim.matrix$sim.id==sim,'n.regions'] = length(unique(all.populations$region))
     sim.matrix[sim.matrix$sim.id==sim,'extant.S'] = nrow(extant.ornot[extant.ornot$x>0,])
