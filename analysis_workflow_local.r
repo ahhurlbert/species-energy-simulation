@@ -45,7 +45,7 @@ library(foreach);
 library(doParallel);
 library(apTreeshape);
 
-package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools');
+package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools','apTreeshape');
 
 source('reg_calc_and_analysis.r');
 source('make.phylo.jimmy.fun.r');
