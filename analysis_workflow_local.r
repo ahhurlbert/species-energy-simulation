@@ -226,10 +226,14 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
     }; # end timeslice loop
   
     #write all of this output to files
-    if (num.of.time.slices == 1) {write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
-    if (num.of.time.slices > 1) {write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,"_mult_times.csv",sep=""),quote=F,row.names=F)};
-    if (num.of.time.slices == -999) {write.csv(output,paste(analysis_dir,"/SENC_Stats_sim",sim,"_specific_times.csv",sep=""),quote=F,row.names=F)};
-    analysis.end = date();
+    if (num.of.time.slices == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices > 1 & root.only == 0) {write.csv(output,paste("NEW_Stats_sim",sim,"_mult_times_all_clades.csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices > 1 & root.only == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_mult_times_root_only.csv",sep=""),quote=F,row.names=F)};
+    if (which.time.slices != -999 & root.only == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_specific_times_root_only.csv",sep=""),quote=F,row.names=F)};
+    if (which.time.slices != -999 & root.only == 0) {write.csv(output,paste("NEW_Stats_sim",sim,"_specific_times_all_clades.csv",sep=""),quote=F,row.names=F)};
+    if (time.sequence != -999 & root.only == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_time_seq_root_only.csv",sep=""),quote=F,row.names=F)};
+    if (time.sequence != -999 & root.only == 0) {write.csv(output,paste("NEW_Stats_sim",sim,"_time_seq_all_clades.csv",sep=""),quote=F,row.names=F)};
+    
     #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
     #print(c(warnings(),sim.start,sim.end,analysis.end));
   
