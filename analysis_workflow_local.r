@@ -31,33 +31,19 @@ if(Allen==1) {
 # Simulation workflow
 
 #(2) load simulation and analysis functions
-if (Allen==1){
-  library(ape,lib.loc=Rlib.location);
-  library(permute,lib.loc=Rlib.location);
-  library(nlme,lib.loc=Rlib.location);
-  library(vegan,lib.loc=Rlib.location);
-  library(picante,lib.loc=Rlib.location);
-  library(mvtnorm,lib.loc=Rlib.location);
-  library(caper,lib.loc=Rlib.location);
-  library(paleotree,lib.loc=Rlib.location);
-  library(plyr,lib.loc=Rlib.location);
-  library(phytools, lib.loc=Rlib.location);
-  library(foreach,lib.loc=Rlib.location);
-  library(doParallel,lib.loc=Rlib.location);
-} else {
-  library(ape);
-  library(permute);
-  library(nlme);
-  library(vegan);
-  library(picante);
-  library(mvtnorm);
-  library(caper);
-  library(paleotree);
-  library(plyr);
-  library(phytools);
-  library(foreach);
-  library(doParallel);
-}
+library(ape);
+library(permute);
+library(nlme);
+library(vegan);
+library(picante);
+library(mvtnorm);
+library(caper);
+library(paleotree);
+library(plyr);
+library(phytools);
+library(foreach);
+library(doParallel);
+library(apTreeshape);
 
 package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools');
 
@@ -206,6 +192,8 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
             PSV.rich.slope = lm(reg.summary$PSV ~ reg.summary$richness)$coefficients[2]
             PSV.env.slope = lm(reg.summary$PSV ~ reg.summary$reg.env)$coefficients[2]
             n.div.regions = length(reg.summary$region[reg.summary$richness > 1])
+            
+            
             
             corr.results = cbind(xregion.analysis(reg.summary2),MRD.range,MRD.mean,MRD.var,MRD.rich.slope,MRD.env.slope,
                                  PSV.range,PSV.mean,PSV.var,PSV.rich.slope,PSV.env.slope,n.div.regions)
