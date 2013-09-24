@@ -194,9 +194,22 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
             #Note that extinction calculation must be done on subset.populations, not sub.populations
             extinction = extinct.calc(subset.populations, timeslice=t)
             reg.summary2 = merge(reg.summary,extinction[,c('region','extinction.rate')],by='region')
-          
-            corr.results = xregion.analysis(reg.summary2)
-          
+            
+            MRD.range = max(reg.summary$MRD,na.rm = T) - min(reg.summary$MRD,na.rm = T)
+            MRD.mean = mean(reg.summary$MRD,na.rm = T)
+            MRD.var = var(reg.summary$MRD,na.rm = T)
+            MRD.rich.slope = lm(reg.summary$MRD ~ reg.summary$richness)$coefficients[2]
+            MRD.env.slope = lm(reg.summary$MRD ~ reg.summary$reg.env)$coefficients[2]
+            PSV.range = max(reg.summary$PSV,na.rm = T) - min(reg.summary$PSV,na.rm = T)
+            PSV.mean = mean(reg.summary$PSV,na.rm = T)
+            PSV.var = var(reg.summary$PSV,na.rm = T)
+            PSV.rich.slope = lm(reg.summary$PSV ~ reg.summary$richness)$coefficients[2]
+            PSV.env.slope = lm(reg.summary$PSV ~ reg.summary$reg.env)$coefficients[2]
+            n.div.regions = length(reg.summary$region[reg.summary$richness > 1])
+            
+            corr.results = cbind(xregion.analysis(reg.summary2),MRD.range,MRD.mean,MRD.var,MRD.rich.slope,MRD.env.slope,
+                                 PSV.range,PSV.mean,PSV.var,PSV.rich.slope,PSV.env.slope,n.div.regions)
+                      
             #Pybus & Harvey (2000)'s gamma statistic
             Gamma.stat = gammaStat(sub.clade.phylo)
             
