@@ -100,6 +100,7 @@ regional.calc = function(sub.populations, phylo.out, max.time)
     
   MRD.PSV.out$global.richness = global.clade.richness
   MRD.PSV.out$extant.richness = clade.extant.richness
+  MRD.PSV.out$max.RD = max(root.dist)
   return(MRD.PSV.out)
 }
   
@@ -128,7 +129,8 @@ xregion.analysis = function(region.summary) {
                            n.regions = n.regions,
                            clade.origin.time = region.summary$clade.origin[1],
                            global.richness = region.summary$global.richness[1],
-                           extant.richness = region.summary$extant.richness[1])
+                           extant.richness = region.summary$extant.richness[1],
+                           max.RD = region.summary$max.RD[1])
     
   if(nrow(unique(region.summary[!is.na(region.summary$time.in.region) & !is.na(region.summary$richness),c('time.in.region','richness')])) > 2) {
     r1 = cor.test(region.summary$time.in.region, region.summary$richness, method = "pearson")
