@@ -193,30 +193,32 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
             PSV.env.slope = lm(reg.summary$PSV ~ reg.summary$reg.env)$coefficients[2]
             n.div.regions = length(reg.summary$region[reg.summary$richness > 1])
             
-            
-            
             corr.results = cbind(xregion.analysis(reg.summary2),MRD.range,MRD.mean,MRD.var,MRD.rich.slope,MRD.env.slope,
                                  PSV.range,PSV.mean,PSV.var,PSV.rich.slope,PSV.env.slope,n.div.regions)
                       
             #Pybus & Harvey (2000)'s gamma statistic
             Gamma.stat = gammaStat(sub.clade.phylo)
             
+            #Calculate Blum & Francois (2006)'s Beta metric of tree imbalance using apTreeshape package
+            tree.beta = maxlik.betasplit(sub.clade.phylo)
+            
             #Calculate Blomberg's K for two traits: environmental optimum, and mean region of occurrence
-            spp.traits = aggregate(sub.populations$region, by = list(sub.populations$spp.name, sub.populations$env.opt),
-                                   function(x) mean(x, na.rm=T))
-            names(spp.traits) = c('spp.name','env.opt','region')
+            #spp.traits = aggregate(sub.populations$region, by = list(sub.populations$spp.name, sub.populations$env.opt),
+            #                       function(x) mean(x, na.rm=T))
+            #names(spp.traits) = c('spp.name','env.opt','region')
             
-            spp.env = spp.traits$env.opt
-            names(spp.env) = spp.traits$spp.name
-            BK.env = phylosig(sub.clade.phylo, spp.env[sub.clade.phylo$tip.label], method="K")
+            #spp.env = spp.traits$env.opt
+            #names(spp.env) = spp.traits$spp.name
+            #BK.env = phylosig(sub.clade.phylo, spp.env[sub.clade.phylo$tip.label], method="K")
             
-            spp.reg = spp.traits$region
-            names(spp.reg) = spp.traits$spp.name
-            BK.reg = phylosig(sub.clade.phylo, spp.reg[sub.clade.phylo$tip.label], method="K")
+            #spp.reg = spp.traits$region
+            #names(spp.reg) = spp.traits$spp.name
+            #BK.reg = phylosig(sub.clade.phylo, spp.reg[sub.clade.phylo$tip.label], method="K")
             
             output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
                                          clade.richness = length(unique(sub.populations$spp.name)), 
-                                         BK.env = BK.env , BK.reg = BK.reg))
+                                         #BK.env = BK.env , BK.reg = BK.reg, 
+                                         tree.beta = tree.beta$max_lik))
             print(paste(sim,sub.clade.loop.end,c,t,date(),length(sub.clade.phylo$tip.label),sep="   "));
           } # end third else
         } # end sub clade for loop
