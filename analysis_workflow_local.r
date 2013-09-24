@@ -78,8 +78,6 @@ if (partial.analysis == 1) {which.sims = c(4065)};
 
 which.sims = which.sims;
 
-trop.orig.extreme = 3;
-temp.orig.extreme = 8;
 
 foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar% {
 
@@ -103,23 +101,13 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
     }
   }
   
-  
-      
-    if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'tropical' ) { extreme.bin = trop.orig.extreme };
-    if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'temperate' ) { extreme.bin = temp.orig.extreme };
-    
     max.time.actual = max(time.richness$time);
-    # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally
-    if (num.of.time.slices==1) {
-      timeslices = max.time.actual
-    } else {
-      if ( num.of.time.slices == -999  ) {
-        timeslices = which.time.slices
-      } else {
-        timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0));
-        }
-      }
-  
+  # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally
+  if (num.of.time.slices == 1) { timeslices = max.time.actual }
+  if (which.time.slices != -999  ) { timeslices = which.time.slices };
+  if (num.of.time.slices > 1) {timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0))};
+  if (time.sequence[1] != -999) {timeslices = subset(time.sequence,time.sequence <= max(time.richness$time))};
+   
     skipped.clades = 0
     skipped.times = ""
     for (t in timeslices) {
@@ -276,7 +264,7 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
 
     write.csv(sim.matrix[sim.matrix$sim.id==sim,],paste(analysis_dir,"/sim.matrix.output.",sim,"_time",t,".csv",sep=""),quote=F,row.names=F);
     sim.matrix[sim.matrix$sim.id==sim,]
-    #} else {print(sim)} # end second if (richness check for defined, extreme bin)
+    #} else {print(sim)} # end second if
   } # end first if (file check)
 } # end sim loop
 
