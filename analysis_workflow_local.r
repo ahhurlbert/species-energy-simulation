@@ -71,8 +71,8 @@ sim.matrix$extant.S = NA
 sim.matrix$extinct.S = NA
 sim.matrix$skipped.clades = NA
 sim.matrix$skipped.times = NA
-sim.matrix$BK.reg = NA
-sim.matrix$BK.env = NA
+#sim.matrix$BK.reg = NA
+#sim.matrix$BK.env = NA
 
 #(4) start analyses based on value of 'sim' which draws parameter values from sim.matrix
 if (partial.analysis == 0) {which.sims = 1:max(sim.matrix$sim.id)};
@@ -246,8 +246,8 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
   sim.matrix[sim.matrix$sim.id==sim,'extinct.S'] = length(extinct.species)
   sim.matrix[sim.matrix$sim.id==sim,'skipped.clades'] = skipped.clades # number of clades skipped over for analysis, summed over timeslices
   sim.matrix[sim.matrix$sim.id==sim,'skipped.times'] = skipped.times # number of time slices skipped over for analysis
-  sim.matrix[sim.matrix$sim.id==sim,'BK.reg'] = BK.reg # blomberg's K based on region
-  sim.matrix[sim.matrix$sim.id==sim,'BK.env'] = BK.env # blomberg's K based on environment
+  #sim.matrix[sim.matrix$sim.id==sim,'BK.reg'] = BK.reg # blomberg's K based on region
+  #sim.matrix[sim.matrix$sim.id==sim,'BK.env'] = BK.env # blomberg's K based on environment
 
   write.csv(sim.matrix[sim.matrix$sim.id==sim,],paste(analysis_dir,"/sim.matrix.output.",sim,"_time",t,".csv",sep=""),quote=F,row.names=F);
   sim.matrix[sim.matrix$sim.id==sim,]
