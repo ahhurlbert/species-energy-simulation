@@ -223,6 +223,7 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
                                        #BK.env = BK.env , BK.reg = BK.reg, 
                                        tree.beta = tree.beta$max_lik))
           print(paste(sim,sub.clade.loop.end,c,t,date(),length(sub.clade.phylo$tip.label),sep="   "));
+          flush.console()
         } # end third else
       } # end sub clade for loop
     } # end second else
