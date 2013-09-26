@@ -91,7 +91,7 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
   if(already.unzipped == 1) {
     all.populations = read.csv(paste(sim_dir,'/SENC_all.pops_sim',sim,'.csv',sep=''), header=T)
     time.richness = read.csv(paste(sim_dir,'/SENC_time.rich_sim',sim,'.csv',sep=''), header=T)
-    phylo.out = read.csv(paste(sim_dir,'/SENC_phylo_sim',sim,'.tre',sep=''))
+    phylo.out = read.tree(paste(sim_dir,'/SENC_phylo_sim',sim,'.tre',sep=''))
     params.out = read.csv(paste(sim_dir,'/SENC_params.out_sim',sim,'.csv',sep=''), header=T)
   } else if (already.unzipped == 0) {
     sim.results = output.unzip(sim_dir,sim)  
