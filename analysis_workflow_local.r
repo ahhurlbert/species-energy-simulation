@@ -9,6 +9,7 @@ num.of.time.slices = -999; # use -999 if you want to define specific time slices
 # if not being used it should be set to -999
 which.time.slices = -999;
 # time.sequence is (apparently) for when the time slices occur for a regular interval; set to -999 if not being used
+# Note that due to the slow calculation of tree imbalance (beta) for large trees, it may be best to specify only ~20 time slices
 time.sequence = seq(2,300,by=2); # for time scenario sims
 #time.sequence = seq(1000,100000,length=100); # for energy gradient sims
 
@@ -203,7 +204,12 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
           Gamma.stat = gammaStat(sub.clade.phylo)
         
           #Calculate Blum & Francois (2006)'s Beta metric of tree imbalance using apTreeshape package
-          tree.beta = maxlik.betasplit(sub.clade.phylo)
+          # --seems to bonk on very large phylogenies, so only try calculating for fewer than 6000 species
+          if(length(sub.phylo$tip.label) < 6000) {
+            tree.beta = maxlik.betasplit(sub.clade.phylo)
+          } else {
+            tree.beta = NA
+          }
         
           #Calculate Blomberg's K for two traits: environmental optimum, and mean region of occurrence
           #spp.traits = aggregate(sub.populations$region, by = list(sub.populations$spp.name, sub.populations$env.opt),
