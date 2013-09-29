@@ -206,7 +206,8 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
           #Calculate Blum & Francois (2006)'s Beta metric of tree imbalance using apTreeshape package
           # --seems to bonk on very large phylogenies, so only try calculating for fewer than 6000 species
           if(length(sub.phylo$tip.label) < 6000) {
-            tree.beta = maxlik.betasplit(sub.clade.phylo)
+            tree.beta.out = maxlik.betasplit(sub.clade.phylo)
+            tree.beta = tree.beta.out$max_lik
           } else {
             tree.beta = NA
           }
@@ -227,7 +228,7 @@ foo = foreach(sim=which.sims,.packages = package.vector,.combine='rbind') %dopar
           output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
                                        clade.richness = length(unique(sub.populations$spp.name)), 
                                        #BK.env = BK.env , BK.reg = BK.reg, 
-                                       tree.beta = tree.beta$max_lik))
+                                       tree.beta = tree.beta))
           print(paste(sim,sub.clade.loop.end,c,t,date(),length(sub.clade.phylo$tip.label),sep="   "));
           flush.console()
         } # end third else
