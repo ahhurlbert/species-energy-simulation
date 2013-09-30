@@ -65,7 +65,7 @@ metric.abind = function(sims, scenario = "K", min.n.regions = 4, min.richness = 
 }
 
 metric.abind.new = function(sims, scenario = "K", min.div.regions = 4, min.richness = 30) {
-  num.cols = 40
+  num.cols = 41
   metrics = matrix(NA, nrow = 100, ncol = num.cols)
   for (i in sims) {
     #if (scenario == "K") {
@@ -75,6 +75,7 @@ metric.abind.new = function(sims, scenario = "K", min.div.regions = 4, min.richn
     #}
     temp$r.lat.rich = -temp$r.env.rich
     temp$scaled.MRD.range = temp$MRD.range/temp$max.RD
+    temp$scaled.MRD.rich.slope = temp$MRD.rich.slope/temp$max.RD
     # There is no output for timesteps in which no correlations could be calculated
     # so we add the relevant number of rows of data with NA's in that case
     if (nrow(temp) < 100) {
@@ -147,7 +148,8 @@ metric.names = c('global.richness',
                  'MRD.mean',
                  'PSV.mean',
                  'tree.beta',
-                 'scaled.MRD.range')
+                 'scaled.MRD.range',
+                 'scaled.MRD.rich.slope')
 
 metric.labels = c('Global richness', 
                   expression(italic(r)[latitude-richness]), 
@@ -165,7 +167,8 @@ metric.labels = c('Global richness',
                   'Mean MRD',
                   'Mean PSV',
                   expression(beta),
-                  'scaled MRD range')
+                  'scaled MRD range',
+                  'scaled MRD-richness slope')
 
 
 # Plot 4 metrics over the course of the simulation: global richness, the latitude-richness correlation, 
@@ -176,7 +179,7 @@ par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 2, las 
 # Specify variables to plot here, and width of error bars
 #names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','MRD.rich.slope')
 #names4plotting = c('r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
-names4plotting = c('MRD.rich.slope', 'MRD.range','scaled.MRD.range','tree.beta')
+names4plotting = c('MRD.rich.slope', 'scaled.MRD.rich.slope','scaled.MRD.range','tree.beta')
 error = 2 # error bars in SD units (+/-)
 for (j in 1:4) {
   curr.metric = names4plotting[j]
