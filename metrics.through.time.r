@@ -65,7 +65,8 @@ metric.abind = function(sims, scenario = "K", min.n.regions = 4, min.richness = 
 }
 
 metric.abind.new = function(sims, scenario = "K", min.div.regions = 4, min.richness = 30) {
-  metrics = matrix(NA, nrow = 100, ncol = 39)
+  num.cols = 40
+  metrics = matrix(NA, nrow = 100, ncol = num.cols)
   for (i in sims) {
     #if (scenario == "K") {
     #  temp = read.csv(paste(sim_dir,"/NEW_Stats_sim",i,"_mult_times.csv",sep=""),header=T)
@@ -73,10 +74,11 @@ metric.abind.new = function(sims, scenario = "K", min.div.regions = 4, min.richn
       temp = read.csv(paste(sim_dir,"/NEW_Stats_sim",i,"_time_seq_root_only.csv",sep=""),header=T)
     #}
     temp$r.lat.rich = -temp$r.env.rich
+    temp$scaled.MRD.range = temp$MRD.range/temp$max.RD
     # There is no output for timesteps in which no correlations could be calculated
     # so we add the relevant number of rows of data with NA's in that case
     if (nrow(temp) < 100) {
-      temp.top = data.frame(matrix(NA, nrow = 100 - nrow(temp), ncol = 39))
+      temp.top = data.frame(matrix(NA, nrow = 100 - nrow(temp), ncol = num.cols))
       names(temp.top) = names(temp)
       temp = rbind(temp.top, temp)
     }
@@ -143,7 +145,9 @@ metric.names = c('global.richness',
                  'MRD.range',
                  'PSV.range',
                  'MRD.mean',
-                 'PSV.mean')df
+                 'PSV.mean',
+                 'tree.beta',
+                 'scaled.MRD.range')
 
 metric.labels = c('Global richness', 
                   expression(italic(r)[latitude-richness]), 
@@ -159,7 +163,9 @@ metric.labels = c('Global richness',
                   'MRD range',
                   'PSV range',
                   'Mean MRD',
-                  'Mean PSV')
+                  'Mean PSV',
+                  expression(beta),
+                  'scaled MRD range')
 
 
 # Plot 4 metrics over the course of the simulation: global richness, the latitude-richness correlation, 
@@ -170,11 +176,11 @@ par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 2, las 
 # Specify variables to plot here, and width of error bars
 #names4plotting = c('global.richness','r.lat.rich', 'gamma.stat','MRD.rich.slope')
 #names4plotting = c('r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
-names4plotting = c('MRD.rich.slope', 'MRD.range','MRD.mean','PSV.mean')
+names4plotting = c('MRD.rich.slope', 'MRD.range','scaled.MRD.range','tree.beta')
 error = 2 # error bars in SD units (+/-)
 for (j in 1:4) {
   curr.metric = names4plotting[j]
-  plot(trop.metrics.mean$time/1000, trop.metrics.mean[, curr.metric], xlim = c(0, max(trop.metrics.mean$time/1000)), 
+  plot(trop.metrics.mean$time/1000, trop.metrics.mean[, curr.metric], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
        ylim = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ], 
                       Ttrop.metrics[, curr.metric, ], Ttemp.metrics[, curr.metric, ]), na.rm= T), type = "n",
        ylab = metric.labels[metric.names == curr.metric], xlab = "")
