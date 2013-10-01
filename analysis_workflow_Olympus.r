@@ -14,8 +14,8 @@ num.of.time.slices = -999; # use -999 if you want to define specific time slices
 which.time.slices = -999;
 # time.sequence is (apparently) for when the time slices occur for a regular interval; set to -999 if not being used
 # Note that due to the slow calculation of tree imbalance (beta) for large trees, it may be best to specify only ~20 time slices
-#time.sequence = seq(2,300,by=2); # for time scenario sims
-time.sequence = seq(1000,1000,length=1); # for energy gradient sims
+time.sequence = seq(2,300,by=2); # for time scenario sims
+#time.sequence = seq(1000,100000,length=100); # for energy gradient sims
 
 # choose root only or all clades
 root.only = 1 # 0 means all clades, 1 means just the root
@@ -75,6 +75,7 @@ source('clade.origin.corr.plot.r');
 source('clade.exmpl.figs.r');
 source('extinct.calc.r');
 source('unzipping_files.r');
+source('maxlik.betasplit.AH.r');
 
 if (local == 1) {
   library(foreach, lib.loc=Rlib.location);
@@ -217,7 +218,7 @@ pre.equil.time = 5459;
             #Calculate Blum & Francois (2006)'s Beta metric of tree imbalance using apTreeshape package
             # --seems to bonk on very large phylogenies, so only try calculating for fewer than 6000 species
             if(length(sub.phylo$tip.label) < 100000) {
-              tree.beta.out = maxlik.betasplit(sub.clade.phylo)
+              tree.beta.out = maxlik.betasplit.AH(sub.clade.phylo)
               tree.beta = tree.beta.out$max_lik
             } else {
               tree.beta = NA
@@ -246,15 +247,20 @@ pre.equil.time = 5459;
         } # end sub clade for loop
       } # end second else
     }; # end timeslice loop
+
+    # this print statement should show up in the output files on the cluster.
     print(warnings())
+
     #write all of this output to files
-    if (num.of.time.slices == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
-    if (num.of.time.slices > 1 & root.only == 0) {write.csv(output,paste("NEW_Stats_sim",sim,"_mult_times_all_clades.csv",sep=""),quote=F,row.names=F)};
-    if (num.of.time.slices > 1 & root.only == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_mult_times_root_only.csv",sep=""),quote=F,row.names=F)};
-    if (which.time.slices != -999 & root.only == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_specific_times_root_only.csv",sep=""),quote=F,row.names=F)};
-    if (which.time.slices != -999 & root.only == 0) {write.csv(output,paste("NEW_Stats_sim",sim,"_specific_times_all_clades.csv",sep=""),quote=F,row.names=F)};
-    if (time.sequence != -999 & root.only == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_time_seq_root_only.csv",sep=""),quote=F,row.names=F)};
-    if (time.sequence != -999 & root.only == 0) {write.csv(output,paste("NEW_Stats_sim",sim,"_time_seq_all_clades.csv",sep=""),quote=F,row.names=F)};
+    # the 'lbeta' part of the name reflect the use of log beta in the calculation of tree imbalance via the maxlik.betasplit.AH function
+    # file names that start with 'NEW' include beta value (i.e. imbalance values) associated with underflow errors, calculated with 'maxlik.betasplit'
+    if (num.of.time.slices == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices > 1 & root.only == 0) {write.csv(output,paste("lbeta_Stats_sim",sim,"_mult_times_all_clades.csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices > 1 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_mult_times_root_only.csv",sep=""),quote=F,row.names=F)};
+    if (which.time.slices != -999 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_specific_times_root_only.csv",sep=""),quote=F,row.names=F)};
+    if (which.time.slices != -999 & root.only == 0) {write.csv(output,paste("lbeta_Stats_sim",sim,"_specific_times_all_clades.csv",sep=""),quote=F,row.names=F)};
+    if (time.sequence != -999 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_time_seq_root_only.csv",sep=""),quote=F,row.names=F)};
+    if (time.sequence != -999 & root.only == 0) {write.csv(output,paste("lbeta_Stats_sim",sim,"_time_seq_all_clades.csv",sep=""),quote=F,row.names=F)};
     
     analysis.end = date();
     #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
