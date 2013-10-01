@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-local = 1; # toggle to 1 to run analyses locally and to 0 to run analyses on the olympus cluster
+local = 0; # toggle to 1 to run analyses locally and to 0 to run analyses on the olympus cluster
 
 if (local == 0) {
   sim = commandArgs();
@@ -14,8 +14,8 @@ num.of.time.slices = -999; # use -999 if you want to define specific time slices
 which.time.slices = -999;
 # time.sequence is (apparently) for when the time slices occur for a regular interval; set to -999 if not being used
 # Note that due to the slow calculation of tree imbalance (beta) for large trees, it may be best to specify only ~20 time slices
-time.sequence = seq(2,300,by=2); # for time scenario sims
-#time.sequence = seq(1000,100000,length=100); # for energy gradient sims
+#time.sequence = seq(2,300,by=2); # for time scenario sims
+time.sequence = seq(1000,1000,length=1); # for energy gradient sims
 
 # choose root only or all clades
 root.only = 1 # 0 means all clades, 1 means just the root
@@ -45,6 +45,7 @@ if (Allen ==0 & local == 0) {
   Rlib.location = "/pic/people/steg815/Rlibs" 
   sim_dir = getwd()
   analysis_dir = sim_dir
+  function_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation"
 }
 
 
@@ -245,7 +246,7 @@ pre.equil.time = 5459;
         } # end sub clade for loop
       } # end second else
     }; # end timeslice loop
-    
+    print(warnings())
     #write all of this output to files
     if (num.of.time.slices == 1) {write.csv(output,paste("NEW_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
     if (num.of.time.slices > 1 & root.only == 0) {write.csv(output,paste("NEW_Stats_sim",sim,"_mult_times_all_clades.csv",sep=""),quote=F,row.names=F)};
@@ -284,8 +285,8 @@ pre.equil.time = 5459;
     sim.matrix[sim.matrix$sim.id==sim,'extinct.S'] = length(extinct.species)
     sim.matrix[sim.matrix$sim.id==sim,'skipped.clades'] = skipped.clades # number of clades skipped over for analysis, summed over timeslices
     sim.matrix[sim.matrix$sim.id==sim,'skipped.times'] = skipped.times # number of time slices skipped over for analysis
-    sim.matrix[sim.matrix$sim.id==sim,'BK.reg'] = BK.reg # blomberg's K based on region
-    sim.matrix[sim.matrix$sim.id==sim,'BK.env'] = BK.env # blomberg's K based on environment
+    sim.matrix[sim.matrix$sim.id==sim,'BK.reg'] = NA # blomberg's K based on region
+    sim.matrix[sim.matrix$sim.id==sim,'BK.env'] = NA # blomberg's K based on environment
     
     write.csv(sim.matrix[sim.matrix$sim.id==sim,],paste("sim.matrix.output.",sim,"_time",t,".csv",sep=""),quote=F,row.names=F);
     sim.matrix[sim.matrix$sim.id==sim,]
