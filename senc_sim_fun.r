@@ -43,12 +43,10 @@ senc_sim_fun = function(sim.matrix, sim) {
                                        intensity = seq(temperate_disturb_intensity, tropical_disturb_intensity, length = num.of.bins + 1)) 
   }
   
-	extinct.pops.output.times = numeric()
+	
 	#print.times = seq(0,max.time,10)       #used to print optional updates of simulation progress to the console
-	tot.extinct.pops = 0
-
-	## hard toggles
-	niche.conserv = 'on' # toggle to turn niche conservatism 'on' or 'off'
+  extinct.pops.output.times = numeric()
+  tot.extinct.pops = 0
 
 	if (reg.of.origin == 'tropical') {reg.of.origin = num.of.bins - 1} else{}
 	if (reg.of.origin == 'temperate') {reg.of.origin = 1} else{}
@@ -98,9 +96,10 @@ senc_sim_fun = function(sim.matrix, sim) {
 	## start toggle-dependent functions
 
 	# mutation functions, which depend on the presence or absence of niche conservatism
-	if (niche.conserv == 'on') {mut.opt.fun = function(sigma_E.param,min.uni.param,max.uni.param,num.to.generate) { rnorm(num.to.generate,mean = 0, sd = sigma_E.param) } } else{}
-	if (niche.conserv == 'off') {mut.opt.fun = function(sigma_E.param,min.uni.param,max.uni.param,num.to.generate) { runif(num.to.generate,min = min.uni.param, max = max.uni.param) } } else{}
-
+	mut.opt.fun = function(sigma_E.param, min.uni.param, max.uni.param, num.to.generate) { 
+    rnorm(num.to.generate, mean = 0, sd = sigma_E.param) 
+	}
+	
 	## end toggle-dependent functions
 
 	## start individuals-dependent extinction, dispersal, and mutation probability functions
