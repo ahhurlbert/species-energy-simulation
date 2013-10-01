@@ -2,6 +2,14 @@ maxlik.betasplit.AH = function (phylo, up = 10, remove.outgroup = FALSE, confide
           conf.level = 0.95, size.bootstrap = 100) 
 {
   vrais.aldous.fin <- function(i, n, b) {
+    # Code below is from the original maxlik.betasplit function.
+    # Due to underflow errors, beta was switched out for lbeta in the 
+    # manner of Purvis et al. 2011, Phil Trans Roy Soc B 366: 2462-2477
+    # (Purvis, pers. comm.)
+    #aux <- beta(b + i + 1, b + n - i + 1)/beta(i + 1, n - 
+    #                                             i + 1)
+    #if (is.na(aux) | (aux == Inf)) 
+    #  aux <- (i/n)^b * (1 - i/n)^(b)
     aux <- exp(lbeta(b + i + 1, b + n - i + 1) - lbeta(i + 1, n - i + 1))
     return(aux)
   }
