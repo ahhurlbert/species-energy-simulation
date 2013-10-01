@@ -50,6 +50,30 @@ senc_sim_fun = function(sim.matrix, sim) {
   #--------------------------------------------------------------------------------------
   
   
+  ## Additional fixed and region-specific parameters 
+  #-------------------------------------------------
+  # abiotic environmental gradient, ranging from 0 to 40 C
+  min.env = 0
+  max.env = 40
+  
+  gamma = 0.1 # rate of decrease in extinction probability as population size increases
+  
+  total.mutations = 0 # the cumulative number of mutations
+
+  # regional environments and carrying capacities with and without an energy gradient
+  reg.E.K. = data.frame(region = 0:num.of.bins, reg.env = seq(min.env, max.env, length = num.of.bins + 1))
+  if (energy.gradient == 'on') { 
+    reg.E.K.$carry.cap = seq(min.K, max.K, length = num.of.bins + 1)
+  } 
+  if (energy.gradient == 'off') { 
+    reg.E.K.$carry.cap = rep(max.K, num.of.bins + 1)
+  } 
+  
+  ## end additional parameters --------------------------------------------------------
+  
+  
+  ## Initialize output variables, matrices, dataframes
+  #------------------------------------------------------------------------------------
 	# Set up initial matrix that hold extant populations including their region, name, environmental optimum, time of orgin, 
   # time of extinction, and population size. Also included are the region-level carrying capacity, environmental condition, 
   # and current species richness one matrix for all regions
@@ -62,7 +86,11 @@ senc_sim_fun = function(sim.matrix, sim) {
                                 'time.of.extinction',
                                 'time.of.sp.origin',
                                 'time.of.sp.extinction')
-
+  # environmental optimum for ancestor species and initial trait value in the ancestral environment
+  all.populations = rbind(all.populations, 
+                          c(reg.of.origin, 1, 1, reg.E.K.$reg.env[reg.E.K.$region == reg.of.origin], 0, max.time + 1, 0, max.time + 1)) 
+  all.populations = merge(all.populations, reg.E.K., by = 'region')
+    
 	# set up initial attributes for building the phylogeny
 	edge = as.data.frame(rbind(c(1, 2, 1, 1), c(1, 3, 1, 2))) 
   names(edge) = c('from.node', 'to.node', 'alive', 'spp')
@@ -80,57 +108,40 @@ senc_sim_fun = function(sim.matrix, sim) {
   # set up variables that will tract extinct species/populations
   extinct.pops.output.times = numeric()
   tot.extinct.pops = 0
+  # end of output initialization -------------------------------------------------------------------
   
-  	## additional parameters
-
-	# abiotic environments and carrying capacities
-	min.env = 0
-	max.env = 40
-	
-  # regional environments and carrying capacities with and without an energy gradient
-  reg.E.K. = data.frame(region = 0:num.of.bins, reg.env = seq(min.env, max.env, length = num.of.bins + 1))
-	if (energy.gradient == 'on') { 
-    reg.E.K.$carry.cap = seq(min.K, max.K, length=num.of.bins+1)
-  } 
-	if (energy.gradient == 'off') { 
-    reg.E.K.$carry.cap = rep(max.K, num.of.bins+1)
-  } 
-
-	# environmental optimum for ancestor species and initial trait value in the ancestral environment
-	all.populations = rbind(all.populations,c(reg.of.origin,1,1,reg.E.K.$reg.env[reg.E.K.$region == reg.of.origin],0,max.time+1,0,max.time+1)) 
-	all.populations = merge(all.populations,reg.E.K.,by='region')
-	all.populations = as.data.frame(all.populations)
-
-	min.uni = -25 max.uni=25 # the min and max values for the random uniform distribution when there is no niche conservatism
-
-	gamma = 0.1 # rate of decrease in extinction probability as population size increases
-
-	total.mutations = 0 # the cumulative number of mutations
-
-	## end additional parameters
-
-	## start toggle-dependent functions
-
-	# mutation functions, which depend on the presence or absence of niche conservatism
-	mut.opt.fun = function(sigma_E.param, min.uni.param, max.uni.param, num.to.generate) { 
+  
+  #Simulation process functions (trait mutation, extinction, dispersal, species mutation/speciation)
+  #------------------------------------------------------------------------------------------------
+	# environmental optimum heritability function, which varies with sigma_E
+	mut.opt.fun = function(sigma_E.param, num.to.generate) { 
     rnorm(num.to.generate, mean = 0, sd = sigma_E.param) 
 	}
+  
+  # extinction function a negative exponential function of population size
+  extinction.fun = function (gamma.param, population.size) { 
+    exp(-gamma.param * population.size) 
+	}
 	
-	## end toggle-dependent functions
+  # dispersal function
+  dispersal.fun = function (population.size, beta.param) { 
+    apply(as.matrix(population.size), 1, function(p) sum(rbinom(p, 1, beta.param))) 
+	}
+  
+	# mutation function leading to differentiated species
+  mutation.fun = function (population.size, alpha.param) { 
+    apply(as.matrix(population.size), 1, function(p) sum(rbinom(p, 1, alpha.param))) 
+	}
 
-	## start individuals-dependent extinction, dispersal, and mutation probability functions
+  # environmental fit function used in determining population sizes
+  env.fit.fun = function (w.param,E,spp.opt) { 
+    exp(-(spp.opt - E)^2/(w.param^2)) 
+  }
+  # end simulation functions -----------------------------------------------------------------
 
-	extinction.fun = function (gamma.param,population.size) { exp(-gamma.param*population.size) }
-	dispersal.fun = function (population.size,beta.param) { apply(as.matrix(population.size), 1, function(p) sum(rbinom(p, 1, beta.param))) }
-	mutation.fun = function (population.size,alpha.param) { apply(as.matrix(population.size), 1, function(p) sum(rbinom(p, 1, alpha.param))) }
 
-	## end individuals-dependent extinction, dispersal, and mutation probability functions
-
-	## environmental fit function used in determining population sizes
-	env.fit.fun = function (w.param,E,spp.opt) { exp(-(spp.opt - E)^2/(w.param^2)) }
-
-	#### start main time loop
-
+	# Start main time loop
+  #---------------------
 	for (curr.time in 1:max.time) {
 
 		## update population sizes
@@ -265,7 +276,7 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 	} 
 
-	#### end main time loop
+	#### end main time loop ---------------------------------------------------------------------
 
 	colnames(time.richness) = c('time','region','spp.rich','reg.env')
 	time.richness = as.data.frame(time.richness)
