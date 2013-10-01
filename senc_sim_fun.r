@@ -289,59 +289,73 @@ senc_sim_fun = function(sim.matrix, sim) {
 		if (tot.richness >= max.richness) {break} else{}
 
 	} 
+	# end main time loop ---------------------------------------------------------------------
 
-	#### end main time loop ---------------------------------------------------------------------
-
-	colnames(time.richness) = c('time','region','spp.rich','reg.env')
+  
+	# Preparing simulation output
+  # ----------------------------------------------------------------------------
+  colnames(time.richness) = c("time", "region", "spp.rich", "reg.env")
 	time.richness = as.data.frame(time.richness)
 
 	## collect all extinct populations and combine with the current all.populations
-
 	correct.num.rows = tot.extinct.pops + nrow(all.populations)
 
-	if (length(extinct.pops.output.times)>0) {
-
+	if (length(extinct.pops.output.times) > 0) {
 		all.pops.row.id = 1
-		all.pops.out = as.data.frame(matrix(c(-999),ncol=10,nrow=correct.num.rows))
+		all.pops.out = as.data.frame(matrix(-999, ncol=10, nrow = correct.num.rows))
 		colnames(all.pops.out) = colnames(all.populations)
-		all.pops.out[all.pops.row.id:nrow(all.populations),] = all.populations
+		all.pops.out[all.pops.row.id:nrow(all.populations), ] = all.populations
 		all.pops.row.id = all.pops.row.id + nrow(all.populations)
 
 		for (out.times in extinct.pops.output.times) {
-
 			print(c(all.pops.row.id,date()))
 			extinct.in = read.csv(paste("temp.extinct.sim.",sim,".time.",out.times,".csv",sep=""),header=T)
-			all.pops.out[all.pops.row.id:(all.pops.row.id + nrow(extinct.in) - 1),] = extinct.in
+			all.pops.out[all.pops.row.id:(all.pops.row.id + nrow(extinct.in) - 1), ] = extinct.in
 			all.pops.row.id = all.pops.row.id + nrow(extinct.in)
 			rm('extinct.in')
-
 		}
 
 		all.populations = all.pops.out
-		spp.extinct.times = as.matrix(tapply(all.populations$time.of.sp.extinction,all.populations$spp.name,FUN=min)) 
-		spp.extinct.times = cbind(as.numeric(rownames(spp.extinct.times)),spp.extinct.times[,1]) colnames(spp.extinct.times) = c('spp.name','time.of.sp.extinction')
-		all.populations = all.populations[,-which(colnames(all.populations)=='time.of.sp.extinction')]
-		all.populations = merge(all.populations,spp.extinct.times,by='spp.name')
+		spp.extinct.times = as.matrix(tapply(all.populations$time.of.sp.extinction, all.populations$spp.name, FUN = min)) 
+		spp.extinct.times = cbind(as.numeric(rownames(spp.extinct.times)), spp.extinct.times[, 1]) 
+    colnames(spp.extinct.times) = c("spp.name", "time.of.sp.extinction")
+		all.populations = all.populations[ , -which(colnames(all.populations) == "time.of.sp.extinction")]
+		all.populations = merge(all.populations, spp.extinct.times, by = "spp.name")
 
-	} else{}
+	} # end if 
 
-	print(c('this should be zero',correct.num.rows - nrow(subset(all.populations,spp.name != -999)))) # this should be zero
+	print(c('this should be zero', correct.num.rows - nrow(subset(all.populations, spp.name != -999)))) # this should be zero
 
-	all.populations = subset(all.populations,region %in% 1:(num.of.bins-1))
+	all.populations = subset(all.populations, region %in% 1:(num.of.bins - 1))
 
 	## write outputs
 
 	phylo.out = make.phylo.jimmy.fun(t = curr.time, edge.length.out = edge.length, edge.out = edge ,stem.depth.out = stem.depth )
-	write.csv(all.populations,paste("SENC_all.pops_sim",sim,".csv",sep=""),quote=F,row.names=F)
-	write.csv(time.richness,paste("SENC_time.rich_sim",sim,".csv",sep=""),quote=F,row.names=F)
-	write.tree(phylo.out,paste("SENC_phylo_sim",sim,".tre",sep=""))
-	end.params = data.frame(sim.id=sim,status='completed',reg.of.origin=region.of.origin,w=w,alpha=alpha,beta=beta,sigma_E=sigma_E,carry.cap=carry.cap,
-                          energy.gradient=energy.gradient,max.K=max.K,num.of.bins=num.of.bins,max.time=max.time,max.richness=max.richness,temperate_disturb_intensity = temperate_disturb_intensity,
-                          tropical_disturb_intensity = tropical_disturb_intensity,disturb_frequency=disturb_frequency) 
-	write.csv(end.params,paste("SENC_params.out_sim",sim,".csv",sep=""),quote=F,row.names=F)
+	write.csv(all.populations, paste("SENC_all.pops_sim", sim, ".csv", sep=""), quote = F, row.names = F)
+	write.csv(time.richness, paste("SENC_time.rich_sim", sim, ".csv", sep=""), quote = F, row.names = F)
+	write.tree(phylo.out, paste("SENC_phylo_sim", sim, ".tre", sep = ""))
+	end.params = data.frame(sim.id = sim,
+                          status = 'completed',
+                          reg.of.origin = region.of.origin,
+                          w= w,
+                          alpha = alpha,
+                          beta = beta,
+                          sigma_E = sigma_E,
+                          carry.cap = carry.cap,
+                          energy.gradient = energy.gradient,
+                          max.K = max.K,
+                          num.of.bins = num.of.bins,
+                          max.time = max.time,
+                          max.richness = max.richness,
+                          temperate_disturb_intensity = temperate_disturb_intensity,
+                          tropical_disturb_intensity = tropical_disturb_intensity,
+                          disturb_frequency = disturb_frequency) 
+	write.csv(end.params,paste("SENC_params.out_sim", sim, ".csv", sep = ""), quote = F, row.names = F)
 
-	return(list(all.populations=all.populations,time.richness=time.richness,phylo.out=phylo.out,params.out=end.params))
-
+	return(list(all.populations = all.populations, 
+              time.richness = time.richness,
+              phylo.out = phylo.out,
+              params.out = end.params))
 
 } # end senc_sim_fun
 
