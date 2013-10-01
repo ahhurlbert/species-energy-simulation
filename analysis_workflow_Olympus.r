@@ -1,11 +1,19 @@
 #!/usr/bin/env Rscript
 
-sim = commandArgs();
-sim = as.numeric(sim[length(sim)]);
+local = 1; # toggle to 1 to run analyses locally and to 0 to run analyses on the olympus cluster
 
+if (local == 0) {
+  sim = commandArgs();
+  sim = as.numeric(sim[length(sim)]);
+}
+  
 # Choose number of time slices per simulation to analyze
 num.of.time.slices = -999; # use -999 if you want to define specific time slices
+# which.time.slices is (apparently) only for specifying particular, unevenly spaced time slices;
+# if not being used it should be set to -999
 which.time.slices = -999;
+# time.sequence is (apparently) for when the time slices occur for a regular interval; set to -999 if not being used
+# Note that due to the slow calculation of tree imbalance (beta) for large trees, it may be best to specify only ~20 time slices
 time.sequence = seq(2,300,by=2); # for time scenario sims
 #time.sequence = seq(1000,100000,length=100); # for energy gradient sims
 
@@ -24,27 +32,40 @@ if(Allen==1) {
   Rlib.location = "C:/program files/R/R-2.15.2/library"
   sim_dir = "C:/SENCoutput"
   analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses"
-} else {
-  Rlib.location = "/pic/people/steg815/Rlibs"}
+}
 
-print(Rlib.location);
-#print(length(list.files(Rlib.location)));
+if (Allen == 0 & local ==1) {
+  Rlib.location = NULL
+  setwd('C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation')
+  sim_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204" #wherever all of your zipped output files are
+  analysis_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204" #wherever you want to store the results of these analyses
+}
+
+if (Allen ==0 & local == 0) { 
+  Rlib.location = "/pic/people/steg815/Rlibs" 
+  sim_dir = getwd()
+  analysis_dir = sim_dir
+}
+
 
 # Simulation workflow
 
 #(2) load simulation and analysis functions
-library(mnormt,lib.loc="/pic/people/steg815/Rlibs");
-library(rgl,lib.loc="/pic/people/steg815/Rlibs");
-library(ape,lib.loc="/pic/people/steg815/Rlibs");
-library(permute,lib.loc="/pic/people/steg815/Rlibs");
-library(nlme,lib.loc="/pic/people/steg815/Rlibs");
-library(vegan,lib.loc="/pic/people/steg815/Rlibs");
-library(picante,lib.loc="/pic/people/steg815/Rlibs");
-library(mvtnorm,lib.loc="/pic/people/steg815/Rlibs");
-library(caper,lib.loc="/pic/people/steg815/Rlibs");
-library(paleotree,lib.loc="/pic/people/steg815/Rlibs");
-library(plyr,lib.loc="/pic/people/steg815/Rlibs");
-library(phytools, lib.loc="/pic/people/steg815/Rlibs");
+library(mnormt,lib.loc=Rlib.location);
+library(rgl,lib.loc=Rlib.location);
+library(ape,lib.loc=Rlib.location);
+library(permute,lib.loc=Rlib.location);
+library(nlme,lib.loc=Rlib.location);
+library(vegan,lib.loc=Rlib.location);
+library(picante,lib.loc=Rlib.location);
+library(mvtnorm,lib.loc=Rlib.location);
+library(caper,lib.loc=Rlib.location);
+library(paleotree,lib.loc=Rlib.location);
+library(plyr,lib.loc=Rlib.location);
+library(phytools, lib.loc=Rlib.location);
+library(apTreeshape, lib.loc=Rlib.location);
+
+package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools','apTreeshape');
 
 source('reg_calc_and_analysis.r');
 source('make.phylo.jimmy.fun.r');
@@ -53,6 +74,13 @@ source('clade.origin.corr.plot.r');
 source('clade.exmpl.figs.r');
 source('extinct.calc.r');
 source('unzipping_files.r');
+
+if (local == 1) {
+  library(foreach, lib.loc=Rlib.location);
+  library(doParallel, lib.loc=Rlib.location);
+  cl = makeCluster(2);
+  registerDoParallel(cl);
+}
 
 #(3) read in master simulation matrix with chosen parameter combinations;
 # then add fields for storing output summary
@@ -69,10 +97,11 @@ trop.orig.extreme = 3;
 temp.orig.extreme = 8;
 pre.equil.time = 5459;
 
+  rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.out', 'output', 'sim.results'))
   output = numeric();
   
   # (5) read in simulation results for specified simulation from the output zip file
-  sim.results = output.unzip(getwd(),sim)
+  sim.results = output.unzip(sim_dir,sim)
   
   if ( !is.null(sim.results) ) {
     all.populations = sim.results$all.populations
@@ -86,11 +115,15 @@ pre.equil.time = 5459;
     #if (time.richness$spp.rich[time.richness$time == pre.equil.time & time.richness$region == extreme.bin] > 5) {
     
     max.time.actual = max(time.richness$time);
-    # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally
-    if (num.of.time.slices == 1) { timeslices = pre.equil.time};
-    if (which.time.slices != -999  ) { timeslices = which.time.slices };
-    if (num.of.time.slices > 1) {timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0))};
-    if (time.sequence[1] != -999) {timeslices = subset(time.sequence,time.sequence <= max(time.richness$time))};
+    # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally (which.time.slices == -999)
+    # or use specified vector in which.time.slices
+    if (num.of.time.slices == 1) { 
+      timeslices = max.time.actual 
+    } else {
+      if (which.time.slices != -999 & num.of.time.slices == - 999) { timeslices = which.time.slices };
+      if (which.time.slices == -999 & num.of.time.slices > 1) {timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0))};
+      if (time.sequence[1] != -999) {timeslices = subset(time.sequence, time.sequence <= max.time.actual)};
+    }
     
     skipped.clades = 0
     skipped.times = ""
@@ -180,23 +213,34 @@ pre.equil.time = 5459;
             #Pybus & Harvey (2000)'s gamma statistic
             Gamma.stat = gammaStat(sub.clade.phylo)
             
+            #Calculate Blum & Francois (2006)'s Beta metric of tree imbalance using apTreeshape package
+            # --seems to bonk on very large phylogenies, so only try calculating for fewer than 6000 species
+            if(length(sub.phylo$tip.label) < 100000) {
+              tree.beta.out = maxlik.betasplit(sub.clade.phylo)
+              tree.beta = tree.beta.out$max_lik
+            } else {
+              tree.beta = NA
+            }
+            
             #Calculate Blomberg's K for two traits: environmental optimum, and mean region of occurrence
-            spp.traits = aggregate(sub.populations$region, by = list(sub.populations$spp.name, sub.populations$env.opt),
-                                   function(x) mean(x, na.rm=T))
-            names(spp.traits) = c('spp.name','env.opt','region')
+            #spp.traits = aggregate(sub.populations$region, by = list(sub.populations$spp.name, sub.populations$env.opt),
+            #                       function(x) mean(x, na.rm=T))
+            #names(spp.traits) = c('spp.name','env.opt','region')
             
-            spp.env = spp.traits$env.opt
-            names(spp.env) = spp.traits$spp.name
-            BK.env = phylosig(sub.clade.phylo, spp.env[sub.clade.phylo$tip.label], method="K")
+            #spp.env = spp.traits$env.opt
+            #names(spp.env) = spp.traits$spp.name
+            #BK.env = phylosig(sub.clade.phylo, spp.env[sub.clade.phylo$tip.label], method="K")
             
-            spp.reg = spp.traits$region
-            names(spp.reg) = spp.traits$spp.name
-            BK.reg = phylosig(sub.clade.phylo, spp.reg[sub.clade.phylo$tip.label], method="K")
+            #spp.reg = spp.traits$region
+            #names(spp.reg) = spp.traits$spp.name
+            #BK.reg = phylosig(sub.clade.phylo, spp.reg[sub.clade.phylo$tip.label], method="K")
             
             output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
                                          clade.richness = length(unique(sub.populations$spp.name)), 
-                                         BK.env = BK.env , BK.reg = BK.reg))
+                                         #BK.env = BK.env , BK.reg = BK.reg, 
+                                         tree.beta = tree.beta))
             print(paste(sim,sub.clade.loop.end,c,t,date(),length(sub.clade.phylo$tip.label),sep="   "));
+            flush.console();
           } # end third else
         } # end sub clade for loop
       } # end second else
