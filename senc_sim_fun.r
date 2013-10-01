@@ -44,7 +44,7 @@ senc_sim_fun = function(sim.matrix, sim) {
   }
   
 	extinct.pops.output.times = numeric()
-	print.times = seq(0,max.time,10)
+	#print.times = seq(0,max.time,10)       #used to print optional updates of simulation progress to the console
 	tot.extinct.pops = 0
 
 	## hard toggles
@@ -234,7 +234,7 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 		tot.richness = length(unique(all.populations$spp.name[all.populations$extant==1]))
 
-		if (is.element(curr.time,print.times)==T) {print(c(curr.time,nrow(all.populations),date(),tot.richness))} else{}
+		#if (is.element(curr.time,print.times)==T) {print(c(curr.time,nrow(all.populations),date(),tot.richness))} else{}
 
 		if (length(all.populations$extant[all.populations$extant==0]) > 500) {
 
