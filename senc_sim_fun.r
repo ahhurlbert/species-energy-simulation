@@ -4,7 +4,7 @@ senc_sim_fun = function(sim.matrix, sim) {
 
   # Assign simulation parameters from the sim.matrix based on the sim.id
   # --------------------------------------------------------------------
-  reg.of.origin = sim.matrix$reg.of.origin[sim.matrix$sim.id == sim]  #'temperate' or 'tropical'
+  region.of.origin = sim.matrix$reg.of.origin[sim.matrix$sim.id == sim]  #'temperate' or 'tropical'
   
   w = sim.matrix$w[sim.matrix$sim.id == sim]  #strength of environmental filtering
   
@@ -48,8 +48,8 @@ senc_sim_fun = function(sim.matrix, sim) {
   extinct.pops.output.times = numeric()
   tot.extinct.pops = 0
 
-	if (reg.of.origin == 'tropical') {reg.of.origin = num.of.bins - 1} else{}
-	if (reg.of.origin == 'temperate') {reg.of.origin = 1} else{}
+	if (region.of.origin == 'tropical') {reg.of.origin = num.of.bins - 1} else{}
+	if (region.of.origin == 'temperate') {reg.of.origin = 1} else{}
 
 	## setup initial matrix that hold extant populations including their region, name, environmental optimum, time of orgin, time of extinction, and population size. Also included are the region-level carrying capacity, environmental condition, and current species richness one matrix for all regions
 	all.populations = matrix(c(-999),nrow=0,ncol=8)
@@ -81,9 +81,6 @@ senc_sim_fun = function(sim.matrix, sim) {
 	all.populations = rbind(all.populations,c(reg.of.origin,1,1,reg.E.K.$reg.env[reg.E.K.$region == reg.of.origin],0,max.time+1,0,max.time+1)) 
 	all.populations = merge(all.populations,reg.E.K.,by='region')
 	all.populations = as.data.frame(all.populations)
-
-	if (reg.of.origin == 1) {reg.of.origin = 'temperate'} else{} # for output file naming
-	if (reg.of.origin == (num.of.bins-1)) {reg.of.origin = 'tropical'} else{} # for output file naming
 
 	min.uni = -25 max.uni=25 # the min and max values for the random uniform distribution when there is no niche conservatism
 
@@ -294,7 +291,7 @@ senc_sim_fun = function(sim.matrix, sim) {
 	write.csv(all.populations,paste("SENC_all.pops_sim",sim,".csv",sep=""),quote=F,row.names=F)
 	write.csv(time.richness,paste("SENC_time.rich_sim",sim,".csv",sep=""),quote=F,row.names=F)
 	write.tree(phylo.out,paste("SENC_phylo_sim",sim,".tre",sep=""))
-	end.params = data.frame(sim.id=sim,status='completed',reg.of.origin=reg.of.origin,w=w,alpha=alpha,beta=beta,sigma_E=sigma_E,carry.cap=carry.cap,
+	end.params = data.frame(sim.id=sim,status='completed',reg.of.origin=region.of.origin,w=w,alpha=alpha,beta=beta,sigma_E=sigma_E,carry.cap=carry.cap,
                           energy.gradient=energy.gradient,max.K=max.K,num.of.bins=num.of.bins,max.time=max.time,max.richness=max.richness,temperate_disturb_intensity = temperate_disturb_intensity,
                           tropical_disturb_intensity = tropical_disturb_intensity,disturb_frequency=disturb_frequency) 
 	write.csv(end.params,paste("SENC_params.out_sim",sim,".csv",sep=""),quote=F,row.names=F)
