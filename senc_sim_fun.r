@@ -20,6 +20,8 @@ senc_sim_fun = function(sim.matrix, sim) {
   
   max.K = sim.matrix$max.K[sim.matrix$sim.id == sim]  #num of individuals that can be supported in region with the highest carrying capacity
   
+  min.K = max.K/10  #num of individuals that can be supported in region with the lowest carrying capacity when there's a gradient
+  
   num.of.bins = sim.matrix$num.of.bins[sim.matrix$sim.id == sim]  #number of spatial bins
   
   max.time = sim.matrix$max.time[sim.matrix$sim.id == sim]  #maximum number of time steps to run simulation
@@ -36,46 +38,63 @@ senc_sim_fun = function(sim.matrix, sim) {
   
   if (disturb_frequency == 0) {
     disturb_times = 0
-    reg.disturb.intensity = data.frame(region = 0:num.of.bins, intensity = rep(0,length = num.of.bins + 1)) 
+    reg.disturb.intensity = data.frame(region = 0:num.of.bins, intensity = rep(0, length = num.of.bins + 1)) 
   } else {
     disturb_times = seq(0, max.time, disturb_frequency)
     reg.disturb.intensity = data.frame(region = 0:num.of.bins, 
                                        intensity = seq(temperate_disturb_intensity, tropical_disturb_intensity, length = num.of.bins + 1)) 
   }
   
-	
-	#print.times = seq(0,max.time,10)       #used to print optional updates of simulation progress to the console
-  extinct.pops.output.times = numeric()
-  tot.extinct.pops = 0
+	if (region.of.origin == 'tropical') {reg.of.origin = num.of.bins - 1}
+	if (region.of.origin == 'temperate') {reg.of.origin = 1} 
+  #--------------------------------------------------------------------------------------
+  
+  
+	# Set up initial matrix that hold extant populations including their region, name, environmental optimum, time of orgin, 
+  # time of extinction, and population size. Also included are the region-level carrying capacity, environmental condition, 
+  # and current species richness one matrix for all regions
+	all.populations = matrix(-999, nrow = 0, ncol = 8)
+	colnames(all.populations) = c('region',
+                                'spp.name',
+                                'extant',
+                                'env.opt',
+                                'time.of.origin',
+                                'time.of.extinction',
+                                'time.of.sp.origin',
+                                'time.of.sp.extinction')
 
-	if (region.of.origin == 'tropical') {reg.of.origin = num.of.bins - 1} else{}
-	if (region.of.origin == 'temperate') {reg.of.origin = 1} else{}
-
-	## setup initial matrix that hold extant populations including their region, name, environmental optimum, time of orgin, time of extinction, and population size. Also included are the region-level carrying capacity, environmental condition, and current species richness one matrix for all regions
-	all.populations = matrix(c(-999),nrow=0,ncol=8)
-	colnames(all.populations) = c('region','spp.name','extant','env.opt','time.of.origin','time.of.extinction','time.of.sp.origin','time.of.sp.extinction')
-
-	## setup initial attributes for building the phylogeny
-	edge = as.data.frame(rbind(c(1,2,1,1), c(1,3,1,2))) colnames(edge) = c('from.node','to.node','alive','spp') edge
+	# set up initial attributes for building the phylogeny
+	edge = as.data.frame(rbind(c(1, 2, 1, 1), c(1, 3, 1, 2))) 
+  names(edge) = c('from.node', 'to.node', 'alive', 'spp')
 	edge.length = rep(NA, 2)
 	stem.depth = numeric(2)
 	next.node = 4
 	next.spp = 2
 
-	## setup initial matrix that will hold time and number of species
-	time.richness = matrix(c(-999),nrow=max.time*(num.of.bins+1),ncol=4)
+	# set up initial matrix that will hold time and number of species
+	time.richness = matrix(-999, nrow = max.time*(num.of.bins + 1), ncol = 4)
 	time.rich.row.id = 1
 
-	## additional parameters
+  #print.times = seq(0,max.time,10)       #used to print optional updates of simulation progress to the console
+  
+  # set up variables that will tract extinct species/populations
+  extinct.pops.output.times = numeric()
+  tot.extinct.pops = 0
+  
+  	## additional parameters
 
 	# abiotic environments and carrying capacities
 	min.env = 0
 	max.env = 40
-	min.K = max.K/10
-
-	if (energy.gradient == 'on') { reg.E.K. = cbind(seq(0,num.of.bins,1),seq(min.env,max.env,length=(num.of.bins+1)),seq(min.K,max.K,length=(num.of.bins+1))) } else{} # regional environments and individuals carrying capacities with energy gradient
-	if (energy.gradient == 'off') { reg.E.K. = cbind(seq(0,num.of.bins,1),seq(min.env,max.env,length=(num.of.bins+1)),rep(max.K,(num.of.bins+1))) } else{} # regional environments and individuals carrying capacities with energy gradient
-	colnames(reg.E.K.) = c('region','reg.env','carry.cap') reg.E.K. = as.data.frame(reg.E.K.)
+	
+  # regional environments and carrying capacities with and without an energy gradient
+  reg.E.K. = data.frame(region = 0:num.of.bins, reg.env = seq(min.env, max.env, length = num.of.bins + 1))
+	if (energy.gradient == 'on') { 
+    reg.E.K.$carry.cap = seq(min.K, max.K, length=num.of.bins+1)
+  } 
+	if (energy.gradient == 'off') { 
+    reg.E.K.$carry.cap = rep(max.K, num.of.bins+1)
+  } 
 
 	# environmental optimum for ancestor species and initial trait value in the ancestral environment
 	all.populations = rbind(all.populations,c(reg.of.origin,1,1,reg.E.K.$reg.env[reg.E.K.$region == reg.of.origin],0,max.time+1,0,max.time+1)) 
