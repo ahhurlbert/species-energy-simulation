@@ -316,13 +316,14 @@ for (j in 1:4) {
     if(curr.metric == 'scaled.MRD.rich.slope') { 
       abline(h = seb.MRD.rich.slope.scaled, lty = 'dashed')
       legend('bottomright', c('zero sum', 'no zero sum', 'temperate origin', 'tropical origin', expression(italic(Sebastes))), 
-             lty = c('solid', 'dashed', 'solid', 'solid', 'dashed'), 
+             lty = c('solid', 'dashed', 'solid', 'solid', 'dashed'), y.intersp = 1.1,
              lwd = c(3, 3, 3, 3, 1), col = c('red', 'red', 'blue', 'red', 'black'), cex = 1.2)
-      xpos = 165.5
-      segments(xpos - x.offset, -.0064, xpos - x.offset + 5.5, -.0064, col = 'blue', lwd = 3)
-      segments(xpos - x.offset, -.0087, xpos - x.offset + 5.5, -.0087, col = 'blue', lty = 'dashed', lwd = 3)
-      segments(xpos - x.offset, -.011, xpos - x.offset + 5.5, -.011, col = 'blue', lty = 'dashed', lwd = 3)
-      segments(xpos - x.offset, -.0133, xpos - x.offset + 5.5, -.0133, col = 'red', lty = 'dashed', lwd = 3)
+      xpos = 159.6
+      seg.length = 6
+      segments(xpos - x.offset, -.00675, xpos - x.offset + seg.length, -.00675, col = 'blue', lwd = 3)
+      segments(xpos - x.offset, -.009, xpos - x.offset + seg.length, -.009, col = 'blue', lty = 'dashed', lwd = 3)
+      segments(xpos - x.offset, -.0112, xpos - x.offset + seg.length, -.0112, col = 'blue', lty = 'dashed', lwd = 3)
+      segments(xpos - x.offset, -.0134, xpos - x.offset + seg.length, -.0134, col = 'red', lty = 'dashed', lwd = 3)
     }
     if(curr.metric == 'tree.beta') { abline(h = seb.beta, lty = 'dashed') }
   } #end else 
