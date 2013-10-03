@@ -204,7 +204,7 @@ error = 2 # error bars in SD units (+/-)
 # Plotting metrics over the course of the simulation: global richness, the latitude-richness correlation 
 # Means +/- 2 SD are shown.
 pdf(paste(analysis_dir,'/rich_latrich_thru_time_',Sys.Date(), '.pdf', sep = ""), height = 5, width = 10)
-par.thrutime = par(mfrow = c(1, 2), mar = c(5, 6, 1, 1), oma = c(3, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+par(mfrow = c(1, 2), mar = c(5, 6, 1, 1), oma = c(3, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 x.offset = min(Ttemp.metrics.mean$time, na.rm = T)
 
@@ -243,17 +243,17 @@ points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), log10(
 points(Ttemp.metrics.mean$time - x.offset, log10(Ttemp.metrics.mean[, 'global.richness']), type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - x.offset, line = 2.5, col = 'gray50')
-mtext('(a)', 3, adj=0, outer=T, cex = 2)
+mtext("(a)", 3, adj=0, outer=T, cex = 2)
 
-legend('bottomright', c('zero sum', 'no zero sum', 'temperate origin', 'tropical origin'), 
+legend('bottomright', c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin'), 
        lty = c('solid', 'dashed', 'solid', 'solid'), y.intersp = 1.1,
-       lwd = 3, col = c('red', 'red', 'blue', 'red'), cex = 1.2)
+       lwd = 3, col = c('red', 'red', 'red', 'blue'), cex = 1.2)
 xpos = 150.2
 seg.length = 8
 segments(xpos - x.offset, 2.32, xpos - x.offset + seg.length, 2.32, col = 'blue', lwd = 3)
 segments(xpos - x.offset, 2.06, xpos - x.offset + seg.length, 2.06, col = 'blue', lty = 'dashed', lwd = 3)
-segments(xpos - x.offset, 1.81, xpos - x.offset + seg.length, 1.81, col = 'blue', lty = 'dashed', lwd = 3)
-segments(xpos - x.offset, 1.56, xpos - x.offset + seg.length, 1.56, col = 'red', lty = 'dashed', lwd = 3)
+segments(xpos - x.offset, 1.81, xpos - x.offset + seg.length, 1.81, col = 'red', lty = 'dashed', lwd = 3)
+segments(xpos - x.offset, 1.56, xpos - x.offset + seg.length, 1.56, col = 'blue', lty = 'dashed', lwd = 3)
 
 
 ## (b) latitude-richness correlation through time
@@ -338,15 +338,15 @@ seb.MRD.rich.slope = coefficients(lm(MRD ~ S, data = output2))[2]
 seb.MRD.rich.slope.scaled = seb.MRD.rich.slope / max(root.dist)
 
 # plot
-pdf(paste(analysis_dir, '/MRDrich_beta_thru_time_', Sys.Date(), '.pdf', sep = ""), height = 8, width = 10)
-par(par.thrutime)
+pdf(paste(analysis_dir, '/MRDrich_beta_thru_time_', Sys.Date(), '.pdf', sep = ""), height = 5, width = 10)
+par(mfrow = c(1, 2), mar = c(5, 6, 1, 1), oma = c(3, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 x.offset = min(Ttemp.metrics.mean$time, na.rm = T)
   
 plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'scaled.MRD.rich.slope'], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
-     ylim = range(c(trop.metrics[, 'scaled.MRD.rich.slope', ], temp.metrics[, 'scaled.MRD.rich.slope', ], yaxt = "n",
+     ylim = range(c(trop.metrics[, 'scaled.MRD.rich.slope', ], temp.metrics[, 'scaled.MRD.rich.slope', ], 
                     Ttrop.metrics[, 'scaled.MRD.rich.slope', ], Ttemp.metrics[, 'scaled.MRD.rich.slope', ]), na.rm= T), type = "n",
-     ylab = metric.labels[metric.names == 'scaled.MRD.rich.slope'], xlab = "")
+     ylab = metric.labels[metric.names == 'scaled.MRD.rich.slope'], xlab = "", yaxt = "n")
 axis(2, at = c(-.015,-.01,-.005,0,.005), labels = c(-15, -10, -5, 0, 5))
 polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
         c(trop.metrics.mean[, 'scaled.MRD.rich.slope'] - error*trop.metrics.sd[, 'scaled.MRD.rich.slope'], 
@@ -378,20 +378,21 @@ points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
+mtext("(a)", 3, adj=0, outer=T, cex = 2)
 
 # empirical value
 abline(h = seb.MRD.rich.slope.scaled, lty = 'dashed')
 
 # legend
-legend('bottomright', c('zero sum', 'no zero sum', 'temperate origin', 'tropical origin', expression(italic(Sebastes))), 
-       lty = c('solid', 'dashed', 'solid', 'solid', 'dashed'), y.intersp = 1.1,
-       lwd = c(3, 3, 3, 3, 1), col = c('red', 'red', 'blue', 'red', 'black'), cex = 1.2)
-xpos = 159.6
-seg.length = 6
+legend('bottomright', c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin', expression(italic(Sebastes))), 
+       lty = c('solid', 'dashed', 'solid', 'solid', 'dashed'), y.intersp = 1,
+       lwd = c(3, 3, 3, 3, 1), col = c('red', 'red', 'red', 'blue', 'black'), cex = 1.2)
+xpos = 150.2
+seg.length = 8
 segments(xpos - x.offset, -.00675, xpos - x.offset + seg.length, -.00675, col = 'blue', lwd = 3)
 segments(xpos - x.offset, -.009, xpos - x.offset + seg.length, -.009, col = 'blue', lty = 'dashed', lwd = 3)
-segments(xpos - x.offset, -.0112, xpos - x.offset + seg.length, -.0112, col = 'blue', lty = 'dashed', lwd = 3)
-segments(xpos - x.offset, -.0134, xpos - x.offset + seg.length, -.0134, col = 'red', lty = 'dashed', lwd = 3)
+segments(xpos - x.offset, -.0112, xpos - x.offset + seg.length, -.0112, col = 'red', lty = 'dashed', lwd = 3)
+segments(xpos - x.offset, -.0134, xpos - x.offset + seg.length, -.0134, col = 'blue', lty = 'dashed', lwd = 3)
 
 
 ## (b) beta (tree imbalance)
@@ -435,7 +436,8 @@ mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), li
 # empirical value
 abline(h = seb.beta, lty = 'dashed') 
   
-mtext("Time (x1000, Energy Gradient)", 1, outer=T, cex = 1.3, line = 1) 
-mtext("Time (No Energy Gradient)", 1, outer = T, cex = 1.3, line = 2.75, col = 'gray50')
+mtext("Time (x1000, zero sum)", 1, outer=T, cex = 1.3, line = 0) 
+mtext("Time (no zero sum)", 1, outer = T, cex = 1.3, line = 1.25, col = 'gray50')
+mtext("(b)", 3, adj=0.5, outer=T, cex = 2)
 dev.off()
 
