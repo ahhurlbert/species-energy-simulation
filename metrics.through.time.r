@@ -204,7 +204,7 @@ error = 2 # error bars in SD units (+/-)
 # Plotting metrics over the course of the simulation: global richness, the latitude-richness correlation 
 # Means +/- 2 SD are shown.
 pdf(paste(analysis_dir,'/rich_latrich_thru_time_',Sys.Date(), '.pdf', sep = ""), height = 5, width = 10)
-par.thrutime = par(mfrow = c(1, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+par.thrutime = par(mfrow = c(1, 2), mar = c(5, 6, 1, 1), oma = c(3, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 x.offset = min(Ttemp.metrics.mean$time, na.rm = T)
 
@@ -243,16 +243,17 @@ points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), log10(
 points(Ttemp.metrics.mean$time - x.offset, log10(Ttemp.metrics.mean[, 'global.richness']), type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - x.offset, line = 2.5, col = 'gray50')
+mtext('(a)', 3, adj=0, outer=T, cex = 2)
 
-legend('bottomright', c('zero sum', 'no zero sum', 'temperate origin', 'tropical origin')), 
+legend('bottomright', c('zero sum', 'no zero sum', 'temperate origin', 'tropical origin'), 
        lty = c('solid', 'dashed', 'solid', 'solid'), y.intersp = 1.1,
        lwd = 3, col = c('red', 'red', 'blue', 'red'), cex = 1.2)
-xpos = 159.6
-seg.length = 6
-segments(xpos - x.offset, 2.4, xpos - x.offset + seg.length, 2.4, col = 'blue', lwd = 3)
-segments(xpos - x.offset, 2.1, xpos - x.offset + seg.length, 2.1, col = 'blue', lty = 'dashed', lwd = 3)
-segments(xpos - x.offset, 1.8, xpos - x.offset + seg.length, 1.8, col = 'blue', lty = 'dashed', lwd = 3)
-segments(xpos - x.offset, 1.6, xpos - x.offset + seg.length, 1.6, col = 'red', lty = 'dashed', lwd = 3)
+xpos = 150.2
+seg.length = 8
+segments(xpos - x.offset, 2.32, xpos - x.offset + seg.length, 2.32, col = 'blue', lwd = 3)
+segments(xpos - x.offset, 2.06, xpos - x.offset + seg.length, 2.06, col = 'blue', lty = 'dashed', lwd = 3)
+segments(xpos - x.offset, 1.81, xpos - x.offset + seg.length, 1.81, col = 'blue', lty = 'dashed', lwd = 3)
+segments(xpos - x.offset, 1.56, xpos - x.offset + seg.length, 1.56, col = 'red', lty = 'dashed', lwd = 3)
 
 
 ## (b) latitude-richness correlation through time
@@ -293,8 +294,9 @@ points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'r.lat.rich'], t
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
 
-mtext("Time (x1000, zero sum)", 1, outer=T, cex = 1.3, line = 1) 
-mtext("Time (no zero sum)", 1, outer = T, cex = 1.3, line = 2.75, col = 'gray50')
+mtext("Time (x1000, zero sum)", 1, outer=T, cex = 1.3, line = 0) 
+mtext("Time (no zero sum)", 1, outer = T, cex = 1.3, line = 1.25, col = 'gray50')
+mtext("(b)", 3, adj=0.5, outer=T, cex = 2)
 dev.off()
 
 
