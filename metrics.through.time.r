@@ -142,9 +142,7 @@ metric.labels = c('Global richness',
                   'MRD-richness slope')
 
 
-# Plot 4 metrics over the course of the simulation: global richness, the latitude-richness correlation, 
-# gamma, and the MRD-richness correlation. Means +/- 2 SD are shown.
-pdf(paste(analysis_dir,'/metrics_thru_time_inc_Tscenario_',Sys.Date(),'_',min.num.regions,'.pdf',sep=""), height = 6, width = 8)
+# Plotting metrics over the course of the simulation: EXPLORATORY PLOTS
 par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 # Specify variables to plot here, and width of error bars
@@ -194,3 +192,98 @@ for (j in 1:4) {
 mtext("Time (x1000, Energy Gradient)", 1, outer=T, cex = 1.75, line = 1.5) 
 mtext("Time (No Energy Gradient)", 1, outer = T, cex = 1.75, line = 3.5, col = 'gray50')
 dev.off()
+
+
+
+#-------------------------------------------------------------------------------------------------------
+# FINAL FIGURE
+# Plotting metrics over the course of the simulation: global richness, the latitude-richness correlation, 
+# the scaled MRD-richness slope, and tree imbalance (beta). Means +/- 2 SD are shown.
+pdf(paste(analysis_dir,'/metrics_thru_time_inc_Tscenario_',Sys.Date(),'_',min.num.regions,'.pdf',sep=""), height = 6, width = 7)
+par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 1.5, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+
+# Specify variables to plot here, and width of error bars
+names4plotting = c('global.richness','r.lat.rich', 'scaled.MRD.rich.slope', 'tree.beta')
+#names4plotting = c('r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
+#names4plotting = c('MRD.rich.slope', 'scaled.MRD.rich.slope','scaled.MRD.range','tree.beta')
+error = 2 # error bars in SD units (+/-)
+for (j in 1:4) {
+  curr.metric = names4plotting[j]
+  
+  if (curr.metric == 'global.richness') {
+    plot(trop.metrics.mean$time/1000, log10(trop.metrics.mean[, curr.metric]), xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
+         ylim = c(1.5, log10(max(Ttrop.metrics[, curr.metric, ], Ttemp.metrics[, curr.metric, ], na.rm= T))), type = "n",
+         ylab = expression(paste(plain(log[10]), " Global richness")), xlab = "")
+    polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
+            log10(c(trop.metrics.mean[, curr.metric] - error*trop.metrics.sd[, curr.metric], 
+              rev(trop.metrics.mean[, curr.metric] + error*trop.metrics.sd[, curr.metric]))), 
+            col = rgb(.8, 0, 0, .3), border = NA)
+    polygon(c(temp.metrics.mean$time/1000, rev(temp.metrics.mean$time/1000)), 
+            log10(c(temp.metrics.mean[, curr.metric] - error*temp.metrics.sd[, curr.metric], 
+              rev(temp.metrics.mean[, curr.metric] + error*temp.metrics.sd[, curr.metric]))), 
+            col = rgb(0, 0, .8, .3), border = NA)
+    points(trop.metrics.mean$time/1000, log10(trop.metrics.mean[, curr.metric]), type = 'l', col = 'red', lwd = 3)
+    points(temp.metrics.mean$time/1000, log10(temp.metrics.mean[, curr.metric]), type = 'l', col = 'blue', lwd = 3)
+    
+    par(new = T)
+    
+    plot(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), log10(Ttrop.metrics.mean[, curr.metric]), 
+         xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - min(Ttemp.metrics.mean$time, na.rm = T)), 
+         ylim = c(1.5, log10(max(c(Ttrop.metrics[, curr.metric, ], Ttemp.metrics[, curr.metric, ]), na.rm= T))), type = "n",
+         ylab = "", xlab = "", yaxt = "n", xaxt = "n")
+    polygon(c(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), rev(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T))), 
+            log10(c(Ttrop.metrics.mean[, curr.metric] - error*Ttrop.metrics.sd[, curr.metric], 
+              rev(Ttrop.metrics.mean[, curr.metric] + error*Ttrop.metrics.sd[, curr.metric]))), 
+            col = rgb(.8, 0, 0, .3), border = NA)
+    polygon(c(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), rev(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T))), 
+            log10(c(Ttemp.metrics.mean[, curr.metric] - error*Ttemp.metrics.sd[, curr.metric], 
+              rev(Ttemp.metrics.mean[, curr.metric] + error*Ttemp.metrics.sd[, curr.metric]))), 
+            col = rgb(0, 0, .8, .3), border = NA)
+    points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), log10(Ttrop.metrics.mean[, curr.metric]), type = 'l', col = 'red', lwd = 3, lty = 'dashed')
+    points(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), log10(Ttemp.metrics.mean[, curr.metric]), type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
+    alt.x.vals = c(120, 140, 160, 180)
+    mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
+    
+  } else {
+    plot(trop.metrics.mean$time/1000, trop.metrics.mean[, curr.metric], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
+         ylim = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ], 
+                        Ttrop.metrics[, curr.metric, ], Ttemp.metrics[, curr.metric, ]), na.rm= T), type = "n",
+         ylab = metric.labels[metric.names == curr.metric], xlab = "")
+    polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
+            c(trop.metrics.mean[, curr.metric] - error*trop.metrics.sd[, curr.metric], 
+              rev(trop.metrics.mean[, curr.metric] + error*trop.metrics.sd[, curr.metric])), 
+            col = rgb(.8, 0, 0, .3), border = NA)
+    polygon(c(temp.metrics.mean$time/1000, rev(temp.metrics.mean$time/1000)), 
+            c(temp.metrics.mean[, curr.metric] - error*temp.metrics.sd[, curr.metric], 
+              rev(temp.metrics.mean[, curr.metric] + error*temp.metrics.sd[, curr.metric])), 
+            col = rgb(0, 0, .8, .3), border = NA)
+    points(trop.metrics.mean$time/1000, trop.metrics.mean[, curr.metric], type = 'l', col = 'red', lwd = 3)
+    points(temp.metrics.mean$time/1000, temp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3)
+    
+    par(new = T)
+  
+    plot(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, curr.metric], 
+         xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - min(Ttemp.metrics.mean$time, na.rm = T)), 
+         ylim = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ], 
+                        Ttrop.metrics[, curr.metric, ], Ttemp.metrics[, curr.metric, ]), na.rm= T), type = "n",
+         ylab = "", xlab = "", yaxt = "n", xaxt = "n")
+    polygon(c(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), rev(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T))), 
+            c(Ttrop.metrics.mean[, curr.metric] - error*Ttrop.metrics.sd[, curr.metric], 
+              rev(Ttrop.metrics.mean[, curr.metric] + error*Ttrop.metrics.sd[, curr.metric])), 
+            col = rgb(.8, 0, 0, .3), border = NA)
+    polygon(c(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), rev(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T))), 
+            c(Ttemp.metrics.mean[, curr.metric] - error*Ttemp.metrics.sd[, curr.metric], 
+              rev(Ttemp.metrics.mean[, curr.metric] + error*Ttemp.metrics.sd[, curr.metric])), 
+            col = rgb(0, 0, .8, .3), border = NA)
+    points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, curr.metric], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
+    points(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), Ttemp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
+    alt.x.vals = c(120, 140, 160, 180)
+    mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
+    
+    if(curr.metric == 'gamma.stat') { abline(h = 0, lty = 'dashed')}
+  } 
+}
+mtext("Time (x1000, Energy Gradient)", 1, outer=T, cex = 1.3, line = 1) 
+mtext("Time (No Energy Gradient)", 1, outer = T, cex = 1.3, line = 2.75, col = 'gray50')
+dev.off()
+
