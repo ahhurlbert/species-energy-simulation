@@ -1,6 +1,6 @@
 ## code for relating various metrics of the root clade to time and making plots
 require(abind)
-
+require(apTreeshape)
 
 
 Allen = 0;
@@ -199,16 +199,49 @@ dev.off()
 # FINAL FIGURE
 # Plotting metrics over the course of the simulation: global richness, the latitude-richness correlation, 
 # the scaled MRD-richness slope, and tree imbalance (beta). Means +/- 2 SD are shown.
-pdf(paste(analysis_dir,'/metrics_thru_time_inc_Tscenario_',Sys.Date(),'_',min.num.regions,'.pdf',sep=""), height = 6, width = 7)
-par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 1.5, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+
+# First, calculate empirical values of beta and scaled MRD-richness slope for Sebastes
+phy = read.tree('Sebastes_tree_Ingram2011PRSB.phy')
+sebastes = read.csv('sebastes_data_for_allen.csv', header=T)
+#Drop non-NEP species (with no latitude data)
+nonNEPsp = as.character(sebastes[is.na(sebastes$min_latitude), 'X'])
+NEPphy = drop.tip(phy,nonNEPsp)
+
+seb.beta = maxlik.betasplit(NEPphy)$max_lik
+
+lat = 23:66 #latitudinal bins
+richness = sapply(lat, function(x) nrow(subset(sebastes, min_latitude <= x & max_latitude >= x)))
+
+phylo.bl1 <- compute.brlen(NEPphy, 1)
+all.dist <- dist.nodes(phylo.bl1)
+root.dist <- all.dist[length(NEPphy$tip.label)+1, 1:length(NEPphy$tip.label)]
+tips.to.root <- data.frame(spp.name=NEPphy$tip.label,root.dist)
+
+output = c()
+for (i in lat) {
+  species = subset(sebastes, min_latitude <= i & max_latitude >= i, select='X')
+  
+  #MRD
+  MRD.ini <- merge(species, tips.to.root, by.x="X", by.y="spp.name",sort = FALSE)
+  MRD <- mean(MRD.ini$root.dist)
+  output = rbind(output, c(i, MRD))
+}
+output2 = data.frame(cbind(output, richness))
+names(output2) = c('lat','MRD','S')
+
+seb.MRD.rich.slope = coefficients(lm(MRD ~ S, data = output2))[2]
+seb.MRD.rich.slope.scaled = seb.MRD.rich.slope / max(root.dist)
+
+
+pdf(paste(analysis_dir,'/metrics_thru_time_inc_Tscenario_',Sys.Date(),'_',min.num.regions,'.pdf',sep=""), height = 8, width = 10)
+par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 # Specify variables to plot here, and width of error bars
 names4plotting = c('global.richness','r.lat.rich', 'scaled.MRD.rich.slope', 'tree.beta')
-#names4plotting = c('r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
-#names4plotting = c('MRD.rich.slope', 'scaled.MRD.rich.slope','scaled.MRD.range','tree.beta')
 error = 2 # error bars in SD units (+/-)
 for (j in 1:4) {
   curr.metric = names4plotting[j]
+  x.offset = min(Ttemp.metrics.mean$time, na.rm = T)
   
   if (curr.metric == 'global.richness') {
     plot(trop.metrics.mean$time/1000, log10(trop.metrics.mean[, curr.metric]), xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
@@ -227,23 +260,23 @@ for (j in 1:4) {
     
     par(new = T)
     
-    plot(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), log10(Ttrop.metrics.mean[, curr.metric]), 
-         xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - min(Ttemp.metrics.mean$time, na.rm = T)), 
+    plot(Ttemp.metrics.mean$time - x.offset, log10(Ttrop.metrics.mean[, curr.metric]), 
+         xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - x.offset), 
          ylim = c(1.5, log10(max(c(Ttrop.metrics[, curr.metric, ], Ttemp.metrics[, curr.metric, ]), na.rm= T))), type = "n",
          ylab = "", xlab = "", yaxt = "n", xaxt = "n")
     polygon(c(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), rev(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T))), 
             log10(c(Ttrop.metrics.mean[, curr.metric] - error*Ttrop.metrics.sd[, curr.metric], 
               rev(Ttrop.metrics.mean[, curr.metric] + error*Ttrop.metrics.sd[, curr.metric]))), 
             col = rgb(.8, 0, 0, .3), border = NA)
-    polygon(c(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), rev(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T))), 
+    polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.offset)), 
             log10(c(Ttemp.metrics.mean[, curr.metric] - error*Ttemp.metrics.sd[, curr.metric], 
               rev(Ttemp.metrics.mean[, curr.metric] + error*Ttemp.metrics.sd[, curr.metric]))), 
             col = rgb(0, 0, .8, .3), border = NA)
     points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), log10(Ttrop.metrics.mean[, curr.metric]), type = 'l', col = 'red', lwd = 3, lty = 'dashed')
-    points(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), log10(Ttemp.metrics.mean[, curr.metric]), type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
+    points(Ttemp.metrics.mean$time - x.offset, log10(Ttemp.metrics.mean[, curr.metric]), type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
     alt.x.vals = c(120, 140, 160, 180)
-    mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
-    
+    mtext(alt.x.vals, 1, at = alt.x.vals - x.offset, line = 2.5, col = 'gray50')
+        
   } else {
     plot(trop.metrics.mean$time/1000, trop.metrics.mean[, curr.metric], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
          ylim = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ], 
@@ -262,8 +295,8 @@ for (j in 1:4) {
     
     par(new = T)
   
-    plot(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, curr.metric], 
-         xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - min(Ttemp.metrics.mean$time, na.rm = T)), 
+    plot(Ttemp.metrics.mean$time - x.offset, Ttrop.metrics.mean[, curr.metric], 
+         xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - x.offset), 
          ylim = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ], 
                         Ttrop.metrics[, curr.metric, ], Ttemp.metrics[, curr.metric, ]), na.rm= T), type = "n",
          ylab = "", xlab = "", yaxt = "n", xaxt = "n")
@@ -271,18 +304,29 @@ for (j in 1:4) {
             c(Ttrop.metrics.mean[, curr.metric] - error*Ttrop.metrics.sd[, curr.metric], 
               rev(Ttrop.metrics.mean[, curr.metric] + error*Ttrop.metrics.sd[, curr.metric])), 
             col = rgb(.8, 0, 0, .3), border = NA)
-    polygon(c(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), rev(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T))), 
+    polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.offset)), 
             c(Ttemp.metrics.mean[, curr.metric] - error*Ttemp.metrics.sd[, curr.metric], 
               rev(Ttemp.metrics.mean[, curr.metric] + error*Ttemp.metrics.sd[, curr.metric])), 
             col = rgb(0, 0, .8, .3), border = NA)
     points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, curr.metric], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
-    points(Ttemp.metrics.mean$time - min(Ttemp.metrics.mean$time, na.rm = T), Ttemp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
+    points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
     alt.x.vals = c(120, 140, 160, 180)
     mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
     
-    if(curr.metric == 'gamma.stat') { abline(h = 0, lty = 'dashed')}
-  } 
-}
+    if(curr.metric == 'scaled.MRD.rich.slope') { 
+      abline(h = seb.MRD.rich.slope.scaled, lty = 'dashed')
+      legend('bottomright', c('zero sum', 'no zero sum', 'temperate origin', 'tropical origin', expression(italic(Sebastes))), 
+             lty = c('solid', 'dashed', 'solid', 'solid', 'dashed'), 
+             lwd = c(3, 3, 3, 3, 1), col = c('red', 'red', 'blue', 'red', 'black'), cex = 1.2)
+      xpos = 165.5
+      segments(xpos - x.offset, -.0064, xpos - x.offset + 5.5, -.0064, col = 'blue', lwd = 3)
+      segments(xpos - x.offset, -.0087, xpos - x.offset + 5.5, -.0087, col = 'blue', lty = 'dashed', lwd = 3)
+      segments(xpos - x.offset, -.011, xpos - x.offset + 5.5, -.011, col = 'blue', lty = 'dashed', lwd = 3)
+      segments(xpos - x.offset, -.0133, xpos - x.offset + 5.5, -.0133, col = 'red', lty = 'dashed', lwd = 3)
+    }
+    if(curr.metric == 'tree.beta') { abline(h = seb.beta, lty = 'dashed') }
+  } #end else 
+} #end for
 mtext("Time (x1000, Energy Gradient)", 1, outer=T, cex = 1.3, line = 1) 
 mtext("Time (No Energy Gradient)", 1, outer = T, cex = 1.3, line = 2.75, col = 'gray50')
 dev.off()
