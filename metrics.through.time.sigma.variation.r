@@ -72,9 +72,9 @@ min.global.richness = 30
 Ktemp.sig1.metrics = metric.abind.new(Ktemp.sims.sig1, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
 Ktrop.sig1.metrics = metric.abind.new(Ktrop.sims.sig1, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
 Ktemp.sig3.metrics = metric.abind.new(Ktemp.sims.sig3, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
-Ktrop.sig3.metrics = metric.abind.new(Ktrop.sims.sig3, scenario = "T", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
+Ktrop.sig3.metrics = metric.abind.new(Ktrop.sims.sig3, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
 Ktemp.sig9.metrics = metric.abind.new(Ktemp.sims.sig9, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
-Ktrop.sig9.metrics = metric.abind.new(Ktrop.sims.sig9, scenario = "T", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
+Ktrop.sig9.metrics = metric.abind.new(Ktrop.sims.sig9, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
 
 #Function for calculating mean or SD for simulations with a minimum number of non-NA values at a given time step
 calc.meanSD = function(x, stat = 'mean', min.num.nonNA = 10) {
@@ -160,7 +160,7 @@ for (j in 1:6) {
   curr.metric = names4plotting[j]
 
   #Sigma_E = 1
-  plot(Ktrop.sig1.mean$time/1000, Ktrop.sig1.mean[, curr.metric], xlim = c(0, max(Ktrop.sig1.mean$time, na.rm=T)/1000), 
+  plot(Ktrop.sig1.mean$time/1000, Ktrop.sig1.mean[, curr.metric], xlim = c(0, max(Ktrop.sig3.mean$time, na.rm=T)/1000), 
        ylim = range(c( Ktemp.sig1.metrics[, curr.metric, ], 
                        Ktemp.sig3.metrics[, curr.metric, ],
                        Ktemp.sig9.metrics[, curr.metric, ]),na.rm= T), 
@@ -198,7 +198,7 @@ for (j in 1:6) {
   par(new = T)
   
   #sigma_E = 9
-  plot(Ktrop.sig9.mean$time/1000, Ktrop.sig9.mean[, curr.metric], xlim = c(0, max(Ktrop.sig9.mean$time, na.rm=T)/1000), 
+  plot(Ktrop.sig9.mean$time/1000, Ktrop.sig9.mean[, curr.metric], xlim = c(0, max(Ktrop.sig3.mean$time, na.rm=T)/1000), 
        ylim = range(c( Ktemp.sig1.metrics[, curr.metric, ], 
                        Ktemp.sig3.metrics[, curr.metric, ],
                        Ktemp.sig9.metrics[, curr.metric, ]),na.rm= T), 
