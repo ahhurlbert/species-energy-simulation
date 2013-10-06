@@ -1,7 +1,7 @@
 ## code for relating various metrics of the root clade to time and making plots
 require(abind)
 require(apTreeshape)
-
+require(ape)
 
 Allen = 0;
 
@@ -301,7 +301,8 @@ dev.off()
 
 
 # Figure 4
-# Plotting metrics over the course of the simulation: the scaled MRD-richness slope, and tree imbalance (beta). 
+# Plotting metrics over the course of the simulation: the scaled MRD-richness slope, and tree imbalance (beta),
+# PSV-richness slope, and gamma. 
 # Means +/- 2 SD are shown.
 
 
@@ -315,6 +316,9 @@ NEPphy = drop.tip(phy,nonNEPsp)
 # Beta
 seb.beta = maxlik.betasplit(NEPphy)$max_lik
 
+# Gamma
+seb.gamma = gammaStat(NEPphy)
+
 # MRD-richness
 lat = 23:66 #latitudinal bins
 richness = sapply(lat, function(x) nrow(subset(sebastes, min_latitude <= x & max_latitude >= x)))
@@ -327,22 +331,37 @@ tips.to.root <- data.frame(spp.name=NEPphy$tip.label,root.dist)
 output = c()
 for (i in lat) {
   species = subset(sebastes, min_latitude <= i & max_latitude >= i, select='X')
+  
+  #MRD
   MRD.ini <- merge(species, tips.to.root, by.x="X", by.y="spp.name",sort = FALSE)
   MRD <- mean(MRD.ini$root.dist)
-  output = rbind(output, c(i, MRD))
+  
+  #PSV
+  Vmatrix = vcv(NEPphy, corr=F)
+  psvs = matrix(NA, ncol=2)
+  
+  index = row.names(Vmatrix) %in% species$X
+  v.matrix = Vmatrix[index,index]
+  n = nrow(v.matrix)
+  psv = (n*sum(diag(v.matrix)) - sum(v.matrix))/(sum(diag(v.matrix))*(n-1))
+  
+  output = rbind(output, c(i, MRD, psv))
 }
 output2 = data.frame(cbind(output, richness))
-names(output2) = c('lat','MRD','S')
+names(output2) = c('lat','MRD','PSV','S')
 
 seb.MRD.rich.slope = coefficients(lm(MRD ~ S, data = output2))[2]
 seb.MRD.rich.slope.scaled = seb.MRD.rich.slope / max(root.dist)
+seb.PSV.rich.slope = coefficients(lm(PSV ~ S, data = output2))[2]
 
 # plot
-pdf(paste(analysis_dir, '/MRDrich_beta_thru_time_', Sys.Date(), '.pdf', sep = ""), height = 5, width = 10)
-par(mfrow = c(1, 2), mar = c(5, 6, 1, 1), oma = c(3, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+pdf(paste(analysis_dir, '/MRDrich_beta_thru_time_', Sys.Date(), '.pdf', sep = ""), height = 8, width = 10)
+par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(3, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 x.offset = min(Ttemp.metrics.mean$time, na.rm = T)
-  
+
+## (a) MRD-richness slope
+# zero sum results
 plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'scaled.MRD.rich.slope'], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
      ylim = range(c(trop.metrics[, 'scaled.MRD.rich.slope', ], temp.metrics[, 'scaled.MRD.rich.slope', ], 
                     Ttrop.metrics[, 'scaled.MRD.rich.slope', ], Ttemp.metrics[, 'scaled.MRD.rich.slope', ]), na.rm= T), type = "n",
@@ -361,6 +380,7 @@ points(temp.metrics.mean$time/1000, temp.metrics.mean[, 'scaled.MRD.rich.slope']
 
 par(new = T)
 
+# non-zero-sum results
 plot(Ttemp.metrics.mean$time - x.offset, Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'], 
      xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - x.offset), 
      ylim = range(c(trop.metrics[, 'scaled.MRD.rich.slope', ], temp.metrics[, 'scaled.MRD.rich.slope', ], 
@@ -432,12 +452,100 @@ points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'tree.beta'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
+mtext("(b)", 3, adj=0.5, outer=T, cex = 2)
 
 # empirical value
 abline(h = seb.beta, lty = 'dashed') 
-  
+
+
+## (c) PSV-richness slope
+# zero sum results
+plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'PSV.rich.slope'], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
+     ylim = range(c(trop.metrics[, 'PSV.rich.slope', ], temp.metrics[, 'PSV.rich.slope', ], 
+                    Ttrop.metrics[, 'PSV.rich.slope', ], Ttemp.metrics[, 'PSV.rich.slope', ]), na.rm= T), type = "n",
+     ylab = metric.labels[metric.names == 'PSV.rich.slope'], xlab = "", yaxt = "n")
+axis(2, at = c(-.015,-.01,-.005,0,.005), labels = c(-15, -10, -5, 0, 5))
+polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
+        c(trop.metrics.mean[, 'PSV.rich.slope'] - error*trop.metrics.sd[, 'PSV.rich.slope'], 
+          rev(trop.metrics.mean[, 'PSV.rich.slope'] + error*trop.metrics.sd[, 'PSV.rich.slope'])), 
+        col = rgb(.8, 0, 0, .3), border = NA)
+polygon(c(temp.metrics.mean$time/1000, rev(temp.metrics.mean$time/1000)), 
+        c(temp.metrics.mean[, 'PSV.rich.slope'] - error*temp.metrics.sd[, 'PSV.rich.slope'], 
+          rev(temp.metrics.mean[, 'PSV.rich.slope'] + error*temp.metrics.sd[, 'PSV.rich.slope'])), 
+        col = rgb(0, 0, .8, .3), border = NA)
+points(trop.metrics.mean$time/1000, trop.metrics.mean[, 'PSV.rich.slope'], type = 'l', col = 'red', lwd = 3)
+points(temp.metrics.mean$time/1000, temp.metrics.mean[, 'PSV.rich.slope'], type = 'l', col = 'blue', lwd = 3)
+
+par(new = T)
+
+# non-zero-sum results
+plot(Ttemp.metrics.mean$time - x.offset, Ttrop.metrics.mean[, 'PSV.rich.slope'], 
+     xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - x.offset), 
+     ylim = range(c(trop.metrics[, 'PSV.rich.slope', ], temp.metrics[, 'PSV.rich.slope', ], 
+                    Ttrop.metrics[, 'PSV.rich.slope', ], Ttemp.metrics[, 'PSV.rich.slope', ]), na.rm= T), type = "n",
+     ylab = "", xlab = "", yaxt = "n", xaxt = "n")
+polygon(c(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), rev(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T))), 
+        c(Ttrop.metrics.mean[, 'PSV.rich.slope'] - error*Ttrop.metrics.sd[, 'PSV.rich.slope'], 
+          rev(Ttrop.metrics.mean[, 'PSV.rich.slope'] + error*Ttrop.metrics.sd[, 'PSV.rich.slope'])), 
+        col = rgb(.8, 0, 0, .3), border = NA)
+polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.offset)), 
+        c(Ttemp.metrics.mean[, 'PSV.rich.slope'] - error*Ttemp.metrics.sd[, 'PSV.rich.slope'], 
+          rev(Ttemp.metrics.mean[, 'PSV.rich.slope'] + error*Ttemp.metrics.sd[, 'PSV.rich.slope'])), 
+        col = rgb(0, 0, .8, .3), border = NA)
+points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, 'PSV.rich.slope'], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
+points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'PSV.rich.slope'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
+alt.x.vals = c(120, 140, 160, 180)
+mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
+mtext("(c)", 3, adj=0, outer=F, cex = 2)
+
+# empirical value
+#abline(h = seb.PSV.rich.slope, lty = 'dashed')
+
+
+## (d) gamma
+# zero sum results
+plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'gamma.stat'], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
+     ylim = range(c(trop.metrics[, 'gamma.stat', ], temp.metrics[, 'gamma.stat', ], 
+                    Ttrop.metrics[, 'gamma.stat', ], Ttemp.metrics[, 'gamma.stat', ]), na.rm= T), type = "n",
+     ylab = metric.labels[metric.names == 'gamma.stat'], xlab = "")
+polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
+        c(trop.metrics.mean[, 'gamma.stat'] - error*trop.metrics.sd[, 'gamma.stat'], 
+          rev(trop.metrics.mean[, 'gamma.stat'] + error*trop.metrics.sd[, 'gamma.stat'])), 
+        col = rgb(.8, 0, 0, .3), border = NA)
+polygon(c(temp.metrics.mean$time/1000, rev(temp.metrics.mean$time/1000)), 
+        c(temp.metrics.mean[, 'gamma.stat'] - error*temp.metrics.sd[, 'gamma.stat'], 
+          rev(temp.metrics.mean[, 'gamma.stat'] + error*temp.metrics.sd[, 'gamma.stat'])), 
+        col = rgb(0, 0, .8, .3), border = NA)
+points(trop.metrics.mean$time/1000, trop.metrics.mean[, 'gamma.stat'], type = 'l', col = 'red', lwd = 3)
+points(temp.metrics.mean$time/1000, temp.metrics.mean[, 'gamma.stat'], type = 'l', col = 'blue', lwd = 3)
+
+par(new = T)
+
+# non-zero-sum results
+plot(Ttemp.metrics.mean$time - x.offset, Ttrop.metrics.mean[, 'gamma.stat'], 
+     xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - x.offset), 
+     ylim = range(c(trop.metrics[, 'gamma.stat', ], temp.metrics[, 'gamma.stat', ], 
+                    Ttrop.metrics[, 'gamma.stat', ], Ttemp.metrics[, 'gamma.stat', ]), na.rm= T), type = "n",
+     ylab = "", xlab = "", yaxt = "n", xaxt = "n")
+polygon(c(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), rev(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T))), 
+        c(Ttrop.metrics.mean[, 'gamma.stat'] - error*Ttrop.metrics.sd[, 'gamma.stat'], 
+          rev(Ttrop.metrics.mean[, 'gamma.stat'] + error*Ttrop.metrics.sd[, 'gamma.stat'])), 
+        col = rgb(.8, 0, 0, .3), border = NA)
+polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.offset)), 
+        c(Ttemp.metrics.mean[, 'gamma.stat'] - error*Ttemp.metrics.sd[, 'gamma.stat'], 
+          rev(Ttemp.metrics.mean[, 'gamma.stat'] + error*Ttemp.metrics.sd[, 'gamma.stat'])), 
+        col = rgb(0, 0, .8, .3), border = NA)
+points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, 'gamma.stat'], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
+points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'gamma.stat'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
+alt.x.vals = c(120, 140, 160, 180)
+mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
+mtext("(d)", 3, adj=0.5, outer=T, cex = 2)
+
+# empirical value
+abline(h = seb.gamma, lty = 'dashed') 
+
+
 mtext("Time (x1000, zero sum)", 1, outer=T, cex = 1.3, line = 0) 
 mtext("Time (no zero sum)", 1, outer = T, cex = 1.3, line = 1.25, col = 'gray50')
-mtext("(b)", 3, adj=0.5, outer=T, cex = 2)
 dev.off()
 
