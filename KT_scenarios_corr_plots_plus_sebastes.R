@@ -13,7 +13,7 @@ Allen = 1;
 
 if (Allen ==1) {
   sim_dir = "C:/SENCoutput/senc_reps_analysis"
-  analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/"
+  analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/summaryplots"
   repo_dir = "C:/Documents and Settings/Hurlbert/species-energy-simulation"
 }
 
@@ -109,7 +109,7 @@ mtext("(b)", 2, outer=F, at = 1.3, cex = cexabc, las = 1, line = 5)
 mtext(expression(italic(r)[latitude-richness]), 2, cex = cexlab, line = 5)
 
 #extra tick marks showing % of max richness
-pcts = c(.75,.25,.1)
+pcts = c(.75, .25, .1, .02)
 axis(1,at=log10(pcts*max(Ttrop$clade.richness)), labels=F,tck= .01)
 text(log10(pcts*max(Ttrop$clade.richness)), rep(-1.12,length(pcts)), paste(pcts*100,"%",sep=""), cex = 1.75) 
 
@@ -152,7 +152,6 @@ mtext("(d)", 2, outer=F, at = 1.3, cex = cexabc, las = 1, line = 5)
 mtext(expression(italic(r)[latitude-richness]), 2, cex = cexlab, line = 5)
 
 #extra tick marks showing % of max richness
-pcts = c(.75,.25,.1)
 axis(1,at=log10(pcts*max(Ktrop$clade.richness)), labels=F,tck= .01)
 text(log10(pcts*max(Ktrop$clade.richness)), rep(-1.12,length(pcts)), paste(pcts*100,"%",sep=""), cex = 1.75) 
 
@@ -196,7 +195,6 @@ mtext("(f)", 2, outer = F, at = 1.3, cex = cexabc, las = 1, line = 5)
 mtext(expression(italic(r)[latitude-richness]), 2, cex = cexlab, line = 5)
 
 #extra tick marks showing % of max richness
-pcts = c(.75,.25,.1)
 axis(1,at=log10(pcts*max(lat.corr.output$clade.richness)), labels=F,tck= .01)
 text(log10(pcts*max(lat.corr.output$clade.richness)), rep(-1.12,length(pcts)), paste(pcts*100,"%",sep=""), cex = 1.75) 
 
