@@ -300,11 +300,11 @@ mtext("(b)", 3, adj=0.5, outer=T, cex = 2)
 dev.off()
 
 
+
 # Figure 4
 # Plotting metrics over the course of the simulation: the scaled MRD-richness slope, and tree imbalance (beta),
 # PSV-richness slope, and gamma. 
 # Means +/- 2 SD are shown.
-
 
 # First, calculate empirical values of beta and scaled MRD-richness slope for Sebastes
 phy = read.tree('Sebastes_tree_Ingram2011PRSB.phy')
@@ -380,6 +380,10 @@ polygon(c(temp.metrics.mean$time/1000, rev(temp.metrics.mean$time/1000)),
 points(trop.metrics.mean$time/1000, trop.metrics.mean[, 'gamma.stat'], type = 'l', col = 'red', lwd = 3)
 points(temp.metrics.mean$time/1000, temp.metrics.mean[, 'gamma.stat'], type = 'l', col = 'blue', lwd = 3)
 
+# vertical line at equilibrium time point
+eq.time = 20 # in thousands of time steps
+abline(v = eq.time)
+
 par(new = T)
 
 # non-zero-sum results
@@ -431,6 +435,9 @@ polygon(c(temp.metrics.mean$time/1000, rev(temp.metrics.mean$time/1000)),
 points(trop.metrics.mean$time/1000, trop.metrics.mean[, 'tree.beta'], type = 'l', col = 'red', lwd = 3)
 points(temp.metrics.mean$time/1000, temp.metrics.mean[, 'tree.beta'], type = 'l', col = 'blue', lwd = 3)
 
+# vertical line at equilibrium time point
+abline(v = eq.time)
+
 par(new = T)
 
 # non-zero-sum results
@@ -475,6 +482,9 @@ polygon(c(temp.metrics.mean$time/1000, rev(temp.metrics.mean$time/1000)),
 points(trop.metrics.mean$time/1000, trop.metrics.mean[, 'PSV.rich.slope'], type = 'l', col = 'red', lwd = 3)
 points(temp.metrics.mean$time/1000, temp.metrics.mean[, 'PSV.rich.slope'], type = 'l', col = 'blue', lwd = 3)
 
+# vertical line at equilibrium time point
+abline(v = eq.time)
+
 par(new = T)
 
 # non-zero-sum results
@@ -518,6 +528,9 @@ polygon(c(temp.metrics.mean$time/1000, rev(temp.metrics.mean$time/1000)),
         col = rgb(0, 0, .8, .3), border = NA)
 points(trop.metrics.mean$time/1000, trop.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'red', lwd = 3)
 points(temp.metrics.mean$time/1000, temp.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'blue', lwd = 3)
+
+# vertical line at equilibrium time point
+abline(v = eq.time)
 
 par(new = T)
 
