@@ -363,51 +363,50 @@ error = 2 # +/- this many standard deviations for envelope
 empirical.lty = '92'
 empirical.lwd = 1.5
 
-## (a) MRD-richness slope
+## (a) gamma
 # zero sum results
-plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'scaled.MRD.rich.slope'], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
-     ylim = range(c(trop.metrics[, 'scaled.MRD.rich.slope', ], temp.metrics[, 'scaled.MRD.rich.slope', ], 
-                    Ttrop.metrics[, 'scaled.MRD.rich.slope', ], Ttemp.metrics[, 'scaled.MRD.rich.slope', ]), na.rm= T), type = "n",
-     ylab = metric.labels[metric.names == 'scaled.MRD.rich.slope'], xlab = "", yaxt = "n")
-axis(2, at = c(-.015,-.01,-.005,0,.005), labels = c(-15, -10, -5, 0, 5))
+plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'gamma.stat'], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
+     ylim = range(c(trop.metrics[, 'gamma.stat', ], temp.metrics[, 'gamma.stat', ], 
+                    Ttrop.metrics[, 'gamma.stat', ], Ttemp.metrics[, 'gamma.stat', ]), na.rm= T), type = "n",
+     ylab = metric.labels[metric.names == 'gamma.stat'], xlab = "", cex.lab = 2)
 polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
-        c(trop.metrics.mean[, 'scaled.MRD.rich.slope'] - error*trop.metrics.sd[, 'scaled.MRD.rich.slope'], 
-          rev(trop.metrics.mean[, 'scaled.MRD.rich.slope'] + error*trop.metrics.sd[, 'scaled.MRD.rich.slope'])), 
+        c(trop.metrics.mean[, 'gamma.stat'] - error*trop.metrics.sd[, 'gamma.stat'], 
+          rev(trop.metrics.mean[, 'gamma.stat'] + error*trop.metrics.sd[, 'gamma.stat'])), 
         col = rgb(.8, 0, 0, .3), border = NA)
 polygon(c(temp.metrics.mean$time/1000, rev(temp.metrics.mean$time/1000)), 
-        c(temp.metrics.mean[, 'scaled.MRD.rich.slope'] - error*temp.metrics.sd[, 'scaled.MRD.rich.slope'], 
-          rev(temp.metrics.mean[, 'scaled.MRD.rich.slope'] + error*temp.metrics.sd[, 'scaled.MRD.rich.slope'])), 
+        c(temp.metrics.mean[, 'gamma.stat'] - error*temp.metrics.sd[, 'gamma.stat'], 
+          rev(temp.metrics.mean[, 'gamma.stat'] + error*temp.metrics.sd[, 'gamma.stat'])), 
         col = rgb(0, 0, .8, .3), border = NA)
-points(trop.metrics.mean$time/1000, trop.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'red', lwd = 3)
-points(temp.metrics.mean$time/1000, temp.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'blue', lwd = 3)
+points(trop.metrics.mean$time/1000, trop.metrics.mean[, 'gamma.stat'], type = 'l', col = 'red', lwd = 3)
+points(temp.metrics.mean$time/1000, temp.metrics.mean[, 'gamma.stat'], type = 'l', col = 'blue', lwd = 3)
 
 par(new = T)
 
 # non-zero-sum results
-plot(Ttemp.metrics.mean$time - x.offset, Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'], 
+plot(Ttemp.metrics.mean$time - x.offset, Ttrop.metrics.mean[, 'gamma.stat'], 
      xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - x.offset), 
-     ylim = range(c(trop.metrics[, 'scaled.MRD.rich.slope', ], temp.metrics[, 'scaled.MRD.rich.slope', ], 
-                    Ttrop.metrics[, 'scaled.MRD.rich.slope', ], Ttemp.metrics[, 'scaled.MRD.rich.slope', ]), na.rm= T), type = "n",
+     ylim = range(c(trop.metrics[, 'gamma.stat', ], temp.metrics[, 'gamma.stat', ], 
+                    Ttrop.metrics[, 'gamma.stat', ], Ttemp.metrics[, 'gamma.stat', ]), na.rm= T), type = "n",
      ylab = "", xlab = "", yaxt = "n", xaxt = "n")
 polygon(c(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), rev(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T))), 
-        c(Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'] - error*Ttrop.metrics.sd[, 'scaled.MRD.rich.slope'], 
-          rev(Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'] + error*Ttrop.metrics.sd[, 'scaled.MRD.rich.slope'])), 
+        c(Ttrop.metrics.mean[, 'gamma.stat'] - error*Ttrop.metrics.sd[, 'gamma.stat'], 
+          rev(Ttrop.metrics.mean[, 'gamma.stat'] + error*Ttrop.metrics.sd[, 'gamma.stat'])), 
         col = rgb(.8, 0, 0, .3), border = NA)
 polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.offset)), 
-        c(Ttemp.metrics.mean[, 'scaled.MRD.rich.slope'] - error*Ttemp.metrics.sd[, 'scaled.MRD.rich.slope'], 
-          rev(Ttemp.metrics.mean[, 'scaled.MRD.rich.slope'] + error*Ttemp.metrics.sd[, 'scaled.MRD.rich.slope'])), 
+        c(Ttemp.metrics.mean[, 'gamma.stat'] - error*Ttemp.metrics.sd[, 'gamma.stat'], 
+          rev(Ttemp.metrics.mean[, 'gamma.stat'] + error*Ttemp.metrics.sd[, 'gamma.stat'])), 
         col = rgb(0, 0, .8, .3), border = NA)
-points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
-points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
+points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, 'gamma.stat'], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
+points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'gamma.stat'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
-mtext("(a)", 2, at = .012, cex = 2, outer = F, las = 1, line = 3)
+mtext("(a)", 2, at = 22, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
-abline(h = seb.MRD.rich.slope.scaled, lty = empirical.lty, lwd = empirical.lwd)
+abline(h = seb.gamma, lty = empirical.lty, lwd = empirical.lwd) 
 
 # legend
-legend(154.5 - x.offset, -.0057, legend = c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin', expression(italic(Sebastes))), 
+legend(154.5 - x.offset, -9.2, legend = c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin', expression(italic(Sebastes))), 
        lty = c('solid', 'dashed', 'dashed', 'dashed', 'solid'), text.col = 'white', cex = 1.2,
        col = c('blue', 'blue', 'red', 'blue', 'white'), bty = "n", lwd = 3, seg.len = 2, y.intersp = 1)
 legend('bottomright', c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin', expression(italic(Sebastes))), 
@@ -420,7 +419,7 @@ legend('bottomright', c('zero sum', 'no zero sum', 'tropical origin', 'temperate
 plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'tree.beta'], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
          ylim = range(c(trop.metrics[, 'tree.beta', ], temp.metrics[, 'tree.beta', ], 
                         Ttrop.metrics[, 'tree.beta', ], Ttemp.metrics[, 'tree.beta', ]), na.rm= T), type = "n",
-         ylab = metric.labels[metric.names == 'tree.beta'], xlab = "")
+         ylab = metric.labels[metric.names == 'tree.beta'], xlab = "", cex.lab = 2)
 polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
         c(trop.metrics.mean[, 'tree.beta'] - error*trop.metrics.sd[, 'tree.beta'], 
           rev(trop.metrics.mean[, 'tree.beta'] + error*trop.metrics.sd[, 'tree.beta'])), 
@@ -502,47 +501,48 @@ mtext("(c)", 2, at = .03, cex = 2, outer = F, las = 1, line = 3)
 abline(h = seb.PSV.rich.slope, lty = empirical.lty, lwd = empirical.lwd)
 
 
-## (d) gamma
+## (d) MRD-richness slope
 # zero sum results
-plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'gamma.stat'], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
-     ylim = range(c(trop.metrics[, 'gamma.stat', ], temp.metrics[, 'gamma.stat', ], 
-                    Ttrop.metrics[, 'gamma.stat', ], Ttemp.metrics[, 'gamma.stat', ]), na.rm= T), type = "n",
-     ylab = metric.labels[metric.names == 'gamma.stat'], xlab = "")
+plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'scaled.MRD.rich.slope'], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
+     ylim = range(c(trop.metrics[, 'scaled.MRD.rich.slope', ], temp.metrics[, 'scaled.MRD.rich.slope', ], 
+                    Ttrop.metrics[, 'scaled.MRD.rich.slope', ], Ttemp.metrics[, 'scaled.MRD.rich.slope', ]), na.rm= T), type = "n",
+     ylab = metric.labels[metric.names == 'scaled.MRD.rich.slope'], xlab = "", yaxt = "n")
+axis(2, at = c(-.015,-.01,-.005,0,.005), labels = c(-15, -10, -5, 0, 5))
 polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
-        c(trop.metrics.mean[, 'gamma.stat'] - error*trop.metrics.sd[, 'gamma.stat'], 
-          rev(trop.metrics.mean[, 'gamma.stat'] + error*trop.metrics.sd[, 'gamma.stat'])), 
+        c(trop.metrics.mean[, 'scaled.MRD.rich.slope'] - error*trop.metrics.sd[, 'scaled.MRD.rich.slope'], 
+          rev(trop.metrics.mean[, 'scaled.MRD.rich.slope'] + error*trop.metrics.sd[, 'scaled.MRD.rich.slope'])), 
         col = rgb(.8, 0, 0, .3), border = NA)
 polygon(c(temp.metrics.mean$time/1000, rev(temp.metrics.mean$time/1000)), 
-        c(temp.metrics.mean[, 'gamma.stat'] - error*temp.metrics.sd[, 'gamma.stat'], 
-          rev(temp.metrics.mean[, 'gamma.stat'] + error*temp.metrics.sd[, 'gamma.stat'])), 
+        c(temp.metrics.mean[, 'scaled.MRD.rich.slope'] - error*temp.metrics.sd[, 'scaled.MRD.rich.slope'], 
+          rev(temp.metrics.mean[, 'scaled.MRD.rich.slope'] + error*temp.metrics.sd[, 'scaled.MRD.rich.slope'])), 
         col = rgb(0, 0, .8, .3), border = NA)
-points(trop.metrics.mean$time/1000, trop.metrics.mean[, 'gamma.stat'], type = 'l', col = 'red', lwd = 3)
-points(temp.metrics.mean$time/1000, temp.metrics.mean[, 'gamma.stat'], type = 'l', col = 'blue', lwd = 3)
+points(trop.metrics.mean$time/1000, trop.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'red', lwd = 3)
+points(temp.metrics.mean$time/1000, temp.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'blue', lwd = 3)
 
 par(new = T)
 
 # non-zero-sum results
-plot(Ttemp.metrics.mean$time - x.offset, Ttrop.metrics.mean[, 'gamma.stat'], 
+plot(Ttemp.metrics.mean$time - x.offset, Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'], 
      xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - x.offset), 
-     ylim = range(c(trop.metrics[, 'gamma.stat', ], temp.metrics[, 'gamma.stat', ], 
-                    Ttrop.metrics[, 'gamma.stat', ], Ttemp.metrics[, 'gamma.stat', ]), na.rm= T), type = "n",
+     ylim = range(c(trop.metrics[, 'scaled.MRD.rich.slope', ], temp.metrics[, 'scaled.MRD.rich.slope', ], 
+                    Ttrop.metrics[, 'scaled.MRD.rich.slope', ], Ttemp.metrics[, 'scaled.MRD.rich.slope', ]), na.rm= T), type = "n",
      ylab = "", xlab = "", yaxt = "n", xaxt = "n")
 polygon(c(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), rev(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T))), 
-        c(Ttrop.metrics.mean[, 'gamma.stat'] - error*Ttrop.metrics.sd[, 'gamma.stat'], 
-          rev(Ttrop.metrics.mean[, 'gamma.stat'] + error*Ttrop.metrics.sd[, 'gamma.stat'])), 
+        c(Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'] - error*Ttrop.metrics.sd[, 'scaled.MRD.rich.slope'], 
+          rev(Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'] + error*Ttrop.metrics.sd[, 'scaled.MRD.rich.slope'])), 
         col = rgb(.8, 0, 0, .3), border = NA)
 polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.offset)), 
-        c(Ttemp.metrics.mean[, 'gamma.stat'] - error*Ttemp.metrics.sd[, 'gamma.stat'], 
-          rev(Ttemp.metrics.mean[, 'gamma.stat'] + error*Ttemp.metrics.sd[, 'gamma.stat'])), 
+        c(Ttemp.metrics.mean[, 'scaled.MRD.rich.slope'] - error*Ttemp.metrics.sd[, 'scaled.MRD.rich.slope'], 
+          rev(Ttemp.metrics.mean[, 'scaled.MRD.rich.slope'] + error*Ttemp.metrics.sd[, 'scaled.MRD.rich.slope'])), 
         col = rgb(0, 0, .8, .3), border = NA)
-points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, 'gamma.stat'], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
-points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'gamma.stat'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
+points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
+points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
-mtext("(d)", 2, at = 22, cex = 2, outer = F, las = 1, line = 3)
+mtext("(d)", 2, at = .012, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
-abline(h = seb.gamma, lty = empirical.lty, lwd = empirical.lwd) 
+abline(h = seb.MRD.rich.slope.scaled, lty = empirical.lty, lwd = empirical.lwd)
 
 
 mtext("Time (x1000, zero sum)", 1, outer=T, cex = 1.3, line = 0) 
