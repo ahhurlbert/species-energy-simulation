@@ -355,10 +355,13 @@ seb.MRD.rich.slope.scaled = seb.MRD.rich.slope / max(root.dist)
 seb.PSV.rich.slope = coefficients(lm(PSV ~ S, data = output2))[2]
 
 # plot
-pdf(paste(analysis_dir, '/MRDrich_beta_thru_time_', Sys.Date(), '.pdf', sep = ""), height = 8, width = 10)
-par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(3, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+pdf(paste(analysis_dir, '/metrics_thru_time_', Sys.Date(), '.pdf', sep = ""), height = 8, width = 10)
+par(mfrow = c(2, 2), mar = c(5, 6, 1, 2), oma = c(3, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 x.offset = min(Ttemp.metrics.mean$time, na.rm = T)
+error = 2 # +/- this many standard deviations for envelope
+empirical.lty = '92'
+empirical.lwd = 1.5
 
 ## (a) MRD-richness slope
 # zero sum results
@@ -398,21 +401,18 @@ points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
-mtext("(a)", 3, adj=0, outer=T, cex = 2)
+mtext("(a)", 2, at = .012, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
-abline(h = seb.MRD.rich.slope.scaled, lty = 'dashed')
+abline(h = seb.MRD.rich.slope.scaled, lty = empirical.lty, lwd = empirical.lwd)
 
 # legend
+legend(154.5 - x.offset, -.0057, legend = c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin', expression(italic(Sebastes))), 
+       lty = c('solid', 'dashed', 'dashed', 'dashed', 'solid'), text.col = 'white', cex = 1.2,
+       col = c('blue', 'blue', 'red', 'blue', 'white'), bty = "n", lwd = 3, seg.len = 2, y.intersp = 1)
 legend('bottomright', c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin', expression(italic(Sebastes))), 
-       lty = c('solid', 'dashed', 'solid', 'solid', 'dashed'), y.intersp = 1,
-       lwd = c(3, 3, 3, 3, 1), col = c('red', 'red', 'red', 'blue', 'black'), cex = 1.2)
-xpos = 150.2
-seg.length = 8
-segments(xpos - x.offset, -.00675, xpos - x.offset + seg.length, -.00675, col = 'blue', lwd = 3)
-segments(xpos - x.offset, -.009, xpos - x.offset + seg.length, -.009, col = 'blue', lty = 'dashed', lwd = 3)
-segments(xpos - x.offset, -.0112, xpos - x.offset + seg.length, -.0112, col = 'red', lty = 'dashed', lwd = 3)
-segments(xpos - x.offset, -.0134, xpos - x.offset + seg.length, -.0134, col = 'blue', lty = 'dashed', lwd = 3)
+       lty = c('solid', 'dashed', 'solid', 'solid', empirical.lty), y.intersp = 1, bty = "n",
+       lwd = c(3, 3, 3, 3, empirical.lwd), col = c('red', 'red', 'red', 'blue', 'black'), cex = 1.2)
 
 
 ## (b) beta (tree imbalance)
@@ -452,10 +452,10 @@ points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'tree.beta'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
-mtext("(b)", 3, adj=0.5, outer=T, cex = 2)
+mtext("(b)", 2, at = 2.6, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
-abline(h = seb.beta, lty = 'dashed') 
+abline(h = seb.beta, lty = empirical.lty, lwd = empirical.lwd) 
 
 
 ## (c) PSV-richness slope
@@ -464,7 +464,7 @@ plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'PSV.rich.slope'], xlim = 
      ylim = range(c(trop.metrics[, 'PSV.rich.slope', ], temp.metrics[, 'PSV.rich.slope', ], 
                     Ttrop.metrics[, 'PSV.rich.slope', ], Ttemp.metrics[, 'PSV.rich.slope', ]), na.rm= T), type = "n",
      ylab = metric.labels[metric.names == 'PSV.rich.slope'], xlab = "", yaxt = "n")
-axis(2, at = c(-.015,-.01,-.005,0,.005), labels = c(-15, -10, -5, 0, 5))
+axis(2, labels = seq(-5, 25, by = 5), at = seq(-0.005, 0.025, by = .005))
 polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
         c(trop.metrics.mean[, 'PSV.rich.slope'] - error*trop.metrics.sd[, 'PSV.rich.slope'], 
           rev(trop.metrics.mean[, 'PSV.rich.slope'] + error*trop.metrics.sd[, 'PSV.rich.slope'])), 
@@ -496,10 +496,10 @@ points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'PSV.rich.slope'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
-mtext("(c)", 3, adj=0, outer=F, cex = 2)
+mtext("(c)", 2, at = .03, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
-#abline(h = seb.PSV.rich.slope, lty = 'dashed')
+abline(h = seb.PSV.rich.slope, lty = empirical.lty, lwd = empirical.lwd)
 
 
 ## (d) gamma
@@ -539,10 +539,10 @@ points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'gamma.stat'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
-mtext("(d)", 3, adj=0.5, outer=T, cex = 2)
+mtext("(d)", 2, at = 22, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
-abline(h = seb.gamma, lty = 'dashed') 
+abline(h = seb.gamma, lty = empirical.lty, lwd = empirical.lwd) 
 
 
 mtext("Time (x1000, zero sum)", 1, outer=T, cex = 1.3, line = 0) 
