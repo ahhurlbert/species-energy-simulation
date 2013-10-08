@@ -467,10 +467,9 @@ abline(h = seb.beta, lty = empirical.lty, lwd = empirical.lwd)
 ## (c) PSV-richness slope
 # zero sum results
 plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'PSV.rich.slope'], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
-     ylim = range(c(trop.metrics[, 'PSV.rich.slope', ], temp.metrics[, 'PSV.rich.slope', ], 
-                    Ttrop.metrics[, 'PSV.rich.slope', ], Ttemp.metrics[, 'PSV.rich.slope', ]), na.rm= T), type = "n",
+     ylim = c(-.008, 0.015), type = "n",
      ylab = metric.labels[metric.names == 'PSV.rich.slope'], xlab = "", yaxt = "n")
-axis(2, labels = seq(-5, 25, by = 5), at = seq(-0.005, 0.025, by = .005))
+axis(2, labels = seq(-5, 15, by = 5), at = seq(-0.005, 0.015, by = .005))
 polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
         c(trop.metrics.mean[, 'PSV.rich.slope'] - error*trop.metrics.sd[, 'PSV.rich.slope'], 
           rev(trop.metrics.mean[, 'PSV.rich.slope'] + error*trop.metrics.sd[, 'PSV.rich.slope'])), 
@@ -490,8 +489,7 @@ par(new = T)
 # non-zero-sum results
 plot(Ttemp.metrics.mean$time - x.offset, Ttrop.metrics.mean[, 'PSV.rich.slope'], 
      xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - x.offset), 
-     ylim = range(c(trop.metrics[, 'PSV.rich.slope', ], temp.metrics[, 'PSV.rich.slope', ], 
-                    Ttrop.metrics[, 'PSV.rich.slope', ], Ttemp.metrics[, 'PSV.rich.slope', ]), na.rm= T), type = "n",
+     ylim = c(-.008, 0.015), type = "n",
      ylab = "", xlab = "", yaxt = "n", xaxt = "n")
 polygon(c(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), rev(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T))), 
         c(Ttrop.metrics.mean[, 'PSV.rich.slope'] - error*Ttrop.metrics.sd[, 'PSV.rich.slope'], 
@@ -505,7 +503,7 @@ points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'PSV.rich.slope'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
-mtext("(c)", 2, at = .03, cex = 2, outer = F, las = 1, line = 3)
+mtext("(c)", 2, at = .018, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
 abline(h = seb.PSV.rich.slope, lty = empirical.lty, lwd = empirical.lwd)
@@ -514,10 +512,9 @@ abline(h = seb.PSV.rich.slope, lty = empirical.lty, lwd = empirical.lwd)
 ## (d) MRD-richness slope
 # zero sum results
 plot(trop.metrics.mean$time/1000, trop.metrics.mean[, 'scaled.MRD.rich.slope'], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
-     ylim = range(c(trop.metrics[, 'scaled.MRD.rich.slope', ], temp.metrics[, 'scaled.MRD.rich.slope', ], 
-                    Ttrop.metrics[, 'scaled.MRD.rich.slope', ], Ttemp.metrics[, 'scaled.MRD.rich.slope', ]), na.rm= T), type = "n",
+     ylim = c(-0.01, 0.008), type = "n",
      ylab = metric.labels[metric.names == 'scaled.MRD.rich.slope'], xlab = "", yaxt = "n")
-axis(2, at = c(-.015,-.01,-.005,0,.005), labels = c(-15, -10, -5, 0, 5))
+axis(2, at = c(-.01, -.005, 0, .005), labels = c(-10, -5, 0, 5))
 polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
         c(trop.metrics.mean[, 'scaled.MRD.rich.slope'] - error*trop.metrics.sd[, 'scaled.MRD.rich.slope'], 
           rev(trop.metrics.mean[, 'scaled.MRD.rich.slope'] + error*trop.metrics.sd[, 'scaled.MRD.rich.slope'])), 
@@ -537,8 +534,7 @@ par(new = T)
 # non-zero-sum results
 plot(Ttemp.metrics.mean$time - x.offset, Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'], 
      xlim = c(0, max(c(Ttrop.metrics.mean$time, Ttemp.metrics.mean$time), na.rm = T) - x.offset), 
-     ylim = range(c(trop.metrics[, 'scaled.MRD.rich.slope', ], temp.metrics[, 'scaled.MRD.rich.slope', ], 
-                    Ttrop.metrics[, 'scaled.MRD.rich.slope', ], Ttemp.metrics[, 'scaled.MRD.rich.slope', ]), na.rm= T), type = "n",
+     ylim = c(-0.01, 0.008), type = "n",
      ylab = "", xlab = "", yaxt = "n", xaxt = "n")
 polygon(c(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), rev(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T))), 
         c(Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'] - error*Ttrop.metrics.sd[, 'scaled.MRD.rich.slope'], 
@@ -552,7 +548,7 @@ points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
 mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
-mtext("(d)", 2, at = .012, cex = 2, outer = F, las = 1, line = 3)
+mtext("(d)", 2, at = .01, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
 abline(h = seb.MRD.rich.slope.scaled, lty = empirical.lty, lwd = empirical.lwd)
