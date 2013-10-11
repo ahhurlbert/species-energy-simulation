@@ -8,17 +8,18 @@ if (local == 0) {
 }
   
 # Choose number of time slices per simulation to analyze
-num.of.time.slices = -999; # use -999 if you want to define specific time slices
+num.of.time.slices = 1; # use -999 if you want to define specific time slices
 # which.time.slices is (apparently) only for specifying particular, unevenly spaced time slices;
 # if not being used it should be set to -999
 which.time.slices = -999;
 # time.sequence is (apparently) for when the time slices occur for a regular interval; set to -999 if not being used
 # Note that due to the slow calculation of tree imbalance (beta) for large trees, it may be best to specify only ~20 time slices
-time.sequence = seq(2,300,by=2); # for time scenario sims
+time.sequence = -999; # to turn off 'time.sequence'
+#time.sequence = seq(2,300,by=2); # for time scenario sims
 #time.sequence = seq(1000,100000,length=100); # for energy gradient sims
 
 # choose root only or all clades
-root.only = 1 # 0 means all clades, 1 means just the root
+root.only = 0 # 0 means all clades, 1 means just the root
 
 # Set minimum number of species in a clade needed to proceed with analysis
 min.num.spp = 8;
@@ -254,7 +255,8 @@ pre.equil.time = 5459;
     #write all of this output to files
     # the 'lbeta' part of the name reflect the use of log beta in the calculation of tree imbalance via the maxlik.betasplit.AH function
     # file names that start with 'NEW' include beta value (i.e. imbalance values) associated with underflow errors, calculated with 'maxlik.betasplit'
-    if (num.of.time.slices == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_time",t,".csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices == 1 & root.only == 0) {write.csv(output,paste("lbeta_Stats_sim",sim,"_endtime_all_clades.csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices == 1 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_endtime_root_only.csv",sep=""),quote=F,row.names=F)};
     if (num.of.time.slices > 1 & root.only == 0) {write.csv(output,paste("lbeta_Stats_sim",sim,"_mult_times_all_clades.csv",sep=""),quote=F,row.names=F)};
     if (num.of.time.slices > 1 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_mult_times_root_only.csv",sep=""),quote=F,row.names=F)};
     if (which.time.slices != -999 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_specific_times_root_only.csv",sep=""),quote=F,row.names=F)};

@@ -37,7 +37,7 @@ chmod u+x SENC_Olympus_Execute_analysis_unix.sh
 
 ./SENC_Olympus_Execute_analysis_unix.sh
 
-
+squeue -p shared -u steg815
 
 
 ## for zipping files for easy transport
