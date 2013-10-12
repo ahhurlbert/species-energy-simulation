@@ -12,7 +12,7 @@ require(caper)
 Allen = 1;
 
 if (Allen ==1) {
-  sim_dir = "C:/SENCoutput/senc_reps_analysis"
+  sim_dir = "C:/SENCoutput"
   analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/summaryplots"
   repo_dir = "C:/Documents and Settings/Hurlbert/species-energy-simulation"
 }
@@ -25,10 +25,10 @@ if (Allen == 0) {
 setwd(repo_dir)
 
 #Simulation data
-Ktrop.all = read.csv(paste(sim_dir,'/SENC_Stats_K.sims.trop.csv',sep=''), header=T)
-Ktemp.all = read.csv(paste(sim_dir,'/SENC_Stats_K.sims.temp.csv',sep=''), header=T)
-Ttrop.all = read.csv(paste(sim_dir,'/SENC_Stats_T.sims.trop.csv',sep=''), header=T)
-Ttemp.all = read.csv(paste(sim_dir,'/SENC_Stats_T.sims.temp.csv',sep=''), header=T)
+Ktrop.all = read.csv(paste(sim_dir,'/SENC_Stats_100K_endtime_K.trop.csv',sep=''), header=T)
+Ktemp.all = read.csv(paste(sim_dir,'/SENC_Stats_100K_endtime_K.temp.csv',sep=''), header=T)
+Ttrop.all = read.csv(paste(sim_dir,'/SENC_Stats_100K_endtime_T.trop.csv',sep=''), header=T)
+Ttemp.all = read.csv(paste(sim_dir,'/SENC_Stats_100K_endtime_T.temp.csv',sep=''), header=T)
 
 Ttrop = subset(Ttrop.all, clade.richness >= 30 & n.regions >=5)
 Ktrop = subset(Ktrop.all, clade.richness >= 30 & n.regions >=5)
@@ -74,7 +74,7 @@ col.3157 = 'gray80' #colors()[577]
 col.2486 = 'black' #colors()[149]
 
 #Plot
-pdf(paste(analysis_dir,'/summaryplots/latcorr_subclades_vs_cladeAgeRich_',Sys.Date(),'_log.pdf',sep=''), height=15, width = 14)
+pdf(paste(analysis_dir,'/latcorr_subclades_vs_cladeAgeRich_',Sys.Date(),'_log.pdf',sep=''), height=15, width = 14)
 par(mfrow=c(3,2), mar = c(7, 8, 3, 10), oma=c(1, 1, 1, 1), mgp = c(5.5, 1.5, 0))
 cexpts = 2
 cexpts.seb = 3
@@ -116,7 +116,7 @@ text(log10(pcts*max(Ttrop$clade.richness)), rep(-1.12,length(pcts)), paste(pcts*
 #Energy gradient scenario: Vs clade origin time (negative the r.env.rich is equal to the richness-latitude correlation)
 # plotting complement of x-axis (hence, difference from max value)
 plot(max(log10(Ktrop$clade.origin.time)) - log10(Ktrop$clade.origin.time), -Ktrop$r.env.rich, xaxt = "n",
-     xlab = expression(paste(plain(log)[10]," Clade origin time")), pch=16, col='red',ylim=c(-1,1),
+     xlab = expression(paste(plain(log)[10]," Clade origin time")), pch=16, col='red',ylim=c(-1,1), xlim = c(.65, 4.75),
      ylab = "", cex = cexpts, main = '', cex.lab = cexlab, cex.axis = cexaxis, las=1)
 points(max(log10(Ktrop$clade.origin.time)) - log10(Ktemp$clade.origin.time), -Ktemp$r.env.rich, 
            col = 'blue', pch = pch.temp, cex = cexpts)
@@ -128,7 +128,7 @@ points(max(log10(Ktrop$clade.origin.time)) - log10(stats$clade.origin.time[stats
        -stats$r.env.rich[stats$clade.id == 2486], pch = 17, col = col.2486, cex = 2*cexpts)
 points(max(log10(Ktrop$clade.origin.time)) - log10(stats$clade.origin.time[stats$clade.id == 3157]),
        -stats$r.env.rich[stats$clade.id == 3157], pch = 17, col = col.3157, cex = 2*cexpts)
-axis(1, at = 0:4, labels = 4:0, cex.axis = cexaxis)
+axis(1, at = max(log10(Ktrop$clade.origin.time)) - 4:0, labels = 4:0, cex.axis = cexaxis)
 mtext(c("recent","old"), 1, at = c(0,4), line = 3, cex = 1.5)
 mtext(expression(italic(r)[latitude-richness]), 2, cex = cexlab, line = 5)
 abline(h = 0, lty = 'dashed')
