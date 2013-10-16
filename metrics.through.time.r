@@ -204,7 +204,7 @@ error = 2 # error bars in SD units (+/-)
 # Plotting metrics over the course of the simulation: global richness, the latitude-richness correlation 
 # Means +/- 2 SD are shown.
 pdf(paste(analysis_dir,'/rich_latrich_thru_time_',Sys.Date(), '.pdf', sep = ""), height = 5, width = 10)
-par(mfrow = c(1, 2), mar = c(5, 6, 1, 1), oma = c(3, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+par(mfrow = c(1, 2), mar = c(4, 6, 1, 1), oma = c(2, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 x.offset = min(Ttemp.metrics.mean$time, na.rm = T)
 
@@ -242,7 +242,7 @@ polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.of
 points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), log10(Ttrop.metrics.mean[, 'global.richness']), type = 'l', col = 'red', lwd = 3, lty = 'dashed')
 points(Ttemp.metrics.mean$time - x.offset, log10(Ttemp.metrics.mean[, 'global.richness']), type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
-mtext(alt.x.vals, 1, at = alt.x.vals - x.offset, line = 2.5, col = 'gray50')
+#mtext(alt.x.vals, 1, at = alt.x.vals - x.offset, line = 2.5, col = 'gray50')
 mtext("(a)", 3, adj=0, outer=T, cex = 2)
 
 legend('bottomright', c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin'), 
@@ -292,10 +292,10 @@ polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.of
 points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, 'r.lat.rich'], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'r.lat.rich'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
-mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
+#mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
 
-mtext("Time (x1000, zero sum)", 1, outer=T, cex = 1.3, line = 0) 
-mtext("Time (no zero sum)", 1, outer = T, cex = 1.3, line = 1.25, col = 'gray50')
+mtext("Time", 1, outer=T, cex = 1.3, line = 0) 
+#mtext("Time (no zero sum)", 1, outer = T, cex = 1.3, line = 1.25, col = 'gray50')
 mtext("(b)", 3, adj=0.5, outer=T, cex = 2)
 dev.off()
 
@@ -356,7 +356,7 @@ seb.PSV.rich.slope = coefficients(lm(PSV ~ S, data = output2))[2]
 
 # plot
 pdf(paste(analysis_dir, '/metrics_thru_time_', Sys.Date(), '.pdf', sep = ""), height = 8, width = 10)
-par(mfrow = c(2, 2), mar = c(5, 6, 1, 2), oma = c(3, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+par(mfrow = c(2, 2), mar = c(4, 6, 1, 2), oma = c(2, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 x.offset = min(Ttemp.metrics.mean$time, na.rm = T)
 error = 2 # +/- this many standard deviations for envelope
@@ -403,7 +403,7 @@ polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.of
 points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, 'gamma.stat'], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'gamma.stat'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
-mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
+#mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
 mtext("(a)", 2, at = 22, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
@@ -457,7 +457,7 @@ polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.of
 points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, 'tree.beta'], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'tree.beta'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
-mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
+#mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
 mtext("(b)", 2, at = 2.6, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
@@ -502,7 +502,7 @@ polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.of
 points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, 'PSV.rich.slope'], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'PSV.rich.slope'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
-mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
+#mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
 mtext("(c)", 2, at = .018, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
@@ -547,14 +547,14 @@ polygon(c(Ttemp.metrics.mean$time - x.offset, rev(Ttemp.metrics.mean$time - x.of
 points(Ttrop.metrics.mean$time - min(Ttrop.metrics.mean$time, na.rm = T), Ttrop.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'red', lwd = 3, lty = 'dashed')
 points(Ttemp.metrics.mean$time - x.offset, Ttemp.metrics.mean[, 'scaled.MRD.rich.slope'], type = 'l', col = 'blue', lwd = 3, lty = 'dashed')
 alt.x.vals = c(120, 140, 160, 180)
-mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
+#mtext(alt.x.vals, 1, at = alt.x.vals - min(Ttemp.metrics.mean$time, na.rm=T), line = 2.5, col = 'gray50')
 mtext("(d)", 2, at = .01, cex = 2, outer = F, las = 1, line = 3)
 
 # empirical value
 abline(h = seb.MRD.rich.slope.scaled, lty = empirical.lty, lwd = empirical.lwd)
 
 
-mtext("Time (x1000, zero sum)", 1, outer=T, cex = 1.3, line = 0) 
-mtext("Time (no zero sum)", 1, outer = T, cex = 1.3, line = 1.25, col = 'gray50')
+mtext("Time", 1, outer=T, cex = 1.3, line = 0) 
+#mtext("Time (no zero sum)", 1, outer = T, cex = 1.3, line = 1.25, col = 'gray50')
 dev.off()
 
