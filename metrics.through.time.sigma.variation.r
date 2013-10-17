@@ -223,4 +223,155 @@ mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 1.5)
 dev.off()
 
 
+###########################################################
+# Evaluating alternative values for w, niche conservatism
+##########################################################
+
+#Energy gradient sims, 10 sims each
+
+# w = 3
+Ktrop.sims.w3 = 2635:2644
+Ktemp.sims.w3 = 2795:2804
+
+# w = 9
+Ktrop.sims.w9 = 2715:2724
+Ktemp.sims.w9 = 2875:2884
+
+
+min.num.regions = 5
+min.num.div.regions = 5
+min.global.richness = 30
+
+Ktemp.w3.metrics = metric.abind.new(Ktemp.sims.w3, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
+Ktrop.w3.metrics = metric.abind.new(Ktrop.sims.w3, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
+Ktemp.w9.metrics = metric.abind.new(Ktemp.sims.w9, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
+Ktrop.w9.metrics = metric.abind.new(Ktrop.sims.w9, scenario = "K", min.div.regions = min.num.div.regions, min.richness = min.global.richness)
+
+
+Ktemp.w3.mean = data.frame(apply(Ktemp.w3.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+Ktemp.w3.sd = data.frame(apply(Ktemp.w3.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+
+Ktrop.w3.mean = data.frame(apply(Ktrop.w3.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+Ktrop.w3.sd = data.frame(apply(Ktrop.w3.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+
+Ktemp.w9.mean = data.frame(apply(Ktemp.w9.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+Ktemp.w9.sd = data.frame(apply(Ktemp.w9.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+
+Ktrop.w9.mean = data.frame(apply(Ktrop.w9.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+Ktrop.w9.sd = data.frame(apply(Ktrop.w9.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+
+metric.names = c('global.richness',
+                 'r.lat.rich', 
+                 'gamma.stat',
+                 'r.env.PSV', 
+                 'r.env.MRD', 
+                 'r.MRD.rich',
+                 'r.PSV.rich',
+                 'MRD.rich.slope',
+                 'MRD.env.slope',
+                 'PSV.rich.slope',
+                 'PSV.env.slope',
+                 'MRD.range',
+                 'PSV.range',
+                 'MRD.mean',
+                 'PSV.mean',
+                 'tree.beta',
+                 'scaled.MRD.range',
+                 'scaled.MRD.rich.slope')
+
+metric.labels = c('Global richness', 
+                  expression(italic(r)[latitude-richness]), 
+                  expression(gamma), 
+                  expression(italic(r)[env-PSV]),
+                  expression(italic(r)[env-MRD]), 
+                  expression(italic(r)[MRD-richness]),
+                  expression(italic(r)[PSV-richness]),
+                  'MRD-Richness slope',
+                  'MRD-Environment slope',
+                  'PSV-Richness slope',
+                  'PSV-Environment slope',
+                  'MRD range',
+                  'PSV range',
+                  'Mean MRD',
+                  'Mean PSV',
+                  expression(beta),
+                  'scaled MRD range',
+                  'MRD-richness slope')
+
+
+# Plotting metrics over the course of the simulation: EXPLORATORY PLOTS
+pdf(paste(analysis_dir, '/metrics_thru_time_wma_dependence', Sys.Date(), '.pdf', sep = ""), height = 12, width = 10)
+par(mfrow = c(3, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+
+# Specify variables to plot here, and width of error bars
+names4plotting = c('global.richness','r.lat.rich', 'scaled.MRD.rich.slope', 'tree.beta', 'PSV.rich.slope', 'gamma.stat')
+
+error = 2 # error bars in SD units (+/-)
+for (j in 1:6) {
+  curr.metric = names4plotting[j]
+  
+  #wma_E = 1
+  plot(Ktrop.w1.mean$time/1000, Ktrop.w1.mean[, curr.metric], xlim = c(0, max(Ktrop.w3.mean$time, na.rm=T)/1000), 
+       ylim = range(c( Ktemp.w1.metrics[, curr.metric, ], 
+                       Ktemp.w3.metrics[, curr.metric, ],
+                       Ktemp.w9.metrics[, curr.metric, ]),na.rm= T), 
+       type = "n",ylab = metric.labels[metric.names == curr.metric], xlab = "")
+  #polygon(c(Ktrop.w1.mean$time/1000, rev(Ktrop.w1.mean$time/1000)), 
+  #        c(Ktrop.w1.mean[, curr.metric] - error*Ktrop.w1.sd[, curr.metric], 
+  #          rev(Ktrop.w1.mean[, curr.metric] + error*Ktrop.w1.sd[, curr.metric])), 
+  #        col = rgb(.8, 0.8, 0.4, .3), border = NA)
+  polygon(c(Ktemp.w1.mean$time/1000, rev(Ktemp.w1.mean$time/1000)), 
+          c(Ktemp.w1.mean[, curr.metric] - error*Ktemp.w1.sd[, curr.metric], 
+            rev(Ktemp.w1.mean[, curr.metric] + error*Ktemp.w1.sd[, curr.metric])), 
+          col = rgb(0.8, 0.8, 0, .3), border = NA)
+  #points(Ktrop.w1.mean$time/1000, Ktrop.w1.mean[, curr.metric], type = 'l', col = rgb(1, 1, .5), lwd = 3)
+  points(Ktemp.w1.mean$time/1000, Ktemp.w1.mean[, curr.metric], type = 'l', col = rgb(1, 1, .5), lwd = 3)
+  
+  par(new = T)
+  
+  #wma_E = 3
+  plot(Ktrop.w3.mean$time/1000, Ktrop.w3.mean[, curr.metric], xlim = c(0, max(Ktrop.w3.mean$time, na.rm=T)/1000), 
+       ylim = range(c( Ktemp.w1.metrics[, curr.metric, ], 
+                       Ktemp.w3.metrics[, curr.metric, ],
+                       Ktemp.w9.metrics[, curr.metric, ]),na.rm= T), 
+       type = "n",ylab = metric.labels[metric.names == curr.metric], xlab = "", xaxt = "n", yaxt = "n")
+  #polygon(c(Ktrop.w3.mean$time/1000, rev(Ktrop.w3.mean$time/1000)), 
+  #        c(Ktrop.w3.mean[, curr.metric] - error*Ktrop.w3.sd[, curr.metric], 
+  #          rev(Ktrop.w3.mean[, curr.metric] + error*Ktrop.w3.sd[, curr.metric])), 
+  #        col = rgb(0.8, 0.4, 0.8, .3), border = NA)
+  polygon(c(Ktemp.w3.mean$time/1000, rev(Ktemp.w3.mean$time/1000)), 
+          c(Ktemp.w3.mean[, curr.metric] - error*Ktemp.w3.sd[, curr.metric], 
+            rev(Ktemp.w3.mean[, curr.metric] + error*Ktemp.w3.sd[, curr.metric])), 
+          col = rgb(0.8, 0, 0.8, .3), border = NA)
+  #points(Ktrop.w3.mean$time/1000, Ktrop.w3.mean[, curr.metric], type = 'l', col = rgb(1, .5, 1), lwd = 3)
+  points(Ktemp.w3.mean$time/1000, Ktemp.w3.mean[, curr.metric], type = 'l', col = rgb(1, .5, 1), lwd = 3)
+  
+  par(new = T)
+  
+  #wma_E = 9
+  plot(Ktrop.w9.mean$time/1000, Ktrop.w9.mean[, curr.metric], xlim = c(0, max(Ktrop.w3.mean$time, na.rm=T)/1000), 
+       ylim = range(c( Ktemp.w1.metrics[, curr.metric, ], 
+                       Ktemp.w3.metrics[, curr.metric, ],
+                       Ktemp.w9.metrics[, curr.metric, ]),na.rm= T), 
+       type = "n",ylab = metric.labels[metric.names == curr.metric], xlab = "", xaxt = "n", yaxt = "n")
+  #polygon(c(Ktrop.w9.mean$time/1000, rev(Ktrop.w9.mean$time/1000)), 
+  #        c(Ktrop.w9.mean[, curr.metric] - error*Ktrop.w9.sd[, curr.metric], 
+  #          rev(Ktrop.w9.mean[, curr.metric] + error*Ktrop.w9.sd[, curr.metric])), 
+  #        col = rgb(0.4, 0.8, 0.8, .3), border = NA)
+  polygon(c(Ktemp.w9.mean$time/1000, rev(Ktemp.w9.mean$time/1000)), 
+          c(Ktemp.w9.mean[, curr.metric] - error*Ktemp.w9.sd[, curr.metric], 
+            rev(Ktemp.w9.mean[, curr.metric] + error*Ktemp.w9.sd[, curr.metric])), 
+          col = rgb(0, 0.8, 0.8, .3), border = NA)
+  #points(Ktrop.w9.mean$time/1000, Ktrop.w9.mean[, curr.metric], type = 'l', col = rgb(.5, 1, 1), lwd = 3)
+  points(Ktemp.w9.mean$time/1000, Ktemp.w9.mean[, curr.metric], type = 'l', col = rgb(.5, 1, 1), lwd = 3)
+  
+  if (curr.metric == 'gamma.stat') { abline(h = 0, lty = 'dashed')}
+  if (curr.metric == 'r.lat.rich') {
+    legend('topright', legend = paste('wma =', c(1,3,9)), col = c(rgb(1,1,.5), rgb(1,.5,1), rgb(.5,1,1)), lwd = 3, cex = 2)
+  }
+} 
+mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 1.5) 
+dev.off()
+
+
 
