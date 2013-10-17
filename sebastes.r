@@ -74,29 +74,29 @@ cor(output3)
 
 # Supplemental figure showing species richness, MRD, and PSV of Pacific rockfish clade
 # as a function of latitude
-pdf(paste('sebastes_MRD-PSV_corrs_',Sys.Date(),'.pdf',sep=''),height=6,width=8)
-par(mar = c(7,7,1,8), mgp = c(5, 2, 0))
-plot(lat,richness, type = 'l', lwd = 3, xlab = "Latitude", ylab = "Species richness", cex.lab = 2.5, cex.axis = 2, las = 1)
-#text(50, 52, paste("Entire gradient:\nMRD-S = ", round(cor(output2$MRD,output2$S),2),
-#    "\nPSV-S = ", round(cor(output2$PSV,output2$S),2), sep = ""))
-#text(39, 6, paste("North of 34N:\nMRD-S = ", round(cor(output3$MRD,output3$S),2),
-#    "\nPSV-S = ", round(cor(output3$PSV,output3$S),2), sep = ""))
+pdf(paste('sebastes_MRD-PSV_corrs_',Sys.Date(),'.pdf',sep=''),height=6,width=9)
+par(mar = c(6,12,1,9), mgp = c(4.5, 2, 0))
+plot(lat,richness, type = 'l', lwd = 3, xlab = "Latitude", ylab = "Richness", cex.lab = 1.5, cex.axis = 1.5, las = 1)
 rect(20,-1,34,60, col = rgb(.9,.9,.9,.4), border=NA)
-#points(34,2, pch = 16)
-#arrows(34, 2, 48, 2, lwd = 2, length = .2)
+
 par(new=T, mgp = c(4,1,0))
-plot(lat, output2$MRD, col='blue',xaxt="n",yaxt="n",ylab="", xlab = "", pch = 16)
-axis(4, at = 6:9, line = .5, col = 'blue', las = 1, cex.axis = 2, lwd = 3)
+
+plot(lat, output2$MRD/max(root.dist), col='blue',xaxt="n",yaxt="n",ylab="", xlab = "", pch = 16)
+axis(4, line = .5, col = 'blue', las = 1, cex.axis = 1.5, lwd = 3)
 par(new=T)
 plot(lat,output2$PSV, col='red',xaxt="n",yaxt="n",ylab="", xlab = "", pch = 16)
-axis(4, line = 3.5, col = 'red', las = 1, cex.axis = 2, lwd = 3)
-#par(new=T)
-#plot(npp.1d.ma$latitude, npp.1d.ma$npp, type='l', col='green', xlim = c(min(lat),max(lat)),
-#     xaxt="n", yaxt="n", lwd = 2, xlab = "", ylab="")
-#axis(4)
-#mtext(expression(paste("NPP (mg C ", m^-2, d^-1,")", sep=" ")),4, line = 3)
-legend("topright",c('richness','MRD','PSV'),lty = c('solid','dotted','dotted'),
-       col=c('black','blue','red'), seg.len = 1, lwd = c(4, 8, 8), cex = 1.5)
+axis(4, line = 5, col = 'red', las = 1, cex.axis = 1.5, lwd = 3)
+
+par(new=T)
+
+plot(npp.1d.ma$latitude, npp.1d.ma$npp, type='l', col='green', xlim = c(min(lat),max(lat)),
+     xaxt="n", yaxt="n", lwd = 2, xlab = "", ylab="")
+axis(2, line = 7, col = 'green', cex.axis = 1.5, lwd =2)
+
+mtext(expression(paste("NPP (mg C ", m^-2, d^-1,")", sep=" ")), 2, cex = 1.5, line = 9.5)
+
+legend("topright",c('richness','MRD','PSV','NPP'),lty = c('solid','dotted','dotted','solid'),
+       col=c('black','blue','red','green'), seg.len = 1, lwd = c(4, 8, 8, 3), cex = 1)
 dev.off()
 
 
