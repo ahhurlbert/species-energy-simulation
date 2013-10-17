@@ -245,15 +245,12 @@ alt.x.vals = c(120, 140, 160, 180)
 #mtext(alt.x.vals, 1, at = alt.x.vals - x.offset, line = 2.5, col = 'gray50')
 mtext("(a)", 3, adj=0, outer=T, cex = 2)
 
+legend(146 - x.offset, 2.43, legend = c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin'), 
+       lty = c('solid', 'dashed', 'dashed', 'dashed'), text.col = 'white', cex = 1.2,
+       col = c('blue', 'blue', 'red', 'blue'), bty = "n", lwd = 3, y.intersp = 1.1)
 legend('bottomright', c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin'), 
-       lty = c('solid', 'dashed', 'solid', 'solid'), y.intersp = 1.1,
+       lty = c('solid', 'dashed', 'solid', 'solid'), y.intersp = 1.1, bty = "n",
        lwd = 3, col = c('red', 'red', 'red', 'blue'), cex = 1.2)
-xpos = 150.2
-seg.length = 8
-segments(xpos - x.offset, 2.32, xpos - x.offset + seg.length, 2.32, col = 'blue', lwd = 3)
-segments(xpos - x.offset, 2.06, xpos - x.offset + seg.length, 2.06, col = 'blue', lty = 'dashed', lwd = 3)
-segments(xpos - x.offset, 1.81, xpos - x.offset + seg.length, 1.81, col = 'red', lty = 'dashed', lwd = 3)
-segments(xpos - x.offset, 1.56, xpos - x.offset + seg.length, 1.56, col = 'blue', lty = 'dashed', lwd = 3)
 
 
 ## (b) latitude-richness correlation through time
@@ -410,7 +407,7 @@ mtext("(a)", 2, at = 22, cex = 2, outer = F, las = 1, line = 3)
 abline(h = seb.gamma, lty = empirical.lty, lwd = empirical.lwd) 
 
 # legend
-legend(154.5 - x.offset, -9.2, legend = c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin', expression(italic(Sebastes))), 
+legend(154.5 - x.offset, -11, legend = c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin', expression(italic(Sebastes))), 
        lty = c('solid', 'dashed', 'dashed', 'dashed', 'solid'), text.col = 'white', cex = 1.2,
        col = c('blue', 'blue', 'red', 'blue', 'white'), bty = "n", lwd = 3, seg.len = 2, y.intersp = 1)
 legend('bottomright', c('zero sum', 'no zero sum', 'tropical origin', 'temperate origin', expression(italic(Sebastes))), 
