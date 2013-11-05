@@ -1,6 +1,6 @@
 # Simulation workflow
 
-#(1) load libraries and simulation and phylogeny-making functions
+#(1) load libraries and simulation function
 library(ape)
 
 # Info for parallelizing processing specify number of processors in makeCluster
@@ -9,7 +9,6 @@ cl = makeCluster(2)
 registerDoParallel(cl)
 
 source("code/senc_sim_fun.r")
-source("code/make.phylo.jimmy.fun.r")
 
 
 #(2) read in master simulation matrix with chosen parameter combinations
