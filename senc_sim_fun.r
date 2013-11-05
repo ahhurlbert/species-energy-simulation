@@ -282,7 +282,7 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 			extinct.pops = subset(all.populations, extant == 0)
 			tot.extinct.pops = tot.extinct.pops + nrow(extinct.pops)
-			write.csv(extinct.pops, paste("temp.extinct.sim.", sim, ".time.", curr.time, ".csv", sep=""), row.names=F, quote=F)
+			write.csv(extinct.pops, paste("./raw_sim_output/temp.extinct.sim.", sim, ".time.", curr.time, ".csv", sep=""), row.names=F, quote=F)
 			all.populations = subset(all.populations, extant == 1)
 			extinct.pops.output.times = c(extinct.pops.output.times, curr.time)
 
@@ -312,7 +312,7 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 		for (out.times in extinct.pops.output.times) {
 			print(c(all.pops.row.id,date()))
-			extinct.in = read.csv(paste("temp.extinct.sim.",sim,".time.",out.times,".csv",sep=""),header=T)
+			extinct.in = read.csv(paste("./raw_sim_output/temp.extinct.sim.",sim,".time.",out.times,".csv",sep=""),header=T)
 			all.pops.out[all.pops.row.id:(all.pops.row.id + nrow(extinct.in) - 1), ] = extinct.in
 			all.pops.row.id = all.pops.row.id + nrow(extinct.in)
 			rm('extinct.in')
@@ -335,9 +335,9 @@ senc_sim_fun = function(sim.matrix, sim) {
 	## write outputs
 
 	phylo.out = make.phylo.jimmy.fun(t = curr.time, edge.length.out = edge.length, edge.out = edge ,stem.depth.out = stem.depth )
-	write.csv(all.populations, paste("SENC_all.pops_sim", sim, ".csv", sep=""), quote = F, row.names = F)
-	write.csv(time.richness, paste("SENC_time.rich_sim", sim, ".csv", sep=""), quote = F, row.names = F)
-	write.tree(phylo.out, paste("SENC_phylo_sim", sim, ".tre", sep = ""))
+	write.csv(all.populations, paste("./raw_sim_output/SENC_all.pops_sim", sim, ".csv", sep=""), quote = F, row.names = F)
+	write.csv(time.richness, paste("./raw_sim_output/SENC_time.rich_sim", sim, ".csv", sep=""), quote = F, row.names = F)
+	write.tree(phylo.out, paste("./raw_sim_output/SENC_phylo_sim", sim, ".tre", sep = ""))
 	end.params = data.frame(sim.id = sim,
                           status = 'completed',
                           reg.of.origin = region.of.origin,
@@ -354,7 +354,7 @@ senc_sim_fun = function(sim.matrix, sim) {
                           temperate_disturb_intensity = temperate_disturb_intensity,
                           tropical_disturb_intensity = tropical_disturb_intensity,
                           disturb_frequency = disturb_frequency) 
-	write.csv(end.params,paste("SENC_params.out_sim", sim, ".csv", sep = ""), quote = F, row.names = F)
+	write.csv(end.params,paste("./raw_sim_output/SENC_params.out_sim", sim, ".csv", sep = ""), quote = F, row.names = F)
 
 	return(list(all.populations = all.populations, 
               time.richness = time.richness,
