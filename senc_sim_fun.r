@@ -6,13 +6,13 @@ senc_sim_fun = function(sim.matrix, sim) {
   # --------------------------------------------------------------------
   region.of.origin = sim.matrix$reg.of.origin[sim.matrix$sim.id == sim]  #'temperate' or 'tropical'
   
-  w = sim.matrix$w[sim.matrix$sim.id == sim]  #strength of environmental filtering
+  w = sim.matrix$w[sim.matrix$sim.id == sim]  #strength of environmental filtering (smaller values = stronger)
   
   alpha = sim.matrix$alpha[sim.matrix$sim.id == sim]  #per capita speciation rate
   
   beta = sim.matrix$beta[sim.matrix$sim.id == sim]  #per capita dispersal rate to adjacent region
   
-  sigma_E = sim.matrix$sigma_E[sim.matrix$sim.id == sim]  #strength of niche conservatism 
+  sigma_E = sim.matrix$sigma_E[sim.matrix$sim.id == sim]  #strength of niche conservatism (smaller values = stronger)
   
   carry.cap = sim.matrix$carry.cap[sim.matrix$sim.id == sim]  #'on' if limits exist to community abundance; else 'off'
   
@@ -56,7 +56,7 @@ senc_sim_fun = function(sim.matrix, sim) {
   min.env = 0
   max.env = 40
   
-  gamma = 0.1 # rate of decrease in extinction probability as population size increases
+  gamma = 0.1 # exponential rate of decrease in extinction probability as population size increases
   
   total.mutations = 0 # the cumulative number of mutations
 
@@ -275,7 +275,10 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 		#if (is.element(curr.time,print.times)==T) {print(c(curr.time,nrow(all.populations),date(),tot.richness))} else{}
 
-		if (length(all.populations$extant[all.populations$extant == 0]) > 500) {
+		
+    # weed out extinct populations from all.populations, but keep track of the number of extinct pops
+    # and the timing of their extinction
+    if (length(all.populations$extant[all.populations$extant == 0]) > 500) {
 
 			extinct.pops = subset(all.populations, extant == 0)
 			tot.extinct.pops = tot.extinct.pops + nrow(extinct.pops)
@@ -326,7 +329,8 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 	print(c('this should be zero', correct.num.rows - nrow(subset(all.populations, spp.name != -999)))) # this should be zero
 
-	all.populations = subset(all.populations, region %in% 1:(num.of.bins - 1))
+	# exclude the two extreme spatial bins which may suffer boundary effects (regions 0 and 11 for our implementation)
+  all.populations = subset(all.populations, region %in% 1:(num.of.bins - 1))
 
 	## write outputs
 
