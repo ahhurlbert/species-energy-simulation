@@ -170,8 +170,8 @@ senc_sim_fun = function(sim.matrix, sim) {
     if (is.element(curr.time, disturb_times) == T) {
       for (reg.sampled in unique(all.populations$region[all.populations$extant==1])) {
         reg.disturb = reg.disturb.intensity$intensity[reg.disturb.intensity$region==reg.sampled]
-        all.populations$pop.size[all.populations$region == reg.sampled & all.populations$extant==1] 
-          = round((1 - reg.disturb) * all.populations$pop.size[all.populations$region == reg.sampled & 
+        all.populations$pop.size[all.populations$region == reg.sampled & all.populations$extant==1] =
+          round((1 - reg.disturb) * all.populations$pop.size[all.populations$region == reg.sampled & 
                                                                  all.populations$extant == 1], digits = 0)
       }  
     }
