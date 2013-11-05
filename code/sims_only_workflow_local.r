@@ -6,11 +6,9 @@ partial.analysis=1
 # (1) set wd for location to write results
 if (user=="Allen") {
   setwd("C:/SENCoutput")
-  repo_dir = "C:/Documents and Settings/Hurlbert/species-energy-simulation"
 }
 if (user=="James") {
   setwd("C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204")
-  repo_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation"
 }
 
 
@@ -28,12 +26,12 @@ library(parallel);
 library(doParallel);
 
 
-source(paste(repo_dir,'/senc_sim_fun.r',sep=''));
-source(paste(repo_dir,'/make.phylo.jimmy.fun.r',sep=''));
+source('code/senc_sim_fun.r')
+source('code/make.phylo.jimmy.fun.r')
 
 #(3) read in master simulation matrix with chosen parameter combinations
 # then add fields for storing output summary
-sim.matrix = read.csv(paste(repo_dir,"/SENC_Master_Simulation_Matrix.csv",sep=""),header=T);
+sim.matrix = read.csv("SENC_Master_Simulation_Matrix.csv", header=T)
 sim.matrix$n.regions = NA
 sim.matrix$extant.S = NA
 sim.matrix$extinct.S = NA
