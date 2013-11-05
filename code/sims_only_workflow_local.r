@@ -2,19 +2,9 @@
 
 #(1) load libraries and simulation and phylogeny-making functions
 library(ape)
-library(permute)
-library(nlme)
-library(vegan)
-library(picante)
-library(mvtnorm)
-library(caper)
-library(paleotree)
-library(plyr)
-library(parallel)
-library(doParallel)
 
 # Info for parallelizing processing specify number of processors in makeCluster
-package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools')
+package.vector = c('ape')
 cl = makeCluster(2)
 registerDoParallel(cl)
 
@@ -23,20 +13,11 @@ source("code/make.phylo.jimmy.fun.r")
 
 
 #(2) read in master simulation matrix with chosen parameter combinations
-# then add fields for storing output summary
 sim.matrix = read.csv("SENC_Master_Simulation_Matrix.csv", header=T)
-sim.matrix$n.regions = NA
-sim.matrix$extant.S = NA
-sim.matrix$extinct.S = NA
-sim.matrix$skipped.clades = NA
-sim.matrix$skipped.times = NA
-sim.matrix$BK.reg = NA
-sim.matrix$BK.env = NA
-
 
 
 #(3) Specify which simulation IDs to run, as given in the sim.matrix
-which.sims = 3125:3324
+which.sims = 3125:3125
 
 foo = foreach(sim = which.sims, .packages = package.vector, .combine = "rbind") %dopar% {
   
