@@ -1,8 +1,11 @@
+# This function is a modification of the maxlik.betasplit() function
+# in the apTreeshape package.
+
 maxlik.betasplit.AH = function (phylo, up = 10, remove.outgroup = FALSE, confidence.interval = "none", 
           conf.level = 0.95, size.bootstrap = 100) 
 {
   vrais.aldous.fin <- function(i, n, b) {
-    # Code below is from the original maxlik.betasplit function.
+    # Code commented out below is from the original maxlik.betasplit function.
     # Due to underflow errors, beta was switched out for lbeta in the 
     # manner of Purvis et al. 2011, Phil Trans Roy Soc B 366: 2462-2477
     # (Purvis, pers. comm.)
