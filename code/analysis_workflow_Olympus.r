@@ -7,9 +7,11 @@ if (local == 0) {
   
 # Choose number of time slices per simulation to analyze
 num.of.time.slices = 1; # use -999 if you want to define specific time slices
+
 # which.time.slices is (apparently) only for specifying particular, unevenly spaced time slices;
 # if not being used it should be set to -999
 which.time.slices = -999;
+
 # time.sequence is (apparently) for when the time slices occur for a regular interval; set to -999 if not being used
 # Note that due to the slow calculation of tree imbalance (beta) for large trees, it may be best to specify only ~20 time slices
 time.sequence = -999; # to turn off 'time.sequence'
@@ -21,6 +23,9 @@ root.only = 0 # 0 means all clades, 1 means just the root
 
 # Set minimum number of species in a clade needed to proceed with analysis
 min.num.spp = 8;
+
+# Specify number of clusters available for parallel proccessing
+num.clusters = 2
 
 # Simulation workflow
 
@@ -53,7 +58,7 @@ source('code/unzipping_files.r');
 source('code/maxlik.betasplit.AH.r');
 
 if (local == 1) {
-  cl = makeCluster(2);
+  cl = makeCluster(num.clusters);
   registerDoParallel(cl);
 }
 
