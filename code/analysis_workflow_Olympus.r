@@ -92,10 +92,14 @@ sim.matrix$BK.env = NA
       timeslices = max.time.actual 
     } else {
       if (which.time.slices != -999 & num.of.time.slices == - 999) { timeslices = which.time.slices };
-      if (which.time.slices == -999 & num.of.time.slices > 1) {timeslices = as.integer(round(seq(max(time.richness$time)/num.of.time.slices,max(time.richness$time),length=num.of.time.slices),digits=0))};
-      if (time.sequence[1] != -999) {timeslices = subset(time.sequence, time.sequence <= max.time.actual)};
+      if (which.time.slices == -999 & num.of.time.slices > 1) {
+        timeslices = as.integer(round(seq(max(time.richness$time) / num.of.time.slices,
+                                          max(time.richness$time), length = num.of.time.slices), digits = 0))
+      }
+      if (time.sequence[1] != -999) { timeslices = subset(time.sequence, time.sequence <= max.time.actual) }
     }
     
+    # Conduct analysis for each time slice specified above
     skipped.clades = 0
     skipped.times = ""
     for (t in timeslices) {
@@ -108,12 +112,9 @@ sim.matrix$BK.env = NA
       time.slice.populations = all.populations;
       time.slice.populations$extant = 0;
       time.slice.populations$extant[time.slice.populations$time.of.origin <= t & time.slice.populations$time.of.extinction > t] = 1
-      extant.ornot = aggregate(time.slice.populations$extant,by=list(time.slice.populations$spp.name),sum)
-      extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
+      extant.ornot = aggregate(time.slice.populations$extant, by = list(time.slice.populations$spp.name), sum)
+      extinct.species = as.character(extant.ornot[extant.ornot$x == 0, 'Group.1'])
       
-      # FIXME:
-      # Add more explanatory comments justifying why we don't need to consider species that existed
-      # at time t but went extinct before the present.
       # In some cases (e.g. sim 1 or 2, t=6000), tips.to.drop includes all tips and so sub.phylo is empty.
       # Does it make sense for this to ever happen? If not, fix it.
       # If so, need to provide an if-else error catch both in the creation of sub.phylo,
@@ -268,3 +269,8 @@ sim.matrix$BK.env = NA
     sim.matrix[sim.matrix$sim.id==sim,]
     #} else {print(sim)} # end second if (richness check for defined, extreme bin)
   } # end first if (file check)
+
+# Remove temporary files with extinct populations
+files = list.files('raw_sim_output')
+temp.files = files[grep('temp.extinct', files)]
+file.remove(paste('raw_sim_output/', temp.files, sep = ''))
