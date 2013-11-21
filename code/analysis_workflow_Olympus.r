@@ -72,7 +72,7 @@ trop.orig.extreme = 3;
 temp.orig.extreme = 8;
 pre.equil.time = 5459;
 
-  rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.out', 'output', 'sim.results'))
+  rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.osput', 'output', 'sim.results'))
   output = numeric();
   
   # (5) read in simulation results for specified simulation from the output zip file, or the raw output files
