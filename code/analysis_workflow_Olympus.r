@@ -270,7 +270,3 @@ sim.matrix$BK.env = NA
     #} else {print(sim)} # end second if (richness check for defined, extreme bin)
   } # end first if (file check)
 
-# Remove temporary files with extinct populations
-files = list.files('raw_sim_output')
-temp.files = files[grep('temp.extinct', files)]
-file.remove(paste('raw_sim_output/', temp.files, sep = ''))
