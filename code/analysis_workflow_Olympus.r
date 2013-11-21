@@ -104,7 +104,7 @@ sim.matrix$BK.env = NA
     skipped.times = ""
     for (t in timeslices) {
       # vector of species in existence at time t
-      sub.species = as.character(unique(subset(all.populations,time.of.sp.origin <= t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
+      sub.species = as.character(unique(subset(all.populations, time.of.origin <= t & time.of.extinction > t, select = 'spp.name'))[,1]);
       
       # Some species may be extant globally (extant==1) but in our boundary regions (0 or 11) only;
       # we need to eliminate species that are not extant within regions 1-10 (which is all that is
@@ -124,12 +124,12 @@ sim.matrix$BK.env = NA
       } else {
         
         # Drop extinct species out of the phylogeny and tidy up
-        sub.phylo = drop.tip(phylo.out,tips.to.drop);
-        temp.root.time = max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1])
-        most.recent.spp = sub.phylo$tip.label[as.numeric(names(which.max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1])))]
-        extinct.time.most.recent = unique(all.populations$time.of.sp.extinction[all.populations$spp.name==most.recent.spp])
-        sub.phylo$root.time = temp.root.time + max(c(0,max.time.actual - extinct.time.most.recent))
-        sub.phylo = collapse.singles(timeSliceTree(sub.phylo,sliceTime=(max.time.actual - t),plot=F,drop.extinct = T));
+        sub.phylo = drop.tip(phylo.out, tips.to.drop);
+        temp.root.time = max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo), Ntip(sub.phylo) + 1])
+        most.recent.spp = sub.phylo$tip.label[as.numeric(names(which.max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo), Ntip(sub.phylo) + 1])))]
+        extinct.time.most.recent = unique(all.populations$time.of.sp.extinction[all.populations$spp.name == most.recent.spp])
+        sub.phylo$root.time = temp.root.time + max(c(0, max.time.actual - extinct.time.most.recent))
+        sub.phylo = collapse.singles(timeSliceTree(sub.phylo, sliceTime = (max.time.actual - t), plot = F, drop.extinct = T));
         num.of.spp = length(sub.phylo$tip.label);
         
         
@@ -147,28 +147,30 @@ sim.matrix$BK.env = NA
           sub.populations = subset(subset.populations, time.of.origin <= t & time.of.extinction > t)
           
           #sub.clade.phylo is a specific simulation clade pulled from the phylogeny that was sliced at timeslice t
-          tips.to.drop2 = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label,as.character(sub.populations$spp.name))==F)]);
+          tips.to.drop2 = as.character(sub.phylo$tip.label[which(is.element(sub.phylo$tip.label, as.character(sub.populations$spp.name)) == F)]);
           
           # check to see if there are at least min.num.spp species for continuing with the analysis; if not increment skipped.clades
           if((length(sub.phylo$tip.label) - length(tips.to.drop2)) < min.num.spp) {
             skipped.clades = skipped.clades + 1
           } else {
             
-            sub.clade.phylo = drop.tip(sub.phylo,tips.to.drop2);
-            sub.clade.phylo$root.time = max(dist.nodes(sub.clade.phylo)[1:Ntip(sub.clade.phylo),Ntip(sub.clade.phylo) + 1]); sub.clade.phylo$root.time;
+            sub.clade.phylo = drop.tip(sub.phylo, tips.to.drop2);
+            sub.clade.phylo$root.time = max(dist.nodes(sub.clade.phylo)[1:Ntip(sub.clade.phylo), Ntip(sub.clade.phylo) + 1])
             sub.clade.phylo$origin.time = t - sub.clade.phylo$root.time
             
-            if (identical(sort(as.integer(unique(sub.populations$spp.name))) , sort(as.integer(sub.clade.phylo$tip.label)))==F ) {
-              print(c(c,t,'Error: trimmed phylogeny does not contain the correct species'))
+            if (identical(sort(as.integer(unique(sub.populations$spp.name))) , sort(as.integer(sub.clade.phylo$tip.label))) == F ) {
+              print(c(c, t, 'Error: trimmed phylogeny does not contain the correct species'))
               break
             } 
             
             # Calculate summary statistics at the regional level
-            reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env','extant')], sub.clade.phylo, as.integer(t));
+            reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env','extant')], 
+                                        sub.clade.phylo, 
+                                        as.integer(t));
             
             #Note that extinction calculation must be done on subset.populations, not sub.populations
-            extinction = extinct.calc(subset.populations, timeslice=t)
-            reg.summary2 = merge(reg.summary,extinction[,c('region','extinction.rate')],by='region')
+            extinction = extinct.calc(subset.populations, timeslice = t)
+            reg.summary2 = merge(reg.summary, extinction[, c('region', 'extinction.rate')], by = 'region')
             
             MRD.range = max(reg.summary$MRD,na.rm = T) - min(reg.summary$MRD,na.rm = T)
             MRD.mean = mean(reg.summary$MRD,na.rm = T)
@@ -182,8 +184,18 @@ sim.matrix$BK.env = NA
             PSV.env.slope = lm(reg.summary$PSV ~ reg.summary$reg.env)$coefficients[2]
             n.div.regions = length(reg.summary$region[reg.summary$richness > 1])
             
-            corr.results = cbind(xregion.analysis(reg.summary2),MRD.range,MRD.mean,MRD.var,MRD.rich.slope,MRD.env.slope,
-                                 PSV.range,PSV.mean,PSV.var,PSV.rich.slope,PSV.env.slope,n.div.regions)
+            corr.results = cbind(xregion.analysis(reg.summary2),
+                                 MRD.range,
+                                 MRD.mean,
+                                 MRD.var,
+                                 MRD.rich.slope,
+                                 MRD.env.slope,
+                                 PSV.range,
+                                 PSV.mean,
+                                 PSV.var,
+                                 PSV.rich.slope,
+                                 PSV.env.slope,
+                                 n.div.regions)
             
             #Pybus & Harvey (2000)'s gamma statistic
             Gamma.stat = gammaStat(sub.clade.phylo)
@@ -210,11 +222,11 @@ sim.matrix$BK.env = NA
             #names(spp.reg) = spp.traits$spp.name
             #BK.reg = phylosig(sub.clade.phylo, spp.reg[sub.clade.phylo$tip.label], method="K")
             
-            output = rbind(output, cbind(sim=sim,clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
+            output = rbind(output, cbind(sim = sim, clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
                                          clade.richness = length(unique(sub.populations$spp.name)), 
                                          #BK.env = BK.env , BK.reg = BK.reg, 
                                          tree.beta = tree.beta))
-            print(paste(sim,sub.clade.loop.end,c,t,date(),length(sub.clade.phylo$tip.label),sep="   "));
+            print(paste(sim, sub.clade.loop.end, c, t, date(), length(sub.clade.phylo$tip.label), sep="   "));
             flush.console();
           } # end third else
         } # end sub clade for loop
@@ -227,10 +239,18 @@ sim.matrix$BK.env = NA
     #write all of this output to files
     # the 'lbeta' part of the name reflect the use of log beta in the calculation of tree imbalance via the maxlik.betasplit.AH function
     # file names that start with 'NEW' include beta value (i.e. imbalance values) associated with underflow errors, calculated with 'maxlik.betasplit'
-    if (num.of.time.slices == 1 & root.only == 0) {write.csv(output,paste("lbeta_Stats_sim",sim,"_endtime_all_clades.csv",sep=""),quote=F,row.names=F)};
-    if (num.of.time.slices == 1 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_endtime_root_only.csv",sep=""),quote=F,row.names=F)};
-    if (num.of.time.slices > 1 & root.only == 0) {write.csv(output,paste("lbeta_Stats_sim",sim,"_mult_times_all_clades.csv",sep=""),quote=F,row.names=F)};
-    if (num.of.time.slices > 1 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_mult_times_root_only.csv",sep=""),quote=F,row.names=F)};
+    if (num.of.time.slices == 1 & root.only == 0) {
+      write.csv(output, paste("lbeta_Stats_sim", sim, "_endtime_all_clades.csv", sep = ""), quote = F, row.names = F)
+    }
+    if (num.of.time.slices == 1 & root.only == 1) {
+      write.csv(output, paste("lbeta_Stats_sim", sim, "_endtime_root_only.csv", sep = ""), quote = F, row.names = F)
+    }
+    if (num.of.time.slices > 1 & root.only == 0) {
+      write.csv(output, paste("lbeta_Stats_sim", sim, "_mult_times_all_clades.csv", sep = ""), quote = F, row.names = F)
+    }
+    if (num.of.time.slices > 1 & root.only == 1) {
+      write.csv(output, paste("lbeta_Stats_sim", sim, "_mult_times_root_only.csv", sep = ""), quote = F, row.names = F)
+    }
     if (which.time.slices != -999 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_specific_times_root_only.csv",sep=""),quote=F,row.names=F)};
     if (which.time.slices != -999 & root.only == 0) {write.csv(output,paste("lbeta_Stats_sim",sim,"_specific_times_all_clades.csv",sep=""),quote=F,row.names=F)};
     if (time.sequence != -999 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_time_seq_root_only.csv",sep=""),quote=F,row.names=F)};
