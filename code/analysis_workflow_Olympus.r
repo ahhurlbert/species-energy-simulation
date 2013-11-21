@@ -1,7 +1,5 @@
 #!/usr/bin/env Rscript
 
-local = 0; # toggle to 1 to run analyses locally and to 0 to run analyses on the olympus cluster
-
 if (local == 0) {
   sim = commandArgs();
   sim = as.numeric(sim[length(sim)]);
@@ -24,46 +22,44 @@ root.only = 0 # 0 means all clades, 1 means just the root
 # Set minimum number of species in a clade needed to proceed with analysis
 min.num.spp = 8;
 
-Allen = 0;
-
 # Simulation workflow
 
 #(2) load simulation and analysis functions
-library(mnormt,lib.loc=Rlib.location);
-library(rgl,lib.loc=Rlib.location);
-library(ape,lib.loc=Rlib.location);
-library(permute,lib.loc=Rlib.location);
-library(nlme,lib.loc=Rlib.location);
-library(vegan,lib.loc=Rlib.location);
-library(picante,lib.loc=Rlib.location);
-library(mvtnorm,lib.loc=Rlib.location);
-library(caper,lib.loc=Rlib.location);
-library(paleotree,lib.loc=Rlib.location);
-library(plyr,lib.loc=Rlib.location);
-library(phytools, lib.loc=Rlib.location);
-library(apTreeshape, lib.loc=Rlib.location);
+library(mnormt)
+library(rgl)
+library(ape)
+library(permute)
+library(nlme)
+library(vegan)
+library(picante)
+library(mvtnorm)
+library(caper)
+library(paleotree)
+library(plyr)
+library(phytools)
+library(apTreeshape)
+library(foreach)
+library(doParallel)
 
 package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools','apTreeshape');
 
-source('reg_calc_and_analysis.r');
-source('make.phylo.jimmy.fun.r');
-source('lat.grad.time.plot.r');
-source('clade.origin.corr.plot.r');
-source('clade.exmpl.figs.r');
-source('extinct.calc.r');
-source('unzipping_files.r');
-source('maxlik.betasplit.AH.r');
+source('code/reg_calc_and_analysis.r');
+source('code/make.phylo.jimmy.fun.r');
+source('code/lat.grad.time.plot.r');
+source('code/clade.origin.corr.plot.r');
+source('code/clade.exmpl.figs.r');
+source('code/extinct.calc.r');
+source('code/unzipping_files.r');
+source('code/maxlik.betasplit.AH.r');
 
 if (local == 1) {
-  library(foreach, lib.loc=Rlib.location);
-  library(doParallel, lib.loc=Rlib.location);
   cl = makeCluster(2);
   registerDoParallel(cl);
 }
 
 #(3) read in master simulation matrix with chosen parameter combinations;
 # then add fields for storing output summary
-sim.matrix = as.data.frame(read.csv("SENC_Master_Simulation_Matrix.csv",header=T));
+sim.matrix = read.csv("SENC_Master_Simulation_Matrix.csv",header=T)
 sim.matrix$n.regions = NA
 sim.matrix$extant.S = NA
 sim.matrix$extinct.S = NA
@@ -79,8 +75,8 @@ pre.equil.time = 5459;
   rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.out', 'output', 'sim.results'))
   output = numeric();
   
-  # (5) read in simulation results for specified simulation from the output zip file
-  sim.results = output.unzip(raw_sim_output,sim)
+  # (5) read in simulation results for specified simulation from the output zip file, or the raw output files
+  sim.results = output.unzip('raw_sim_output', sim)
   
   if ( !is.null(sim.results) ) {
     all.populations = sim.results$all.populations
