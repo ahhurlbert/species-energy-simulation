@@ -123,6 +123,7 @@ sim.matrix$BK.env = NA
         skipped.times = paste(skipped.times, t) # keep track of the timeslices that were skipped in a text string
       } else {
         
+        # Drop extinct species out of the phylogeny and tidy up
         sub.phylo = drop.tip(phylo.out,tips.to.drop);
         temp.root.time = max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1])
         most.recent.spp = sub.phylo$tip.label[as.numeric(names(which.max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo),Ntip(sub.phylo) + 1])))]
@@ -131,6 +132,9 @@ sim.matrix$BK.env = NA
         sub.phylo = collapse.singles(timeSliceTree(sub.phylo,sliceTime=(max.time.actual - t),plot=F,drop.extinct = T));
         num.of.spp = length(sub.phylo$tip.label);
         
+        
+        # The 'c' loop repeats the basic analysis for every node in the tree (if root.only = 0)
+        # or just for the overall root clade (if root.only = 1)
         if (root.only == 1) { sub.clade.loop.end = (num.of.spp+1) }
         if (root.only == 0) { sub.clade.loop.end = max(sub.phylo$edge) }
         for (c in (num.of.spp+1):sub.clade.loop.end) {
@@ -159,6 +163,7 @@ sim.matrix$BK.env = NA
               break
             } 
             
+            # Calculate summary statistics at the regional level
             reg.summary = regional.calc(sub.populations[,c('region','spp.name','time.of.origin','reg.env','extant')], sub.clade.phylo, as.integer(t));
             
             #Note that extinction calculation must be done on subset.populations, not sub.populations
