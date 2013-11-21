@@ -2,6 +2,8 @@
 
 #(1) load libraries and simulation function
 library(ape)
+library(parallel)
+library(doParallel)
 
 # Info for parallelizing processing specify number of processors in makeCluster
 package.vector = c('ape')
