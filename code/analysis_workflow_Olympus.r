@@ -73,10 +73,6 @@ sim.matrix$skipped.times = NA
 sim.matrix$BK.reg = NA
 sim.matrix$BK.env = NA
 
-trop.orig.extreme = 3;
-temp.orig.extreme = 8;
-pre.equil.time = 5459;
-
   rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.osput', 'output', 'sim.results'))
   output = numeric();
   
@@ -88,11 +84,6 @@ pre.equil.time = 5459;
     time.richness = sim.results$time.richness
     phylo.out = sim.results$phylo.out
     params.out = sim.results$params.out
-    
-    if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'tropical' ) { extreme.bin = trop.orig.extreme };
-    if (sim.matrix$reg.of.origin[sim.matrix$sim.id == sim] == 'temperate' ) { extreme.bin = temp.orig.extreme };
-    
-    #if (time.richness$spp.rich[time.richness$time == pre.equil.time & time.richness$region == extreme.bin] > 5) {
     
     max.time.actual = max(time.richness$time);
     # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally (which.time.slices == -999)
