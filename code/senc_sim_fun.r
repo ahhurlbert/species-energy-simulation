@@ -344,7 +344,12 @@ senc_sim_fun = function(sim.matrix, sim) {
 			all.pops.row.id = all.pops.row.id + nrow(extinct.in)
 			rm('extinct.in')
 		}
-
+		# Remove temporary files with extinct populations
+		files = list.files('raw_sim_output')
+		temp.files = files[grep('temp.extinct', files)]
+		file.remove(paste('raw_sim_output/', temp.files, sep = ''))
+		
+    
 		all.populations = all.pops.out
 		spp.extinct.times = as.matrix(tapply(all.populations$time.of.sp.extinction, all.populations$spp.name, FUN = min)) 
 		spp.extinct.times = cbind(as.numeric(rownames(spp.extinct.times)), spp.extinct.times[, 1]) 
