@@ -25,30 +25,6 @@ root.only = 0 # 0 means all clades, 1 means just the root
 min.num.spp = 8;
 
 Allen = 0;
-partial.analysis = 1; # toggle to determine whether we're looking at all sims or just some
-
-#New parameter for taking into account which of us is running this code
-if(Allen==1) {
-  setwd('c:/documents and settings/hurlbert/species-energy-simulation')
-  Rlib.location = "C:/program files/R/R-2.15.2/library"
-  sim_dir = "C:/SENCoutput"
-  analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses"
-}
-
-if (Allen == 0 & local ==1) {
-  Rlib.location = NULL
-  setwd('C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation')
-  sim_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204" #wherever all of your zipped output files are
-  analysis_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204" #wherever you want to store the results of these analyses
-}
-
-if (Allen ==0 & local == 0) { 
-  Rlib.location = "/pic/people/steg815/Rlibs" 
-  sim_dir = getwd()
-  analysis_dir = sim_dir
-  function_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation"
-}
-
 
 # Simulation workflow
 
@@ -104,7 +80,7 @@ pre.equil.time = 5459;
   output = numeric();
   
   # (5) read in simulation results for specified simulation from the output zip file
-  sim.results = output.unzip(sim_dir,sim)
+  sim.results = output.unzip(raw_sim_output,sim)
   
   if ( !is.null(sim.results) ) {
     all.populations = sim.results$all.populations
@@ -285,7 +261,7 @@ pre.equil.time = 5459;
     }
     
     # There are currently some bugs in clade.exmpl.figs.
-    # clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_dir)
+    # clade.exmpl.figs(sim.results, output, clade.slices=6, seed=0, output.dir = analysis_output)
     
     # Add overall summary info
     sim.matrix[sim.matrix$sim.id==sim,'n.regions'] = length(unique(all.populations$region))
