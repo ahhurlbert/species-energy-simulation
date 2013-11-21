@@ -106,7 +106,7 @@ sim.matrix$BK.env = NA
       # vector of species in existence at time t
       sub.species = as.character(unique(subset(all.populations,time.of.sp.origin <= t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
       
-      # Some species may be extant globally (extant==1) but in our boundary regions (0,11) only;
+      # Some species may be extant globally (extant==1) but in our boundary regions (0 or 11) only;
       # we need to eliminate species that are not extant within regions 1-10 (which is all that is
       # reflected in the all.populations dataframe)
       time.slice.populations = all.populations;
@@ -115,13 +115,8 @@ sim.matrix$BK.env = NA
       extant.ornot = aggregate(time.slice.populations$extant, by = list(time.slice.populations$spp.name), sum)
       extinct.species = as.character(extant.ornot[extant.ornot$x == 0, 'Group.1'])
       
-      # In some cases (e.g. sim 1 or 2, t=6000), tips.to.drop includes all tips and so sub.phylo is empty.
-      # Does it make sense for this to ever happen? If not, fix it.
-      # If so, need to provide an if-else error catch both in the creation of sub.phylo,
-      # and of sub.clade.phylo inside the clade loop. (Sim 3, t = 156 bonks at that point)
-      # NOTE: code runs for sim==5 currently as a test case
-      sub.species2 = sub.species[!sub.species %in% extinct.species]
-      tips.to.drop = as.character(phylo.out$tip.label[!phylo.out$tip.label %in% sub.species2]);
+      sub.species2 = sub.species[!sub.species %in% extinct.species] # 'true' list of extant species
+      tips.to.drop = as.character(phylo.out$tip.label[!phylo.out$tip.label %in% sub.species2]) # species to drop
       
       # check to see if there are at least min.num.spp species for continuing with the analysis; if not store the skipped timeslice
       if ( (length(phylo.out$tip.label) - length(tips.to.drop)) < min.num.spp) {
