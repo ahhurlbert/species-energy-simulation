@@ -202,5 +202,5 @@ analysis = function(sim,                    #simulation ID to analyze
   # Clean up files
   oldsimfiles = c('all.populations', 'time.richness', 'phylo.out', 'params.out', 'output', 'sim.results')
   rm(list = ls()[oldsimfiles %in% ls()])
-  stopCluster(cl)
+  on.exit(stopCluster(cl))
 } # end function
