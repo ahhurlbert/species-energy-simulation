@@ -237,28 +237,14 @@ sim.matrix$BK.env = NA
     print(warnings())
 
     #write all of this output to files
-    # the 'lbeta' part of the name reflect the use of log beta in the calculation of tree imbalance via the maxlik.betasplit.AH function
-    # file names that start with 'NEW' include beta value (i.e. imbalance values) associated with underflow errors, calculated with 'maxlik.betasplit'
-    if (num.of.time.slices == 1 & root.only == 0) {
-      write.csv(output, paste("lbeta_Stats_sim", sim, "_endtime_all_clades.csv", sep = ""), quote = F, row.names = F)
+    if (root.only == 0) {
+      write.csv(output, paste("Stats_sim", sim, "_all_subclades.csv", sep = ""), quote = F, row.names = F)
     }
-    if (num.of.time.slices == 1 & root.only == 1) {
-      write.csv(output, paste("lbeta_Stats_sim", sim, "_endtime_root_only.csv", sep = ""), quote = F, row.names = F)
+    if (root.only == 1) {
+      write.csv(output, paste("Stats_sim", sim, "_rootclade_only.csv", sep = ""), quote = F, row.names = F)
     }
-    if (num.of.time.slices > 1 & root.only == 0) {
-      write.csv(output, paste("lbeta_Stats_sim", sim, "_mult_times_all_clades.csv", sep = ""), quote = F, row.names = F)
-    }
-    if (num.of.time.slices > 1 & root.only == 1) {
-      write.csv(output, paste("lbeta_Stats_sim", sim, "_mult_times_root_only.csv", sep = ""), quote = F, row.names = F)
-    }
-    if (which.time.slices != -999 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_specific_times_root_only.csv",sep=""),quote=F,row.names=F)};
-    if (which.time.slices != -999 & root.only == 0) {write.csv(output,paste("lbeta_Stats_sim",sim,"_specific_times_all_clades.csv",sep=""),quote=F,row.names=F)};
-    if (time.sequence != -999 & root.only == 1) {write.csv(output,paste("lbeta_Stats_sim",sim,"_time_seq_root_only.csv",sep=""),quote=F,row.names=F)};
-    if (time.sequence != -999 & root.only == 0) {write.csv(output,paste("lbeta_Stats_sim",sim,"_time_seq_all_clades.csv",sep=""),quote=F,row.names=F)};
     
     analysis.end = date();
-    #FIXME: store these warnings to a file, along with sim.id? Or is this being done in the shell?
-    #print(c(warnings(),sim.start,sim.end,analysis.end));
     
     
     ####################################################
