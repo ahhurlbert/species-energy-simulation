@@ -1,44 +1,51 @@
-# Figure 4: Plot latitude-richness correlation versus (a) time of clade origin and
-# (b) clade richness for all simulation subclades with at least 30 species and
-# spanning at least 5 regions. (c) Plot same thing for empirical Sebastes data
-# for the entire northeastern Pacific gradient (23-66N) as well as the gradient
-# north of Point Conception (34-66N).
+# Code for plotting Figure 3 in Hurlbert & Stegen
 
 # libraries
 require(ape)
 require(caper)
 
+##########################################
+# Specify simulations for plotting
+##########################################
 
-Allen = 1;
+#Energy gradient sims
+# currently has 100 sims
+Ktrop.sims = c(4065:4074, 4185:4274)
+Ktemp.sims = c(4075:4084, 4275:4364)
 
-if (Allen ==1) {
-  sim_dir = "C:/SENCoutput"
-  analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/summaryplots"
-  repo_dir = "C:/Documents and Settings/Hurlbert/species-energy-simulation"
-}
+#No energy gradient sims
+# currently has 100 sims
+Ttrop.sims = 3465:3564
+Ttemp.sims = 3565:3664
 
-if (Allen == 0) {
-  sim_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204"
-  analysis_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204"
-  repo_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation"  
-}
-setwd(repo_dir)
+#########################################
+
 
 #Simulation data
-Ktrop.all = read.csv(paste(sim_dir,'/SENC_Stats_100K_endtime_K.trop.csv',sep=''), header=T)
-Ktemp.all = read.csv(paste(sim_dir,'/SENC_Stats_100K_endtime_K.temp.csv',sep=''), header=T)
-Ttrop.all = read.csv(paste(sim_dir,'/SENC_Stats_100K_endtime_T.trop.csv',sep=''), header=T)
-Ttemp.all = read.csv(paste(sim_dir,'/SENC_Stats_100K_endtime_T.temp.csv',sep=''), header=T)
+compile.stats = function(sims) {
+  for (sim in sims) {
+    compiled = c()
+    temp = read.csv(paste('raw_sim_output/Stats_sim', sim, '_all_subclades.csv', sep = ''), header = T)
+    compiled = rbind(compiled, temp)
+  }
+}
+
+Ktrop.all = compile.stats(Ktrop.sims)
+Ktemp.all = compile.stats(Ktemp.sims)
+Ttrop.all = compile.stats(Ttrop.sims)
+Ttemp.all = compile.stats(Ttemp.sims)
 
 Ttrop = subset(Ttrop.all, clade.richness >= 30 & n.regions >=5)
 Ktrop = subset(Ktrop.all, clade.richness >= 30 & n.regions >=5)
 Ttemp = subset(Ttemp.all, clade.richness >= 30 & n.regions >=5)
 Ktemp = subset(Ktemp.all, clade.richness >= 30 & n.regions >=5)
 
+#####################################################################
 #Sebastes data
-sebastes = read.csv(paste(repo_dir,'/sebastes_data_for_allen.csv',sep=''),header=T)
-phy = read.tree(paste(repo_dir,'/Sebastes_tree_Ingram2011PRSB.phy',sep=''))
-#Drop non-NEP species (with no latitude data)
+sebastes = read.csv('sebastes_data_for_allen.csv', header = T)
+phy = read.tree('Sebastes_tree_Ingram2011PRSB.phy')
+
+#Drop non-NorthEastern Pacific species (with no latitude data)
 nonNEPsp = as.character(sebastes[is.na(sebastes$min_latitude), 'X'])
 NEPphy = drop.tip(phy,nonNEPsp)
 lat = min(sebastes$min_latitude, na.rm=T):max(sebastes$max_latitude, na.rm=T)
@@ -54,19 +61,21 @@ for (c in (NEPphy$Nnode+2):max(NEPphy$edge)) {
   
   sub.richness = sapply(lat, function(x) nrow(sub.populations[sub.populations$min_latitude <= x & sub.populations$max_latitude >= x, ]))
   if(length(sub.clade) >= min.num.spp) {
-    lat.corr = cor(lat[sub.richness>0], sub.richness[sub.richness>0])
-    lat.corr2 = cor(lat[sub.richness>0 & lat >= 34], sub.richness[sub.richness > 0 & lat >=34])
-    lat.corr3 = cor(lat[sub.richness>0 & lat < 34], sub.richness[sub.richness > 0 & lat < 34])
+    lat.corr = cor(lat[sub.richness > 0], sub.richness[sub.richness > 0])
+    lat.corr2 = cor(lat[sub.richness > 0 & lat >= 34], sub.richness[sub.richness > 0 & lat >= 34])
+    lat.corr3 = cor(lat[sub.richness > 0 & lat < 34], sub.richness[sub.richness > 0 & lat < 34])
     lat.corr.output = rbind(lat.corr.output, c(c, length(sub.clade), lat.corr, lat.corr2, lat.corr3))
   }
 }
 lat.corr.output = data.frame(lat.corr.output)
 names(lat.corr.output) = c('cladeID','clade.richness','r.lat.rich','r.lat.rich.gte34','r.lat.rich.lt34')  
 
+####################################################################
+
 # Example clade richness vs opportunity patterns
 source('opportunity_gradient.r')
 sim.for.plot = 3325
-stats = read.csv(paste('C:/SENCoutput/SENC_stats_sim',sim.for.plot,'.csv',sep=''), header=T)
+stats = read.csv(paste('analysis_output/SENC_stats_sim',sim.for.plot,'.csv',sep=''), header=T)
 
 c3157 = reg.opp.grad(cladeid = 3157, sim = sim.for.plot, plot=F, output=T)
 c2486 = reg.opp.grad(cladeid = 2486, sim = sim.for.plot, plot=F, output=T)
@@ -74,7 +83,7 @@ col.3157 = 'gray80' #colors()[577]
 col.2486 = 'black' #colors()[149]
 
 #Plot
-pdf(paste(analysis_dir,'/latcorr_subclades_vs_cladeAgeRich_',Sys.Date(),'_log.pdf',sep=''), height=15, width = 14)
+pdf('analysis_output/latcorr_subclades_vs_cladeAgeRich.pdf', height=15, width = 14)
 par(mfrow=c(3,2), mar = c(7, 8, 3, 10), oma=c(1, 1, 1, 1), mgp = c(5.5, 1.5, 0))
 cexpts = 2
 cexpts.seb = 3
