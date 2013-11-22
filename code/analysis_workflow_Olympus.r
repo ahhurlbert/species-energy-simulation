@@ -2,26 +2,13 @@
 
 analysis = function(sim,                    #simulation ID to analyze
                     sim.matrix,             #matrix with simulation parameters for all simulations
-                    local = 1,              #analysis on a local machine (1) or cluster (0)
                     root.only = 1,          #analyze root clade only (1) or all subclades (1)
                     num.of.time.slices = 1, #number of points in time to analyze (if 1, then the end of the simulation)
                     which.time.slices = NA, #which points in time to analyze if irregularly spaced (a vector)
                     time.sequence = NA,     #which points in time to analyze if regularly spaced (a vector)
-                    min.num.spp = 8,        #minimum number of species in a clade needed to proceed with analysis
-                    num.processors = 2)     #number of processors for parallel processing on local machine
+                    min.num.spp = 8)        #minimum number of species in a clade needed to proceed with analysis
   {
   
-  # For parallel processing on a local machine
-  if (local == 1) {
-    cl = makeCluster(num.processors)
-    registerDoParallel(cl)
-  }
-  # Pass arguments from shell on cluster
-  if (local == 0) {
-    sim = commandArgs()
-    sim = as.numeric(sim[length(sim)])
-  }
-
   # Initialize output
   output = numeric()
   
@@ -176,9 +163,6 @@ analysis = function(sim,                    #simulation ID to analyze
       } # end second else
     } # end timeslice loop
 
-    # this print statement should show up in the output files on the cluster.
-    print(warnings())
-
     #write all of this output to files
     if (root.only == 0) {
       write.csv(output, paste("analysis_output/Stats_sim", sim, "_all_subclades.csv", sep = ""), quote = F, row.names = F)
@@ -202,5 +186,4 @@ analysis = function(sim,                    #simulation ID to analyze
   # Clean up files
   oldsimfiles = c('all.populations', 'time.richness', 'phylo.out', 'params.out', 'output', 'sim.results')
   rm(list = ls()[oldsimfiles %in% ls()])
-  on.exit(stopCluster(cl))
 } # end function
