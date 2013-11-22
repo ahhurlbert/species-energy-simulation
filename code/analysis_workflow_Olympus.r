@@ -70,8 +70,6 @@ sim.matrix$extant.S = NA
 sim.matrix$extinct.S = NA
 sim.matrix$skipped.clades = NA
 sim.matrix$skipped.times = NA
-sim.matrix$BK.reg = NA
-sim.matrix$BK.env = NA
 
   rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.osput', 'output', 'sim.results'))
   output = numeric();
@@ -209,22 +207,8 @@ sim.matrix$BK.env = NA
               tree.beta = NA
             }
             
-            #Calculate Blomberg's K for two traits: environmental optimum, and mean region of occurrence
-            #spp.traits = aggregate(sub.populations$region, by = list(sub.populations$spp.name, sub.populations$env.opt),
-            #                       function(x) mean(x, na.rm=T))
-            #names(spp.traits) = c('spp.name','env.opt','region')
-            
-            #spp.env = spp.traits$env.opt
-            #names(spp.env) = spp.traits$spp.name
-            #BK.env = phylosig(sub.clade.phylo, spp.env[sub.clade.phylo$tip.label], method="K")
-            
-            #spp.reg = spp.traits$region
-            #names(spp.reg) = spp.traits$spp.name
-            #BK.reg = phylosig(sub.clade.phylo, spp.reg[sub.clade.phylo$tip.label], method="K")
-            
             output = rbind(output, cbind(sim = sim, clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
                                          clade.richness = length(unique(sub.populations$spp.name)), 
-                                         #BK.env = BK.env , BK.reg = BK.reg, 
                                          tree.beta = tree.beta))
             print(paste(sim, sub.clade.loop.end, c, t, date(), length(sub.clade.phylo$tip.label), sep="   "));
             flush.console();
@@ -247,16 +231,12 @@ sim.matrix$BK.env = NA
     analysis.end = date();
     
     # Add overall summary info
-    sim.matrix[sim.matrix$sim.id==sim,'n.regions'] = length(unique(all.populations$region))
-    sim.matrix[sim.matrix$sim.id==sim,'extant.S'] = nrow(extant.ornot[extant.ornot$x>0,])
-    sim.matrix[sim.matrix$sim.id==sim,'extinct.S'] = length(extinct.species)
-    sim.matrix[sim.matrix$sim.id==sim,'skipped.clades'] = skipped.clades # number of clades skipped over for analysis, summed over timeslices
-    sim.matrix[sim.matrix$sim.id==sim,'skipped.times'] = skipped.times # number of time slices skipped over for analysis
-    sim.matrix[sim.matrix$sim.id==sim,'BK.reg'] = NA # blomberg's K based on region
-    sim.matrix[sim.matrix$sim.id==sim,'BK.env'] = NA # blomberg's K based on environment
+    sim.matrix[sim.matrix$sim.id == sim, 'n.regions'] = length(unique(all.populations$region))
+    sim.matrix[sim.matrix$sim.id == sim, 'extant.S'] = nrow(extant.ornot[extant.ornot$x>0,])
+    sim.matrix[sim.matrix$sim.id == sim, 'extinct.S'] = length(extinct.species)
+    sim.matrix[sim.matrix$sim.id == sim, 'skipped.clades'] = skipped.clades # number of clades skipped over for analysis, summed over timeslices
+    sim.matrix[sim.matrix$sim.id == sim, 'skipped.times'] = skipped.times # number of time slices skipped over for analysis
     
-    write.csv(sim.matrix[sim.matrix$sim.id==sim,],paste("sim.matrix.output.",sim,"_time",t,".csv",sep=""),quote=F,row.names=F);
-    sim.matrix[sim.matrix$sim.id==sim,]
-    #} else {print(sim)} # end second if (richness check for defined, extreme bin)
+    write.csv(sim.matrix[sim.matrix$sim.id == sim,], paste("analysis_output/summary_output_sim", sim, ".csv", sep = ""), quote = F, row.names = F);
   } # end first if (file check)
 
