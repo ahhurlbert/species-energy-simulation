@@ -32,24 +32,41 @@ source('code/analysis_workflow_Olympus.r')
 sim.matrix = read.csv("SENC_Master_Simulation_Matrix.csv",header=T)
 
 #####################################################################
-# Specify sims to run
+# Specify sims to run, whether to do so locally, and number of cores 
+# available for parallel processing
+#####################################################################
+which.sims = 3345
+local = 1
+num.cores = 2
 
 #sim,  simulation ID to analyze
 #sim.matrix,  matrix with simulation parameters for all simulations
-#local,   analysis on a local machine (1) or cluster (0)
 #root.only, analyze root clade only (1) or all subclades (1)
 #num.of.time.slices,  number of points in time to analyze (if 1, then the end of the simulation)
 #which.time.slices,  which points in time to analyze if irregularly spaced (a vector)
 #time.sequence,   which points in time to analyze if regularly spaced (a vector)
 #min.num.spp,   minimum number of species in a clade needed to proceed with analysis
-#num.processors,  number of processors for parallel processing on local machine
+
+# For parallel processing on a local machine
+if (local == 1) {
+  cl = makeCluster(num.cores)
+  registerDoParallel(cl)
   
-analysis(sim = ,
-         sim.matrix,
-         local = 1,
-         root.only = 1,
-         num.of.time.slices = 1,
-         which.time.slices = NA,
-         time.sequence = NA,
-         min.num.spp = 8,
-         num.processors = 2)
+  foo = foreach(sim = which.sims, .packages = package.vector, .combine = "rbind") %dopar% {
+    
+    analysis(sim, sim.matrix, root.only = 1, num.of.time.slices = 1, 
+             which.time.slices = NA, time.sequence = NA, min.num.spp = 8)
+  }
+}
+
+# Pass arguments from shell on cluster:
+############# NEEDS REVISION ############
+if (local == 0) {
+  sim = commandArgs()
+  sim = as.numeric(sim[length(sim)])
+  
+  analysis(sim, sim.matrix, root.only = 1, num.of.time.slices = 1, 
+           which.time.slices = NA, time.sequence = NA, min.num.spp = 8)
+  
+  
+}
