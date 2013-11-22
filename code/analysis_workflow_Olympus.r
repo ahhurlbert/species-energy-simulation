@@ -10,9 +10,7 @@ analysis = function(sim,                    #simulation ID to analyze
                     min.num.spp = 8,        #minimum number of species in a clade needed to proceed with analysis
                     num.processors = 2)     #number of processors for parallel processing on local machine
   {
-  # Clean up potentially lingering files
-  rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.osput', 'output', 'sim.results'))
-
+  
   # For parallel processing on a local machine
   if (local == 1) {
     cl = makeCluster(num.processors)
@@ -200,4 +198,8 @@ analysis = function(sim,                    #simulation ID to analyze
     
     write.csv(sim.matrix[sim.matrix$sim.id == sim,], paste("analysis_output/summary_output_sim", sim, ".csv", sep = ""), quote = F, row.names = F)
   } # end first if (file check)
+  
+  # Clean up files
+  rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.out', 'output', 'sim.results'))
+  
 } # end function
