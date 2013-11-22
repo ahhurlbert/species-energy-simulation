@@ -71,6 +71,16 @@ sim.matrix$extinct.S = NA
 sim.matrix$skipped.clades = NA
 sim.matrix$skipped.times = NA
 
+
+analysis = function(sim,
+                    local = 1,
+                    root.only = 1,
+                    num.of.time.slices = 1,
+                    which.time.slices = NA,
+                    time.sequence = NA,
+                    min.num.spp = 8,
+                    num.clusters = 2)
+  {
   rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.osput', 'output', 'sim.results'))
   output = numeric()
   
@@ -89,12 +99,12 @@ sim.matrix$skipped.times = NA
     if (num.of.time.slices == 1) { 
       timeslices = max.time.actual 
     } else {
-      if (which.time.slices != -999 & num.of.time.slices == - 999) { timeslices = which.time.slices }
-      if (which.time.slices == -999 & num.of.time.slices > 1) {
+      if (is.na(which.time.slices) == F & is.na(num.of.time.slices)) { timeslices = which.time.slices }
+      if (is.na(which.time.slices) & num.of.time.slices > 1) {
         timeslices = as.integer(round(seq(max(time.richness$time) / num.of.time.slices,
                                           max(time.richness$time), length = num.of.time.slices), digits = 0))
       }
-      if (time.sequence[1] != -999) { timeslices = subset(time.sequence, time.sequence <= max.time.actual) }
+      if (is.na(time.sequence[1]) == F) { timeslices = subset(time.sequence, time.sequence <= max.time.actual) }
     }
     
     # Conduct analysis for each time slice specified above
@@ -241,4 +251,4 @@ sim.matrix$skipped.times = NA
     
     write.csv(sim.matrix[sim.matrix$sim.id == sim,], paste("analysis_output/summary_output_sim", sim, ".csv", sep = ""), quote = F, row.names = F)
   } # end first if (file check)
-
+} # end function
