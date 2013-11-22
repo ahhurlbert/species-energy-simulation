@@ -1,2 +1,0 @@
-sim.id,status,reg.of.origin,w,alpha,beta,sigma_E,carry.cap,energy.gradient,max.K,num.of.bins,max.time,max.richness,replicate,disturb_frequency,temperate_disturb_intensity,tropical_disturb_intensity,n.regions,extant.S,extinct.S,skipped.clades,skipped.times
-4064,completed,temperate,3,1e-06,1e-04,1,on,off,22000,11,30000,10000,100,100,0.99,0.75,4,1,0,0, 30000
