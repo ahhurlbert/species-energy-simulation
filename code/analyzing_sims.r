@@ -39,13 +39,11 @@ which.sims = 3345
 local = 1
 num.cores = 2
 
-#sim,  simulation ID to analyze
-#sim.matrix,  matrix with simulation parameters for all simulations
-#root.only, analyze root clade only (1) or all subclades (1)
-#num.of.time.slices,  number of points in time to analyze (if 1, then the end of the simulation)
-#which.time.slices,  which points in time to analyze if irregularly spaced (a vector)
-#time.sequence,   which points in time to analyze if regularly spaced (a vector)
-#min.num.spp,   minimum number of species in a clade needed to proceed with analysis
+# The following sim IDs were used in Hurlbert & Stegen 2014
+# --temperate origin, energy gradient, c(4075:4084, 4275:4364)
+# --tropical origin, energy gradient, c(4065:4074, 4185:4274
+# --temperate origin, no zero sum constraint, c(3565:3664)
+# --tropical origin, no zero sum constraint, c(3465:3564)
 
 # For parallel processing on a local machine
 if (local == 1) {
@@ -56,6 +54,15 @@ if (local == 1) {
     
     analysis(sim, sim.matrix, root.only = 1, num.of.time.slices = 1, 
              which.time.slices = NA, time.sequence = NA, min.num.spp = 8)
+    
+    #sim,  simulation ID to analyze
+    #sim.matrix,  matrix with simulation parameters for all simulations
+    #root.only, analyze root clade only (1) or all subclades (1)
+    #num.of.time.slices,  number of points in time to analyze (if 1, then the end of the simulation)
+    #which.time.slices,  which points in time to analyze if irregularly spaced (a vector)
+    #time.sequence,   which points in time to analyze if regularly spaced (a vector)
+    #min.num.spp,   minimum number of species in a clade needed to proceed with analysis
+    
   }
 }
 
