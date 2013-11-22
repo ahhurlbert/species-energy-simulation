@@ -1,90 +1,39 @@
-#!/usr/bin/env Rscript
+# Function for analyzing raw simulation output
 
-if (local == 0) {
-  sim = commandArgs()
-  sim = as.numeric(sim[length(sim)])
-}
-  
-# Choose number of time slices per simulation to analyze
-num.of.time.slices = 1 # use -999 if you want to define specific time slices
-
-# which.time.slices is (apparently) only for specifying particular, unevenly spaced time slices;
-# if not being used it should be set to -999
-which.time.slices = -999
-
-# time.sequence is (apparently) for when the time slices occur for a regular interval; set to -999 if not being used
-# Note that due to the slow calculation of tree imbalance (beta) for large trees, it may be best to specify only ~20 time slices
-time.sequence = -999 # to turn off 'time.sequence'
-#time.sequence = seq(2,300,by=2) # for time scenario sims
-#time.sequence = seq(1000,100000,length=100) # for energy gradient sims
-
-# choose root only or all clades
-root.only = 0 # 0 means all clades, 1 means just the root
-
-# Set minimum number of species in a clade needed to proceed with analysis
-min.num.spp = 8
-
-# Specify number of clusters available for parallel proccessing
-num.clusters = 2
-
-# Simulation workflow
-
-#(2) load simulation and analysis functions
-library(mnormt)
-library(rgl)
-library(ape)
-library(permute)
-library(nlme)
-library(vegan)
-library(picante)
-library(mvtnorm)
-library(caper)
-library(paleotree)
-library(plyr)
-library(phytools)
-library(apTreeshape)
-library(foreach)
-library(doParallel)
-
-package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools','apTreeshape')
-
-source('code/reg_calc_and_analysis.r')
-source('code/make.phylo.jimmy.fun.r')
-source('code/lat.grad.time.plot.r')
-source('code/clade.origin.corr.plot.r')
-source('code/clade.exmpl.figs.r')
-source('code/extinct.calc.r')
-source('code/unzipping_files.r')
-source('code/maxlik.betasplit.AH.r')
-
-if (local == 1) {
-  cl = makeCluster(num.clusters)
-  registerDoParallel(cl)
-}
-
-#(3) read in master simulation matrix with chosen parameter combinations;
-# then add fields for storing output summary
-sim.matrix = read.csv("SENC_Master_Simulation_Matrix.csv",header=T)
-sim.matrix$n.regions = NA
-sim.matrix$extant.S = NA
-sim.matrix$extinct.S = NA
-sim.matrix$skipped.clades = NA
-sim.matrix$skipped.times = NA
-
-
-analysis = function(sim,
-                    local = 1,
-                    root.only = 1,
-                    num.of.time.slices = 1,
-                    which.time.slices = NA,
-                    time.sequence = NA,
-                    min.num.spp = 8,
-                    num.clusters = 2)
+analysis = function(sim,                    #simulation ID to analyze
+                    sim.matrix,             #matrix with simulation parameters for all simulations
+                    local = 1,              #analysis on a local machine (1) or cluster (0)
+                    root.only = 1,          #analyze root clade only (1) or all subclades (1)
+                    num.of.time.slices = 1, #number of points in time to analyze (if 1, then the end of the simulation)
+                    which.time.slices = NA, #which points in time to analyze if irregularly spaced (a vector)
+                    time.sequence = NA,     #which points in time to analyze if regularly spaced (a vector)
+                    min.num.spp = 8,        #minimum number of species in a clade needed to proceed with analysis
+                    num.processors = 2)     #number of processors for parallel processing on local machine
   {
+  # Clean up potentially lingering files
   rm(list=c('all.populations', 'time.richness', 'phylo.out', 'params.osput', 'output', 'sim.results'))
+
+  # For parallel processing on a local machine
+  if (local == 1) {
+    cl = makeCluster(num.processors)
+    registerDoParallel(cl)
+  }
+  # Pass arguments from shell on cluster
+  if (local == 0) {
+    sim = commandArgs()
+    sim = as.numeric(sim[length(sim)])
+  }
+
+  # Initialize output
   output = numeric()
   
-  # (5) read in simulation results for specified simulation from the output zip file, or the raw output files
+  sim.matrix$n.regions = NA
+  sim.matrix$extant.S = NA
+  sim.matrix$extinct.S = NA
+  sim.matrix$skipped.clades = NA
+  sim.matrix$skipped.times = NA
+  
+  # read in simulation results for specified simulation from the output zip file, or the raw output files
   sim.results = output.unzip('raw_sim_output', sim)
   
   if ( !is.null(sim.results) ) {
@@ -94,7 +43,7 @@ analysis = function(sim,
     params.out = sim.results$params.out
     
     max.time.actual = max(time.richness$time)
-    # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally (which.time.slices == -999)
+    # If just a single timeslice, then use the end of the simulation or a designated time, otherwise space them equally 
     # or use specified vector in which.time.slices
     if (num.of.time.slices == 1) { 
       timeslices = max.time.actual 
