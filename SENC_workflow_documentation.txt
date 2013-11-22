@@ -45,7 +45,7 @@ FILE OUTPUTS:   (all saved in 'raw_sim_output' folder; XXX specifies simID)
 
 # Workflow for analysis of SENC simulation output
 
-FILE:   analysis_workflow_Olympus.r
+FILE:   analyzing_sims.r
 ---------------------------------
 FILE INPUTS:   
  DATA
@@ -53,7 +53,14 @@ FILE INPUTS:
     Table listing the parameter combinations of every simulation to be run.
   senc.out.XXX.zip
     Zipped output files where XXX is the simulation id, ranging from 1 to ~4000
+  (OR UNZIPPED:)
+  SENC_all.pops_simXXX.csv
+  SENC_time.rich_simXXX.csv
+  SENC_phylo_simXXX.tre
+  SENC_params.out_simXXX.csv
  SCRIPTS
+  analysis_workflow_Olympus.r
+    complete analysis of a single simulation
   unzipping_files.r
     Unzips simulation output of the form senc.out.XXX.zip, stores info in sim.results
   reg_calc_and_analysis.r
@@ -70,14 +77,13 @@ FILE INPUTS:
     Makes clade_example_figs_simXXX.pdf plots. Currently broken.
 
 VARIABLE INPUTS:   
-  number.of.time.slices
-    The number of points in time over the course of the simulation to analyze results.
-  min.num.spp
-    The minimum number of species a clade must have to be analyzed as its own entity.
-  Allen
-    If Allen==1, then various local paths are specified to read and write files
-    correctly on Allen's office machine. If Allen==0, then paths should be set for
-    James' working environment.
+  which.sims
+    simulation IDs to analyze
+  local
+    toggle for analyses on local machine (1) or computing cluster (0)
+  num.cores
+    number of processors available for parallel processing on a local machine
+
 
 FILE OUTPUTS:
   SENC_Stats_simXXX.csv
@@ -86,14 +92,7 @@ FILE OUTPUTS:
     simID, cladeID, time, correlation coefficients and p-values for correlations among
     richness, environment, region, MRD, and PSV, Pybus & Harvey's gamma statistic, and
     Blomberg's K for both environmental optimum and mean region of occurrence.
-  lat_grad_thru_time_simXXX.pdf
-    Plot of species richness versus latitude for ten equally spaced points in time from
-    throughout the simulation.
-  corrs_vs_cladeage_simXXX.pdf
-    9-panel bivariate plots with clade origin time (the inverse of clade age) on the X
-    and the various variables from SENC_Stats_simXXX.csv on the Y.
-    NOTE:   Need to modify to include the two Blomberg's K values as two additional plots.
-  sim.matrix.output_YYYY-MM-DD.csv
+  summary_output_simXXX.csv
     One row for each simulation with summary information regarding the simulation
     parameters, the total number of regions over which species occurred, the number of 
     extant species, the number of species going extinct over the simulation, the number
@@ -101,3 +100,24 @@ FILE OUTPUTS:
     threshold, the number of timeslices that were skipped because there were insufficient
     species (usually timeslices very early on under a limited range of parameters), and
     the total number of rows of output in that simulation's SENC_Stats_simXXX.csv file.
+
+
+# Manuscript plots
+
+Figures 2 and 4:  metrics.through.time.r
+----------------------------------------
+
+
+
+
+Figure 3: KT_scenarios_corr_plots_plus_sebastes.r
+-------------------------------------------------
+
+
+Figure S1:
+
+
+Figure S2: 
+
+
+Figure S3:
