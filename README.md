@@ -210,60 +210,134 @@ files produced are listed below.
 
 
 #Analyze simulation output
-The following code creates derived data and statistics from the raw simulation output.
+The following code creates derived data and statistics from the raw simulation output. Required inputs
+for analysis and analysis output are described below.
 
-FILE:   analyzing_sims.r
----------------------------------
-FILE INPUTS:   
- DATA
-  SENC_Master_Simulation_Matrix.csv 
-    Table listing the parameter combinations of every simulation to be run.
-  senc.out.XXX.zip
-    Zipped output files where XXX is the simulation id, ranging from 1 to ~4000
-  (OR UNZIPPED:)
-  SENC_all.pops_simXXX.csv
-  SENC_time.rich_simXXX.csv
-  SENC_phylo_simXXX.tre
-  SENC_params.out_simXXX.csv
- SCRIPTS
-  analysis_workflow_Olympus.r
-    complete analysis of a single simulation
-  unzipping_files.r
-    Unzips simulation output of the form senc.out.XXX.zip, stores info in sim.results
-  reg_calc_and_analysis.r
-    
-  extinct.calc.r
-    Calculates an extinction rate for each region
-  make.phylo.jimmy.fun.r
-    Makes a phylogeny from the edge and edge.length info collected during the simulation
-  lat.grad.time.plot.r
-    Makes the lat_grad_thru_time_simXXX.pdf plots.
-  clade.origin.corr.plot.r
-    Makes the corr_vs_cladeage_simXXX.pdf plots.
-  clade.exmpl.figs.r 
-    Makes clade_example_figs_simXXX.pdf plots. Currently broken.
-
-VARIABLE INPUTS:   
-  which.sims
-    simulation IDs to analyze
-  local
-    toggle for analyses on local machine (1) or computing cluster (0)
-  num.cores
-    number of processors available for parallel processing on a local machine
-
-
-FILE OUTPUTS:
-  SENC_Stats_simXXX.csv
-    Often referred to as the "stats" file or "output" file. For each subclade and at
+<table>
+  <tr>
+    <td colspan="2">FILE:   analyzing_sims.r</td>
+  </tr>
+  <tr>
+    <td>FILE INPUTS:</td><td></td>
+  </tr>
+  <tr>
+    <td>DATA</td><td></td>
+  </tr>
+  <tr>
+    <td>SENC_Master_Simulation_Matrix.csv</td>
+    <td>Table listing the parameter combinations of every simulation to be run.</td>
+  </tr>
+  <tr>
+    <td>senc.out.XXX.zip</td>
+    <td>Zipped output files where XXX is the simulation id, ranging from 1 to ~4000</td>
+  </tr>
+  <tr>
+    <td>(OR UNZIPPED:)</td><td></td>
+  </tr>
+  <tr>
+    <td>SENC_all.pops_simXXX.csv</td><td></td>
+  </tr>
+  <tr>
+    <td>SENC_time.rich_simXXX.csv</td><td></td>
+  </tr>
+  <tr>
+    <td>SENC_phylo_simXXX.tre</td><td></td>
+  </tr>
+  <tr>
+    <td>SENC_params.out_simXXX.csv</td><td></td>
+  </tr>
+  <tr>
+    <td></td><td></td>
+  </tr>
+  <tr>
+    <td>SCRIPTS</td><td></td>
+  </tr>
+  <tr>
+    <td>analysis_workflow_Olympus.r</td>
+    <td>complete analysis of a single simulation</td>
+  </tr>
+  <tr>
+    <td>unzipping_files.r</td>
+    <td>Unzips simulation output of the form senc.out.XXX.zip, stores info in sim.results</td>
+  </tr>
+  <tr>
+    <td>reg_calc_and_analysis.r</td>
+    <td>includes functions that calculate richness and phylogenetic metrics within each region, as well as
+       correlations in metrics across regions</td>
+  </tr>
+  <tr>
+    <td>extinct.calc.r</td>
+    <td>Calculates an extinction rate for each region</td>
+  </tr>
+  <tr>
+    <td>make.phylo.jimmy.fun.r</td>
+    <td>Makes a phylogeny from the edge and edge.length info collected during the simulation</td>
+  </tr>
+  <tr>
+    <td>lat.grad.time.plot.r</td>
+    <td> Makes the lat_grad_thru_time_simXXX.pdf plots.</td>
+  </tr>
+  <tr>
+    <td>clade.origin.corr.plot.r</td>
+    <td>Makes the corr_vs_cladeage_simXXX.pdf plots.</td>
+  <tr>
+    <td></td><td></td>
+  </tr>
+  <tr>
+    <td>VARIABLE INPUTS:</td><td></td>
+  </tr>
+  <tr>
+    <td>which.sims</td>
+    <td>simulation IDs to analyze</td>
+  </tr>
+  <tr>
+    <td>local</td>
+    <td>toggle for analyses on local machine (1) or computing cluster (0)</td>
+  </tr>
+  <tr>
+    <td>num.cores</td>
+    <td>number of processors available for parallel processing on a local machine</td>
+  </tr>
+  <tr>
+    <td></td><td></td>
+  </tr>
+  <tr>
+    <td>FILE OUTPUTS:</td><td></td>
+  </tr>
+  <tr>
+    <td>SENC_Stats_simXXX.csv</td>
+    <td>Often referred to as the "stats" file or "output" file. For each subclade and at
     each specified timeslice within simulation XXX, the following information is stored:
     simID, cladeID, time, correlation coefficients and p-values for correlations among
     richness, environment, region, MRD, and PSV, Pybus & Harvey's gamma statistic, and
-    Blomberg's K for both environmental optimum and mean region of occurrence.
-  summary_output_simXXX.csv
-    One row for each simulation with summary information regarding the simulation
+    Blomberg's K for both environmental optimum and mean region of occurrence.</td>
+  </tr>
+  <tr>
+    <td>summary_output_simXXX.csv</td>
+    <td>One row for each simulation with summary information regarding the simulation
     parameters, the total number of regions over which species occurred, the number of 
     extant species, the number of species going extinct over the simulation, the number
     of clades that were skipped in analysis because they were smaller than the min.num.spp
     threshold, the number of timeslices that were skipped because there were insufficient
     species (usually timeslices very early on under a limited range of parameters), and
-    the total number of rows of output in that simulation's SENC_Stats_simXXX.csv file.
+    the total number of rows of output in that simulation's SENC_Stats_simXXX.csv file.</td>
+  </tr>
+</table>
+
+#Duplicating manuscript figures
+
+##Figures 2 and 4
+metrics.through.time.r
+
+##Figure 3
+KT_scenarios_corr_plots_plus_sebastes.r
+
+##Figure S1
+
+
+##Figure S2
+metrics.through.time.sigma.variation.r
+
+##Figure S3
+pacific_npp.r
+sebastes.r
