@@ -100,17 +100,18 @@ No zero sum constraint, temperate origin: c(3565:3664)
 No zero sum constraint, tropical origin: c(3465:3564)  
 
 To run simulations with novel parameter combinations, add a line or lines specifying those parameter combos
-to the SENC_Master_Simulation_Matrix.csv file. 
+to the SENC_Master_Simulation_Matrix.csv file. The inputs required for running simulations and the output
+files produced are listed below.
 
 <table>
   <tr>
     <td colspan="2">FILE: sims_only_workflow_local.r</td>
   </tr>
   <tr>
-    <td>FILE INPUTS:</td>
+    <td>FILE INPUTS:</td><td></td>
   </tr>
   <tr>
-    <td>DATA</td>
+    <td>DATA</td><td></td>
   </tr>
   <tr>
     <td>SENC_Master_Simulation_Matrix.csv</td>
@@ -124,12 +125,14 @@ to the SENC_Master_Simulation_Matrix.csv file.
     <td>Runs an entire simulation for one sim ID (i.e., one combination of simulation parameters)</td>
   <tr></tr>
   <tr>
-    <td>VARIABLE INPUTS:</td>
+    <td>VARIABLE INPUTS:</td><td></td>
   </tr>
   <tr>
     <td>which.sims</td>
     <td>The sim IDs for which simulations should be run</td>
-  <tr></tr>
+  <tr>
+    <td></td><td></td>
+  </tr>
   <tr>
     <td>FILE OUTPUTS:</td>
     <td>(all saved in 'raw_sim_output' folder; XXX specifies simID)</td>
