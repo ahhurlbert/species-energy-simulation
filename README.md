@@ -118,12 +118,18 @@ files produced are listed below.
     <td>Table listing the parameter combinations of every simulation to be run.</td>
   </tr>
   <tr>
-    <td>SCRIPTS</td>
+    <td></td><td></td>
+  </tr>
+  <tr>
+    <td>SCRIPTS</td><td></td>
   </tr>
   <tr>
     <td>senc_sim_fun.r</td>
     <td>Runs an entire simulation for one sim ID (i.e., one combination of simulation parameters)</td>
-  <tr></tr>
+  </tr>
+  <tr>
+    <td></td><td></td>
+  </tr>
   <tr>
     <td>VARIABLE INPUTS:</td><td></td>
   </tr>
