@@ -90,7 +90,7 @@ file. These parameters include:
     <td>disturb_frequency</td>
     <td>frequency of disturbance in number of time steps</td>
   </tr>
-
+</table>
 
 The simulations reported on in the paper correspond to the following sim.id's:
 
