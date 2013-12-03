@@ -18,8 +18,11 @@ The parameters governing a given simulation are specified within the SENC_Master
 file. These parameters include:
 
 sim.id	 	a unique numeric identifier referring to a set of simulation parameters
+
 status	 	"completed" if the simulation has finished, or "to.run" if it is pending
+
 reg.of.origin 	region of origin, either "tropical" or "temperate"
+
 w		governs the strength of environmental filtering, small values = stronger
 alpha		per individual speciation probability
 beta		per individual dispersal probability
@@ -39,7 +42,9 @@ disturb_frequency		frequency of disturbance in number of time steps
 The simulations reported on in the paper correspond to the following sim.id's:
 
 Zero sum energy gradient, temperate origin: c(4075:4084, 4275:4364)
+
 Zero sum energy gradient, tropical origin: c(4065:4074, 4185:4274
+
 No zero sum constraint, temperate origin: c(3565:3664)
 No zero sum constraint, tropical origin: c(3465:3564)
 
