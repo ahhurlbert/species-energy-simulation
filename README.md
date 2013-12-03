@@ -345,7 +345,7 @@ metrics.through.time.r
 KT_scenarios_corr_plots_plus_sebastes.r
 
 ##Figure S1
-
+lat.grad.time.plot.r
 
 ##Figure S2
 metrics.through.time.sigma.variation.r
