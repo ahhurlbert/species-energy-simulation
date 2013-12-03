@@ -17,10 +17,10 @@ install.packages(package.vector)
 The parameters governing a given simulation are specified within the SENC_Master_Simulation_Matrix.csv
 file. These parameters include:
 
-sim.id	 	a unique numeric identifier referring to a set of simulation parameters  
-status	 	"completed" if the simulation has finished, or "to.run" if it is pending  
-reg.of.origin 	region of origin, either "tropical" or "temperate"  
-w		governs the strength of environmental filtering, small values = stronger  
+sim.id          a unique numeric identifier referring to a set of simulation parameters  
+status          "completed" if the simulation has finished, or "to.run" if it is pending  
+reg.of.origin   region of origin, either "tropical" or "temperate"  
+w               governs the strength of environmental filtering, small values = stronger  
 alpha		per individual speciation probability
 beta		per individual dispersal probability
 sigma_E		governs the strength of niche conservatism, small values = stronger
