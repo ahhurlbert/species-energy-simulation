@@ -7,7 +7,7 @@ Stegen, *Ecology Letters*.
 #Setup
 Requirements: R 3.0 with the following packages installed:
 
-```sh
+```R
 package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools','apTreeshape','foreach','doParallel')
 
 install.packages(package.vector)
@@ -102,45 +102,102 @@ No zero sum constraint, tropical origin: c(3465:3564)
 To run simulations with novel parameter combinations, add a line or lines specifying those parameter combos
 to the SENC_Master_Simulation_Matrix.csv file. 
 
-FILE:   sims_only_workflow_local.r  
-FILE INPUTS:     
- DATA  
-  SENC_Master_Simulation_Matrix.csv   
-    Table listing the parameter combinations of every simulation to be run.  
- SCRIPTS  
-  senc_sim_fun.r  
-    Runs an entire simulation for one sim ID (i.e., one combination of simulation parameters)  
-  
-VARIABLE INPUTS:  
-  which.sims  
-    The sim IDs for which simulations should be run  
-  
-FILE OUTPUTS:   (all saved in 'raw_sim_output' folder; XXX specifies simID)  
-  SENC_all.pops_simXXX.csv  
-    Simulation output containing all spatial, temporal and trait information for every  
-    population to arise over the course of the simulation.  
-    region:   spatial region number  
-    spp.name:   species identifier  
-    extant:   species extant as of the most recent time step (1) or extinct (0)  
-    env.opt:   environmental optimum of the species, ranging from ~0-40  
-    time.of.origin:   time at which the species appeared in the region. If this is a first  
+<table>
+  <tr>
+    <td colspan="2">FILE: sims_only_workflow_local.r</td>
+  </tr>
+  <tr>
+    <td>FILE INPUTS:</td>
+  </tr>
+  <tr>
+    <td>DATA</td>
+  </tr>
+  <tr>
+    <td>SENC_Master_Simulation_Matrix.csv</td>
+    <td>Table listing the parameter combinations of every simulation to be run.</td>
+  </tr>
+  <tr>
+    <td>SCRIPTS</td>
+  </tr>
+  <tr>
+    <td>senc_sim_fun.r</td>
+    <td>Runs an entire simulation for one sim ID (i.e., one combination of simulation parameters)</td>
+  <tr></tr>
+  <tr>
+    <td>VARIABLE INPUTS:</td>
+  </tr>
+  <tr>
+    <td>which.sims</td>
+    <td>The sim IDs for which simulations should be run</td>
+  <tr></tr>
+  <tr>
+    <td>FILE OUTPUTS:</td>
+    <td>(all saved in 'raw_sim_output' folder; XXX specifies simID)</td>
+  </tr>
+  <tr>
+    <td>SENC_all.pops_simXXX.csv</td>
+    <td>Simulation output containing all spatial, temporal and trait information for every  
+    population to arise over the course of the simulation.</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>region:   spatial region number</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>spp.name:   species identifier</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>extant:   species extant as of the most recent time step (1) or extinct (0)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>env.opt:   environmental optimum of the species, ranging from ~0-40</td>  
+  </tr>
+  <tr>
+    <td></td>
+    <td>time.of.origin:   time at which the species appeared in the region. If this is a first  
       appearance due to having newly speciated, then time.of.origin should equal  
       time.of.sp.origin. More likely, the appearance is due to colonization from an  
-      adjacent region.  
-    time.of.extinction:   time at which the species disappears from the region. Most often  
-      this will reflect the timing of a local extinction.  
-    time.of.sp.origin:   time at which the species first appeared in the simulation due to  
-      speciation.  
-    time.of.sp.extinction:   time at which the species went globally extinct. If it did not  
-      go extinct, then its value is the number of time steps the simulation was run plus 1.  
-    reg.env:   the average temperature of the region.  
-    carry.cap:   the carrying capacity (over all species) of the region.  
-  SENC_time.rich_simXXX.csv  
-    Summary of the number of species in each region at each time step in the simulation.  
-  SENC_phylo_simXXX.tre  
-    Object of class 'phylo' describing phylogenetic relationships among simulation species.  
-  SENC_params.out_simXXX.csv  
-    Simulation parameters used for simulation XXX.
+      adjacent region.</td>  
+  </tr>
+  <tr>
+    <td></td>
+    <td>time.of.extinction:   time at which the species disappears from the region. Most often  
+      this will reflect the timing of a local extinction.</td>  
+  </tr>
+  <tr>
+    <td></td>
+    <td>time.of.sp.origin:   time at which the species first appeared in the simulation due to  
+      speciation.</td>  
+  </tr>
+  <tr>
+    <td></td>
+    <td>time.of.sp.extinction:   time at which the species went globally extinct. If it did not  
+      go extinct, then its value is the number of time steps the simulation was run plus 1.</td>  
+  </tr>
+  <tr>
+    <td></td>
+    <td>reg.env:   the average temperature of the region.</td>  
+  </tr>
+  <tr>
+    <td></td>
+    <td>carry.cap:   the carrying capacity (over all species) of the region.</td>
+  </tr>
+  <tr>
+    <td>SENC_time.rich_simXXX.csv</td>
+    <td>Summary of the number of species in each region at each time step in the simulation.</td>
+  </tr>
+  <tr>
+    <td>SENC_phylo_simXXX.tre</td>
+    <td>Object of class 'phylo' describing phylogenetic relationships among simulation species.</td>
+  </tr>
+  <tr>
+    <td>SENC_params.out_simXXX.csv</td>
+    <td>Simulation parameters used for simulation XXX.</td>
+  </tr>
+</table>
 
 
 #Analyze simulation output
