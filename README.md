@@ -7,11 +7,11 @@ Stegen, *Ecology Letters*.
 #Setup
 Requirements: R 3.0 with the following packages installed:
 
-'''sh
+```sh
 package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools','apTreeshape','foreach','doParallel')
 
 install.packages(package.vector)
-'''
+```
 
 #Run simulations
 The parameters governing a given simulation are specified within the SENC_Master_Simulation_Matrix.csv
