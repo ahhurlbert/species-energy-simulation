@@ -19,9 +19,6 @@ package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','p
 
 source('code/reg_calc_and_analysis.r')
 source('code/make.phylo.jimmy.fun.r')
-source('code/lat.grad.time.plot.r')
-source('code/clade.origin.corr.plot.r')
-source('code/clade.exmpl.figs.r')
 source('code/extinct.calc.r')
 source('code/unzipping_files.r')
 source('code/maxlik.betasplit.AH.r')
