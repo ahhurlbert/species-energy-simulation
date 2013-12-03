@@ -8,7 +8,19 @@ Stegen, *Ecology Letters*.
 Requirements: R 3.0 with the following packages installed:
 
 ```R
-package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools','apTreeshape','foreach','doParallel')
+package.vector = c('ape',
+		   'permute',
+		   'nlme',
+		   'vegan',
+		   'picante',
+		   'mvtnorm',
+		   'caper',
+		   'paleotree',
+		   'plyr',
+		   'phytools',
+		   'apTreeshape',
+		   'foreach',
+		   'doParallel')
 
 install.packages(package.vector)
 ```
@@ -323,6 +335,7 @@ for analysis and analysis output are described below.
     the total number of rows of output in that simulation's SENC_Stats_simXXX.csv file.</td>
   </tr>
 </table>
+<<<<<<< HEAD
 
 #Duplicating manuscript figures
 
@@ -341,3 +354,5 @@ metrics.through.time.sigma.variation.r
 ##Figure S3
 pacific_npp.r
 sebastes.r
+=======
+>>>>>>> d02b51fd90ed83038fca34b649e7a43a72236ce4
