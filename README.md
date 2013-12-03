@@ -96,50 +96,50 @@ The simulations reported on in the paper correspond to the following sim.id's:
 
 Zero sum energy gradient, temperate origin: c(4075:4084, 4275:4364)  
 Zero sum energy gradient, tropical origin: c(4065:4074, 4185:4274)  
-No zero sum constraint, temperate origin: c(3565:3664)
-No zero sum constraint, tropical origin: c(3465:3564)
+No zero sum constraint, temperate origin: c(3565:3664)  
+No zero sum constraint, tropical origin: c(3465:3564)  
 
 To run simulations with novel parameter combinations, add a line or lines specifying those parameter combos
 to the SENC_Master_Simulation_Matrix.csv file. 
 
-FILE:   sims_only_workflow_local.r
-FILE INPUTS:   
- DATA
-  SENC_Master_Simulation_Matrix.csv 
-    Table listing the parameter combinations of every simulation to be run.
- SCRIPTS
-  senc_sim_fun.r
-    Runs an entire simulation for one sim ID (i.e., one combination of simulation parameters)
-
-VARIABLE INPUTS:
-  which.sims
-    The sim IDs for which simulations should be run
-
-FILE OUTPUTS:   (all saved in 'raw_sim_output' folder; XXX specifies simID)
-  SENC_all.pops_simXXX.csv
-    Simulation output containing all spatial, temporal and trait information for every
-    population to arise over the course of the simulation.
-    region:   spatial region number
-    spp.name:   species identifier
-    extant:   species extant as of the most recent time step (1) or extinct (0)
-    env.opt:   environmental optimum of the species, ranging from ~0-40
-    time.of.origin:   time at which the species appeared in the region. If this is a first
-      appearance due to having newly speciated, then time.of.origin should equal
-      time.of.sp.origin. More likely, the appearance is due to colonization from an
-      adjacent region.
-    time.of.extinction:   time at which the species disappears from the region. Most often
-      this will reflect the timing of a local extinction.
-    time.of.sp.origin:   time at which the species first appeared in the simulation due to
-      speciation.
-    time.of.sp.extinction:   time at which the species went globally extinct. If it did not
-      go extinct, then its value is the number of time steps the simulation was run plus 1.
-    reg.env:   the average temperature of the region.
-    carry.cap:   the carrying capacity (over all species) of the region.
-  SENC_time.rich_simXXX.csv
-    Summary of the number of species in each region at each time step in the simulation.
-  SENC_phylo_simXXX.tre
-    Object of class 'phylo' describing phylogenetic relationships among simulation species.
-  SENC_params.out_simXXX.csv
+FILE:   sims_only_workflow_local.r  
+FILE INPUTS:     
+ DATA  
+  SENC_Master_Simulation_Matrix.csv   
+    Table listing the parameter combinations of every simulation to be run.  
+ SCRIPTS  
+  senc_sim_fun.r  
+    Runs an entire simulation for one sim ID (i.e., one combination of simulation parameters)  
+  
+VARIABLE INPUTS:  
+  which.sims  
+    The sim IDs for which simulations should be run  
+  
+FILE OUTPUTS:   (all saved in 'raw_sim_output' folder; XXX specifies simID)  
+  SENC_all.pops_simXXX.csv  
+    Simulation output containing all spatial, temporal and trait information for every  
+    population to arise over the course of the simulation.  
+    region:   spatial region number  
+    spp.name:   species identifier  
+    extant:   species extant as of the most recent time step (1) or extinct (0)  
+    env.opt:   environmental optimum of the species, ranging from ~0-40  
+    time.of.origin:   time at which the species appeared in the region. If this is a first  
+      appearance due to having newly speciated, then time.of.origin should equal  
+      time.of.sp.origin. More likely, the appearance is due to colonization from an  
+      adjacent region.  
+    time.of.extinction:   time at which the species disappears from the region. Most often  
+      this will reflect the timing of a local extinction.  
+    time.of.sp.origin:   time at which the species first appeared in the simulation due to  
+      speciation.  
+    time.of.sp.extinction:   time at which the species went globally extinct. If it did not  
+      go extinct, then its value is the number of time steps the simulation was run plus 1.  
+    reg.env:   the average temperature of the region.  
+    carry.cap:   the carrying capacity (over all species) of the region.  
+  SENC_time.rich_simXXX.csv  
+    Summary of the number of species in each region at each time step in the simulation.  
+  SENC_phylo_simXXX.tre  
+    Object of class 'phylo' describing phylogenetic relationships among simulation species.  
+  SENC_params.out_simXXX.csv  
     Simulation parameters used for simulation XXX.
 
 
