@@ -17,24 +17,80 @@ install.packages(package.vector)
 The parameters governing a given simulation are specified within the SENC_Master_Simulation_Matrix.csv
 file. These parameters include:
 
-sim.id          a unique numeric identifier referring to a set of simulation parameters  
-status          "completed" if the simulation has finished, or "to.run" if it is pending  
-reg.of.origin   region of origin, either "tropical" or "temperate"  
-w               governs the strength of environmental filtering, small values = stronger  
-alpha		per individual speciation probability
-beta		per individual dispersal probability
-sigma_E		governs the strength of niche conservatism, small values = stronger
-carry.cap	"on" if limits exist to community abundance; else "off"
-energy.gradient	"on" if carry.cap varies linearly across the gradient; else "off"
-max.K		num of individuals that can be supported in region with the highest carrying capacity
-min.K		num of individuals that can be supported in region with the lowest carrying capacity
-num.of.bins	number of spatial bins
-max.time	maximum number of time steps to run simulation
-max.richness	maximum number of species that can accumulate before simulation breaks off
-replicate	replicate ID if simulation is a repeat of an existing parameter combination
-temperate_disturb_intensity	fraction of individuals killed in disturbance event at temperate end of gradient
-tropical_disturb_intensity	fraction of individuals killed in disturbance event at tropical end of gradient
-disturb_frequency		frequency of disturbance in number of time steps
+<table>
+  <tr>
+    <td>sim.id</td>
+    <td>a unique numeric identifier referring to a set of simulation parameters</td>
+  </tr>
+  <tr>
+    <td>status</td>
+    <td>"completed" if the simulation has finished, or "to.run" if it is pending</td>
+  </tr>
+  <tr>
+    <td>reg.of.origin</td>
+    <td>region of origin, either "tropical" or "temperate"</td>
+  </tr>
+  <tr>
+    <td>w</td>
+    <td>governs the strength of environmental filtering, small values = stronger</td>
+  </tr>
+  <tr>
+    <td>alpha</td>
+    <td>per individual speciation probability</td>
+  </tr>
+  <tr>
+    <td>beta</td>
+    <td>per individual dispersal probability</td>
+  </tr>
+  <tr>
+    <td>sigma_E</td>
+    <td>governs the strength of niche conservatism, small values = stronger</td>
+  </tr>
+  <tr>
+    <td>carry.cap</td>
+    <td>"on" if limits exist to community abundance; else "off"</td>
+  </tr>
+  <tr>
+    <td>energy.gradient</td>
+    <td>"on" if carry.cap varies linearly across the gradient; else "off"</td>
+  </tr>
+  <tr>
+    <td>max.K</td>
+    <td>num of individuals that can be supported in region with the highest carrying capacity</td>
+  </tr>
+  <tr>
+    <td>min.K</td>
+    <td>num of individuals that can be supported in region with the lowest carrying capacity</td>
+  </tr>
+  <tr>
+    <td>num.of.bins</td>
+    <td>number of spatial bins</td>
+  </tr>
+  <tr>
+    <td>max.time</td>
+    <td>maximum number of time steps to run simulation</td>
+  </tr>
+  <tr>
+    <td>max.richness</td>
+    <td>maximum number of species that can accumulate before simulation breaks off</td>
+  </tr>
+  <tr>
+    <td>replicate</td>
+    <td>replicate ID if simulation is a repeat of an existing parameter combination</td>
+  </tr>
+  <tr>
+    <td>temperate_disturb_intensity</td>
+    <td>fraction of individuals killed in disturbance event at temperate end of gradient</td>
+  </tr>
+  <tr>
+    <td>tropical_disturb_intensity</td>
+    <td>fraction of individuals killed in disturbance event at tropical end of gradient</td>
+  </tr>
+  <tr>
+    <td>disturb_frequency</td>
+    <td>frequency of disturbance in number of time steps</td>
+  </tr>
+
 
 The simulations reported on in the paper correspond to the following sim.id's:
 
