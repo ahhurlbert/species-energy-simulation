@@ -4,7 +4,7 @@
 Code for conducting eco-evolutionary simulations of diversification and dispersal of species with and without energetic constraints as described in Hurlbert &
 Stegen, *Ecology Letters*.
 
-#Setup
+##Setup
 Requirements: R 3.0 with the following packages installed:
 
 ```R
@@ -25,7 +25,7 @@ package.vector = c('ape',
 install.packages(package.vector)
 ```
 
-#Run simulations
+##Run simulations
 The parameters governing a given simulation are specified within the SENC_Master_Simulation_Matrix.csv
 file. These parameters include:
 
@@ -221,7 +221,7 @@ files produced are listed below.
 </table>
 
 
-#Analyze simulation output
+##Analyze simulation output
 The following code creates derived data and statistics from the raw simulation output. Required inputs
 for analysis and analysis output are described below.
 
@@ -336,20 +336,20 @@ for analysis and analysis output are described below.
   </tr>
 </table>
 
-#Duplicating manuscript figures
+##Duplicating manuscript figures
 
-##Figures 2 and 4
+###Figures 2 and 4
 metrics.through.time.r
 
-##Figure 3
+###Figure 3
 KT_scenarios_corr_plots_plus_sebastes.r
 
-##Figure S1
+###Figure S1
 lat.grad.time.plot.r
 
-##Figure S2
+###Figure S2
 metrics.through.time.sigma.variation.r
 
-##Figure S3
+###Figure S3
 pacific_npp.r
 sebastes.r
