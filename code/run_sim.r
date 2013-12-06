@@ -22,13 +22,12 @@ run_sim = function(which_sims,
   sim_matrix = read.csv(sim_matrix_filename, header = T)
 
   if(local) {
+    writeLines(c(""), "log.txt")
     foo = foreach(sim = which_sims, .packages = 'ape', .combine = "rbind", .export = "senc_sim_fun") %dopar% {
       
-      sim_start = date()
-      print(sim_start)
+      sink("raw_sim_output/log.txt", append = T)
+      cat(paste("Starting sim", sim, ",", date(), "\n"))
       sim.results = senc_sim_fun(sim_matrix, sim = sim)
-      sim_end = date()
-      print(sim_end)
       
     } #end foreach
     
