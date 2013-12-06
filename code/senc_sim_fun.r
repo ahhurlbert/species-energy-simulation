@@ -359,7 +359,7 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 	} # end if 
 
-	print(c('this should be zero', correct.num.rows - nrow(subset(all.populations, spp.name != -999)))) # this should be zero
+	#print(c('this should be zero', correct.num.rows - nrow(subset(all.populations, spp.name != -999)))) # this should be zero
 
 	# exclude the two extreme spatial bins which may suffer boundary effects (regions 0 and 11 for our implementation)
   all.populations = subset(all.populations, region %in% 1:(num.of.bins - 1))
