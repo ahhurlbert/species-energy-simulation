@@ -4,6 +4,8 @@
 #   local:       TRUE if running on a local machine, FALSE if running on a remote cluster
 #   num_cores:   number of processors available for parallel processing
 
+source("code/senc_sim_fun.r")
+
 run_sim = function(which_sims, 
                    sim_matrix_filename = "SENC_Master_Simulation_Matrix.csv", 
                    local = T, 
@@ -17,12 +19,10 @@ run_sim = function(which_sims,
   cl = makeCluster(num_cores)
   registerDoParallel(cl)
   
-  source("code/senc_sim_fun.r")
-
   sim_matrix = read.csv(sim_matrix_filename, header = T)
 
   if(local) {
-    foo = foreach(sim = which_sims, .packages = 'ape', .combine = "rbind") %dopar% {
+    foo = foreach(sim = which_sims, .packages = 'ape', .combine = "rbind", .export = "senc_sim_fun") %dopar% {
       
       sim_start = date()
       print(sim_start)
