@@ -112,28 +112,29 @@ No zero sum constraint, temperate origin: c(3565:3664)
 No zero sum constraint, tropical origin: c(3465:3564)  
 
 To run simulations with novel parameter combinations, add a line or lines specifying those parameter combos
-to the SENC_Master_Simulation_Matrix.csv file. The inputs required for running simulations and the output
+to the SENC_Master_Simulation_Matrix.csv file.  
+
+After installing the R packages listed above, type `source('code/run_sim.r')`.
+
+Then, as an example, if you'd like to run sim IDs 3325 to 3334 on your local machine, parallelizing over 2 processors, type
+`run_sim(3325:3334, local = T, num_cores = 2)`
+
+All simulation output will appear in the `raw_sim_output` folder. You can check on the status of a large simulation run by 
+looking in the 'log.txt' file created in this folder.
+
+The inputs required for running simulations and the output
 files produced are listed below.
 
 <table>
   <tr>
-    <td colspan="2">FILE: sims_only_workflow_local.r</td>
+    <td colspan="2">FILE: run_sim.r</td>
   </tr>
   <tr>
     <td>FILE INPUTS:</td><td></td>
   </tr>
   <tr>
-    <td>DATA</td><td></td>
-  </tr>
-  <tr>
     <td>SENC_Master_Simulation_Matrix.csv</td>
     <td>Table listing the parameter combinations of every simulation to be run.</td>
-  </tr>
-  <tr>
-    <td></td><td></td>
-  </tr>
-  <tr>
-    <td>SCRIPTS</td><td></td>
   </tr>
   <tr>
     <td>senc_sim_fun.r</td>
@@ -142,12 +143,6 @@ files produced are listed below.
   <tr>
     <td></td><td></td>
   </tr>
-  <tr>
-    <td>VARIABLE INPUTS:</td><td></td>
-  </tr>
-  <tr>
-    <td>which.sims</td>
-    <td>The sim IDs for which simulations should be run</td>
   <tr>
     <td></td><td></td>
   </tr>
