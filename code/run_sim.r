@@ -22,11 +22,16 @@ run_sim = function(which_sims,
   sim_matrix = read.csv(sim_matrix_filename, header = T)
 
   if(local) {
+
+    #Create a log file for checking simulation progress
     writeLines(c(""), "log.txt")
+    counter = 0
+    
     foo = foreach(sim = which_sims, .packages = 'ape', .combine = "rbind", .export = "senc_sim_fun") %dopar% {
       
+      counter = counter + 1
       sink("raw_sim_output/log.txt", append = T)
-      cat(paste("Starting sim", sim, ",", date(), "\n"))
+      cat(paste("Starting sim", sim, "(", counter, "out of", length(which_sims), "),", date(), "\n"))
       sim.results = senc_sim_fun(sim_matrix, sim = sim)
       
     } #end foreach
