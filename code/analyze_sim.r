@@ -40,7 +40,7 @@ analyze_sim = function(which_sims,
     #Create a log file for checking simulation progress
     writeLines(c(""), "analysis_output/analysis_log.txt")
     
-    foo = foreach(sim = which_sims, .packages = package.vector, .combine = "rbind"
+    foo = foreach(sim = which_sims, .packages = package.vector, .combine = "rbind",
                   .export = c("analysis", "output.unzip", "regional.calc",
                               "xregion.analysis", "extinct.calc",
                               "maxlik.betasplit.AH")) %dopar% {

@@ -24,8 +24,8 @@ run_sim = function(which_sims,
     #Create a log file for checking simulation progress
     writeLines(c(""), "raw_sim_output/log.txt")
     
-    foo = foreach(sim = which_sims, .packages = 'ape', .combine = "rbind", 
-                  .export = c("senc_sim_fun", "make.phylo.jimmy.fun") %dopar% {
+    foo = foreach(sim = which_sims, .packages = 'ape', .combine = "rbind", .export =
+                   c("senc_sim_fun", "make.phylo.jimmy.fun")) %dopar% {
       
       sink("raw_sim_output/log.txt", append = T)
       cat(paste("Starting sim", sim, ",", date(), "\n"))
