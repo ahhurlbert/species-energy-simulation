@@ -1,14 +1,16 @@
 ##species-energy-simulation
 
 
-Code for conducting eco-evolutionary simulations of diversification and dispersal of species with and without energetic constraints as described in Hurlbert &
-Stegen, *Ecology Letters*.
+Code for conducting eco-evolutionary simulations of diversification and dispersal of species with 
+and without energetic constraints as described in Hurlbert & Stegen, *Ecology Letters*.
 
 ##Setup
-Requirements: R 3.0 with the following packages installed:
+Requirements: R 3.0 or greater with the following packages installed:
 
 ```R
-package.vector = c('ape',
+package.vector = c('mnormt',
+		   'rgl',
+		   'ape',
 		   'permute',
 		   'nlme',
 		   'vegan',
@@ -23,6 +25,10 @@ package.vector = c('ape',
 		   'doParallel')
 
 install.packages(package.vector)
+
+source('code/run_sim.r')
+source('code/analyze_sim.r')
+source('code/supplemental_analysis_functions.r')
 ```
 
 ##Run simulations
