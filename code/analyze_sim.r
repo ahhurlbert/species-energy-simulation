@@ -1,14 +1,23 @@
-# Function for analyzing simulation output
+# Use this function to analyze simulations by specifying:
+#   which_sims:  the simulation IDs to run
+#   sim_matrix_filename:  a .csv file specifying parameter combinations for each sim ID
+#   local:       TRUE if running on a local machine, FALSE if running on a remote cluster
+#   num_cores:   number of processors available for parallel processing
+#   root.only:   analyze root clade only (1) or all subclades (0)
+#   num.of.time.slices:  number of points in time to analyze
+#   which.time.slices:   which points in time to analyze if irregularly spaced
+#   time.sequence:       which points in time to analyze if regularly spaced
+#   min.num.spp:         min num of spp in a clade needed to proceed with analysis
 
 analyze_sim = function(which_sims, 
                        sim_matrix_filename = "SENC_Master_Simulation_Matrix.csv", 
-                       local = T, #analysis conducted on local machine (T) or not (F)
-                       num_cores = 1, #num of cores available for parallel processing
-                       root.only = 1, #analyze root clade only (1) or all subclades (0)
-                       num.of.time.slices = 1, #number of points in time to analyze 
-                       which.time.slices = NA, #which points in time to analyze if irregularly spaced
-                       time.sequence = NA,  #which points in time to analyze if regularly spaced
-                       min.num.spp = 8) #min num of spp in a clade needed to proceed with analysis
+                       local = T, 
+                       num_cores = 1, 
+                       root.only = 1, 
+                       num.of.time.slices = 1, 
+                       which.time.slices = NA, 
+                       time.sequence = NA,  
+                       min.num.spp = 8) 
 {
 
   require(mnormt)

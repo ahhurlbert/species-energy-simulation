@@ -1,6 +1,6 @@
 # Use this function to run simulations by specifying:
 #   which_sims:  the simulation IDs to run
-#   sim_matrix:  a .csv file specifying parameter combinations for each sim ID
+#   sim_matrix_filename:  a .csv file specifying parameter combinations for each sim ID
 #   local:       TRUE if running on a local machine, FALSE if running on a remote cluster
 #   num_cores:   number of processors available for parallel processing
 
