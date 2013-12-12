@@ -4,8 +4,6 @@
 #   local:       TRUE if running on a local machine, FALSE if running on a remote cluster
 #   num_cores:   number of processors available for parallel processing
 
-source("code/senc_sim_fun.r")
-
 run_sim = function(which_sims, 
                    sim_matrix_filename = "SENC_Master_Simulation_Matrix.csv", 
                    local = T, 
@@ -26,7 +24,8 @@ run_sim = function(which_sims,
     #Create a log file for checking simulation progress
     writeLines(c(""), "raw_sim_output/log.txt")
     
-    foo = foreach(sim = which_sims, .packages = 'ape', .combine = "rbind", .export = "senc_sim_fun") %dopar% {
+    foo = foreach(sim = which_sims, .packages = 'ape', .combine = "rbind", 
+                  .export = c("senc_sim_fun", "make.phylo.jimmy.fun") %dopar% {
       
       sink("raw_sim_output/log.txt", append = T)
       cat(paste("Starting sim", sim, ",", date(), "\n"))
