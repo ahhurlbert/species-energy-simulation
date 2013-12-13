@@ -5,7 +5,7 @@ Code for conducting eco-evolutionary simulations of diversification and dispersa
 and without energetic constraints as described in Hurlbert & Stegen, *Ecology Letters*.
 
 ##Setup
-Requirements: R 3.0 or greater with the following packages installed:
+Requirements: R 3.0 or greater with the following packages installed and the following scripts sourced:
 
 ```R
 package.vector = c('mnormt',
@@ -230,7 +230,7 @@ for analysis and analysis output are described below.
 
 <table>
   <tr>
-    <td colspan="2">FILE:   analyzing_sims.r</td>
+    <td colspan="2">FILE:   analyze_sim.r</td>
   </tr>
   <tr>
     <td>FILE INPUTS:</td><td></td>
