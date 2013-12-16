@@ -232,9 +232,12 @@ senc_sim_fun = function(sim.matrix, sim) {
 		mutated.populations = mutated.populations[is.element(rownames(mutated.populations), 
                                                          rownames(unique(mutated.populations[,c('spp.name','env.opt')],
                                                                          fromLast = sample(c(FALSE,TRUE),1))))==TRUE,]
-		# this is just for the first mutation event
+		if (nrow(mutated.populations) > 0) {
+      total.mutations = total.mutations + 1
+		}
+    # this is just for the first mutation event
 		if (nrow(mutated.populations) > 0 & total.mutations == 1) { 
-      total.mutations = total.mutations + 1	
+      
 			stem.depth = as.numeric(c(curr.time, curr.time))
 			all.populations = rbind(all.populations, 
                               c(mutated.populations$region, next.spp, 1, mutated.populations$mutant.env.opt,
@@ -243,7 +246,7 @@ senc_sim_fun = function(sim.matrix, sim) {
 		
     # this handles all mutations after the first mutation
 		if (nrow(mutated.populations) > 0 & total.mutations > 1) { 
-		  total.mutations = total.mutations + 1
+		  
 			for (i in 1:nrow(mutated.populations)) {
 
 				next.spp = next.spp + 1
