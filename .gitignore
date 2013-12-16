@@ -1,3 +1,10 @@
 *.Rhistory
 log.txt
 analysis_log.txt
+SENC_all.pops_sim*
+SENC_params.out_sim*
+SENC_phylo_sim*
+SENC_time.rich_sim*
+SENC_stats_sim*
+summary_output_sim*
+Stats_sim*
