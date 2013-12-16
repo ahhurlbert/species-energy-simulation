@@ -122,8 +122,6 @@ No zero sum constraint, tropical origin: c(3465:3564)
 To run simulations with novel parameter combinations, add a line or lines specifying those parameter combos
 to the SENC_Master_Simulation_Matrix.csv file.  
 
-After installing the R packages listed above, type `source('code/run_sim.r')`.
-
 Then, as an example, if you'd like to run sim IDs 3325 to 3334 on your local machine, parallelizing over 2 processors, type
 `run_sim(3325:3334, local = T, num_cores = 2)`
 
@@ -225,22 +223,26 @@ files produced are listed below.
 
 
 ##Analyze simulation output
-The following code creates derived data and statistics from the raw simulation output. Required inputs
-for analysis and analysis output are described below.
+To analyze raw simulation output created using 'run_sim', use the 'analyze_sim' function. With this
+function, you can specify whether you want to analyze patterns for the root clade only (i.e., for the
+entire clade of species that diversified over the course of the simulation; root.only = 1) or for all
+possible subclades nested within and including the root clade (root.only = 0; this will obviously
+take much longer). You may also specify whether you want to analyze patterns at multiple points in 
+time ("timeslices"), or just the pattern present at simulation's end (the default).
+
+For example, to analyze simulation output for sim IDs 3325:3334 for all possible subclades but for
+just the final timeslice on your local machine, parallelizing over 2 processors, type 
+`analyze_sim(3325:3334, local = T, num_cores = 2, root.only = 0, num.of.time.slices = 1)`
+
+The table below provides more details on the arguments to this function, and describes the
+analysis output
 
 <table>
   <tr>
     <td colspan="2">FILE:   analyze_sim.r</td>
   </tr>
   <tr>
-    <td>FILE INPUTS:</td><td></td>
-  </tr>
-  <tr>
-    <td>DATA</td><td></td>
-  </tr>
-  <tr>
-    <td>SENC_Master_Simulation_Matrix.csv</td>
-    <td>Table listing the parameter combinations of every simulation to be run.</td>
+    <td>DATA INPUT REQUIRED</td><td></td>
   </tr>
   <tr>
     <td>senc.out.XXX.zip</td>
@@ -265,41 +267,7 @@ for analysis and analysis output are described below.
     <td></td><td></td>
   </tr>
   <tr>
-    <td>SCRIPTS</td><td></td>
-  </tr>
-  <tr>
-    <td>analysis_workflow_Olympus.r</td>
-    <td>complete analysis of a single simulation</td>
-  </tr>
-  <tr>
-    <td>unzipping_files.r</td>
-    <td>Unzips simulation output of the form senc.out.XXX.zip, stores info in sim.results</td>
-  </tr>
-  <tr>
-    <td>reg_calc_and_analysis.r</td>
-    <td>includes functions that calculate richness and phylogenetic metrics within each region, as well as
-       correlations in metrics across regions</td>
-  </tr>
-  <tr>
-    <td>extinct.calc.r</td>
-    <td>Calculates an extinction rate for each region</td>
-  </tr>
-  <tr>
-    <td>make.phylo.jimmy.fun.r</td>
-    <td>Makes a phylogeny from the edge and edge.length info collected during the simulation</td>
-  </tr>
-  <tr>
-    <td>lat.grad.time.plot.r</td>
-    <td> Makes the lat_grad_thru_time_simXXX.pdf plots.</td>
-  </tr>
-  <tr>
-    <td>clade.origin.corr.plot.r</td>
-    <td>Makes the corr_vs_cladeage_simXXX.pdf plots.</td>
-  <tr>
-    <td></td><td></td>
-  </tr>
-  <tr>
-    <td>VARIABLE INPUTS:</td><td></td>
+    <td>ARGUMENTS</td><td></td>
   </tr>
   <tr>
     <td>which.sims</td>
@@ -313,6 +281,26 @@ for analysis and analysis output are described below.
     <td>num.cores</td>
     <td>number of processors available for parallel processing on a local machine</td>
   </tr>
+  <tr>
+    <td>root.only</td>
+    <td>analyze patterns for the root clade only (1) or for all possible subclades including the root (0)</td>
+  </tr>
+  <tr>
+    <td>num.of.time.slices</td>
+    <td>number of points in time to conduct analyses; if 1, then analysis will be conducted at the final time step in the simulation</td>
+  </tr>
+  <tr>
+    <td>which.time.slices</td>
+    <td>a vector of points in time to analyze if those time points are irregularly spaced</td>
+  </tr>
+  <tr>
+    <td>time.sequence</td>
+    <td>a vector of points in time to analyze if those time points are regularly spaced; NB: JCS is responsible for these crazy time vectors</td>
+  </tr>
+  <tr>
+    <td>min.num.spp</td>
+    <td>the minimum number of species in a clade needed to proceed with analysis (i.e., clades smaller than this will be skipped)</td>
+  </tr
   <tr>
     <td></td><td></td>
   </tr>
