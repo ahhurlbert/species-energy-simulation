@@ -309,11 +309,10 @@ analysis output
   </tr>
   <tr>
     <td>SENC_Stats_simXXX.csv</td>
-    <td>Often referred to as the "stats" file or "output" file. For each subclade and at
+    <td>For each subclade and at
     each specified timeslice within simulation XXX, the following information is stored:
     simID, cladeID, time, correlation coefficients and p-values for correlations among
-    richness, environment, region, MRD, and PSV, Pybus & Harvey's gamma statistic, and
-    Blomberg's K for both environmental optimum and mean region of occurrence.</td>
+    richness, environment, region, MRD, and PSV, and Pybus & Harvey's gamma statistic.</td>
   </tr>
   <tr>
     <td>summary_output_simXXX.csv</td>
