@@ -341,5 +341,5 @@ lat.grad.time.plot.r
 metrics.through.time.sigma.variation.r
 
 ###Figure S3
-pacific_npp.r
+pacific_npp.r  
 sebastes.r
