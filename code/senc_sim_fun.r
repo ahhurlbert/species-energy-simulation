@@ -341,7 +341,6 @@ senc_sim_fun = function(sim.matrix, sim) {
 		all.pops.row.id = all.pops.row.id + nrow(all.populations)
 
 		for (out.times in extinct.pops.output.times) {
-			print(c(all.pops.row.id,date()))
 			extinct.in = read.csv(paste("./raw_sim_output/temp.extinct.sim.",sim,".time.",out.times,".csv",sep=""),header=T)
 			all.pops.out[all.pops.row.id:(all.pops.row.id + nrow(extinct.in) - 1), ] = extinct.in
 			all.pops.row.id = all.pops.row.id + nrow(extinct.in)
