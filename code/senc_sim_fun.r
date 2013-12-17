@@ -341,15 +341,15 @@ senc_sim_fun = function(sim.matrix, sim) {
 		all.pops.row.id = all.pops.row.id + nrow(all.populations)
 
 		for (out.times in extinct.pops.output.times) {
-			extinct.in = read.csv(paste("./raw_sim_output/temp.extinct.sim.",sim,".time.",out.times,".csv",sep=""),header=T)
+		  extinct.in = read.csv(paste("./raw_sim_output/temp.extinct.sim.",sim,".time.",out.times,".csv",sep=""),header=T)
 			all.pops.out[all.pops.row.id:(all.pops.row.id + nrow(extinct.in) - 1), ] = extinct.in
 			all.pops.row.id = all.pops.row.id + nrow(extinct.in)
 			rm('extinct.in')
 		}
 		# Remove temporary files with extinct populations
-		files = list.files('raw_sim_output')
-		temp.files = files[grep('temp.extinct', files)]
-		file.remove(paste('raw_sim_output/', temp.files, sep = ''))
+		files = list.files("raw_sim_output")
+		temp.files = files[grep(paste("temp.extinct.sim.", sim, sep = ""), files)]
+		file.remove(paste("raw_sim_output/", temp.files, sep = ""))
 		
     
 		all.populations = all.pops.out
