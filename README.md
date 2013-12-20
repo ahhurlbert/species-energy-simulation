@@ -230,9 +230,15 @@ possible subclades nested within and including the root clade (root.only = 0; th
 take much longer). You may also specify whether you want to analyze patterns at multiple points in 
 time ("timeslices"), or just the pattern present at simulation's end (the default).
 
-For example, to analyze simulation output for sim IDs 3325:3334 for all possible subclades but for
+You can also specify whether to analyze some of the example simulation output that has already been
+run (sim_dir = "archived") or simulation output that you have newly created (sim_dir = "new"). The
+'archived_sim_output' folder contains simulation output for 10 of the 100 simulations for each of the
+4 combinations of region of origin and zero sum condition. The entire simulation output (~7 GB) can be
+found in the Dryad Data Repository associated with this paper [insert link here].
+
+For example, to analyze simulation output for sim IDs 4065:4074 for all possible subclades but for
 just the final timeslice on your local machine, parallelizing over 2 processors, type 
-`analyze_sim(3325:3334, local = T, num_cores = 2, root.only = 0, num.of.time.slices = 1)`
+`analyze_sim(4065:4074, local = T, num_cores = 2, root.only = 0, num.of.time.slices = 1, sim_dir = "archived")`
 
 The table below provides more details on the arguments to this function, and describes the
 analysis output
@@ -300,7 +306,11 @@ analysis output
   <tr>
     <td>min.num.spp</td>
     <td>the minimum number of species in a clade needed to proceed with analysis (i.e., clades smaller than this will be skipped)</td>
-  </tr
+  </tr>
+  <tr>
+    <td>sim_dir</td>
+    <td>repository directory where the simulation output you wish to analyze resides; "archived" if analyzing provided example simulation output, "new" if analyzing newly created output</td>
+  </tr>
   <tr>
     <td></td><td></td>
   </tr>
