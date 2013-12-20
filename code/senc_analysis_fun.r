@@ -6,7 +6,10 @@ analysis = function(sim,                    #simulation ID to analyze
                     num.of.time.slices = 1, #number of points in time to analyze (if 1, then the end of the simulation)
                     which.time.slices = NA, #which points in time to analyze if irregularly spaced (a vector)
                     time.sequence = NA,     #which points in time to analyze if regularly spaced (a vector)
-                    min.num.spp = 8)        #minimum number of species in a clade needed to proceed with analysis
+                    min.num.spp = 8,        #minimum number of species in a clade needed to proceed with analysis
+                    sim_dir = 'archived')   #directory where raw simulation output reside ('archived' for example
+                                            #  output from the published paper, 'new' for simulation output created
+                                            #  by the user)
   {
   
   # Initialize output
@@ -19,7 +22,9 @@ analysis = function(sim,                    #simulation ID to analyze
   sim.matrix$skipped.times = NA
   
   # read in simulation results for specified simulation from the output zip file, or the raw output files
-  sim.results = output.unzip('raw_sim_output', sim)
+  if(sim_dir == 'archived') { directory = 'archived_sim_output'}
+  if(sim_dir == 'new') { directory = 'raw_sim_output'}
+  sim.results = output.unzip(directory, sim)
   
   if ( !is.null(sim.results) ) {
     all.populations = sim.results$all.populations
