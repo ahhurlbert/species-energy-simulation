@@ -2,7 +2,7 @@
 
 
 Code for conducting eco-evolutionary simulations of diversification and dispersal of species with 
-and without energetic constraints as described in Hurlbert & Stegen, *Ecology Letters*.
+and without energetic constraints as described in Hurlbert & Stegen, *Ecology Letters*. DOI: 10.1111/ele.12240
 
 ##Setup
 Requirements: R 3.0 or greater with the following packages installed and the following scripts sourced:
