@@ -18,6 +18,8 @@ senc_sim_fun = function(sim.matrix, sim) {
   
   energy.gradient = sim.matrix$energy.gradient[sim.matrix$sim.id == sim]  #'on' if maximum abundance varies across the gradient; else 'off'
   
+  specn.gradient = sim.matrix$specn.gradient[sim.matrix$sim.id == sim] #'on' if specn rate is higher in tropics; 'off' if does not vary across gradient
+  
   max.K = sim.matrix$max.K[sim.matrix$sim.id == sim]  #num of individuals that can be supported in region with the highest carrying capacity
   
   min.K = max.K/10  #num of individuals that can be supported in region with the lowest carrying capacity when there's a gradient
@@ -56,6 +58,11 @@ senc_sim_fun = function(sim.matrix, sim) {
   min.env = 0
   max.env = 40
   
+  # Factor by which speciation rate varies over latitudinal gradient.
+  # 10 is chosen as the default which is in the ballpark of a number of published studies
+  # (e.g. Allen et al. 2006, Cardillo et al. 2005, Wiens 2007
+  specn.factor = 10
+  
   gamma = 0.1 # exponential rate of decrease in extinction probability as population size increases
   
   total.mutations = 0 # the cumulative number of mutations
@@ -68,6 +75,13 @@ senc_sim_fun = function(sim.matrix, sim) {
   if (energy.gradient == 'off') { 
     reg.E.K.$carry.cap = rep(max.K, num.of.bins + 1)
   } 
+  if (specn.gradient == 'on') {
+    reg.E.K.$reg.alpha = seq(alpha/specn.factor, alpha, length = num.of.bins + 1)
+  }
+  if (specn.gradient == 'off') {
+    reg.E.K.$reg.alpha = rep(alpha, num.of.bins + 1)
+  }
+  
   
   ## end additional parameters --------------------------------------------------------
   
