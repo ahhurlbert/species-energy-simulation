@@ -72,8 +72,9 @@ senc_sim_fun = function(sim.matrix, sim) {
   if (energy.gradient == 'off') { 
     reg.E.K.$carry.cap = rep(max.K, num.of.bins + 1)
   } 
+  # regional speciation rates depending on whether they vary across the gradient
   if (specn.gradient == 'on') {
-    reg.E.K.$reg.alpha = seq(alpha/specn.factor, alpha, length = num.of.bins + 1)
+    reg.E.K.$reg.alpha = seq(alpha/(specn.factor ^ .5), alpha*(specn.factor ^ .5), length = num.of.bins + 1)
   }
   if (specn.gradient == 'off') {
     reg.E.K.$reg.alpha = rep(alpha, num.of.bins + 1)
