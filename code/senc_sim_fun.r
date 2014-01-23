@@ -20,6 +20,8 @@ senc_sim_fun = function(sim.matrix, sim) {
   
   specn.gradient = sim.matrix$specn.gradient[sim.matrix$sim.id == sim] #'on' if specn rate is higher in tropics; 'off' if does not vary across gradient
   
+  specn.factor = sim.matrix$specn.factor[sim.matrix$sim.id == sim] #factor by which tropical speciation rate is greater than temperate
+  
   max.K = sim.matrix$max.K[sim.matrix$sim.id == sim]  #num of individuals that can be supported in region with the highest carrying capacity
   
   min.K = max.K/10  #num of individuals that can be supported in region with the lowest carrying capacity when there's a gradient
@@ -57,11 +59,6 @@ senc_sim_fun = function(sim.matrix, sim) {
   # abiotic environmental gradient, ranging from 0 to 40 C
   min.env = 0
   max.env = 40
-  
-  # Factor by which speciation rate varies over latitudinal gradient.
-  # 10 is chosen as the default which is in the ballpark of a number of published studies
-  # (e.g. Allen et al. 2006, Cardillo et al. 2005, Wiens 2007
-  specn.factor = 10
   
   gamma = 0.1 # exponential rate of decrease in extinction probability as population size increases
   
@@ -218,7 +215,7 @@ senc_sim_fun = function(sim.matrix, sim) {
     }
 
 		# evaluate mutation across all extant species
-		num.of.mutations = mutation.fun(population.size = all.populations$pop.size, alpha.param = alpha)
+		num.of.mutations = mutation.fun(population.size = all.populations$pop.size, alpha.param = all.populations$reg.alpha)
 		all.populations$mutate = num.of.mutations
 
 		# find new trait values for mutants
