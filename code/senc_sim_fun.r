@@ -346,7 +346,7 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 	if (length(extinct.pops.output.times) > 0) {
 		all.pops.row.id = 1
-		all.pops.out = as.data.frame(matrix(-999, ncol=10, nrow = correct.num.rows))
+		all.pops.out = as.data.frame(matrix(-999, ncol = ncol(all.populations), nrow = correct.num.rows))
 		colnames(all.pops.out) = colnames(all.populations)
 		all.pops.out[all.pops.row.id:nrow(all.populations), ] = all.populations
 		all.pops.row.id = all.pops.row.id + nrow(all.populations)
