@@ -4,7 +4,7 @@ test_sim = function() {
 
   require(ape)
   
-    sim_matrix = data.frame(sim.id = 0,
+  sim_matrix = data.frame(sim.id = 0,
                           status = 'test',
                           reg.of.origin = 'tropical',
                           w = 3,
@@ -20,7 +20,9 @@ test_sim = function() {
                           replicate = 0,
                           disturb_frequency = 0,
                           temperate_disturb_intensity = 0,
-                          tropical_disturb_intensity = 0)
+                          tropical_disturb_intensity = 0,
+                          specn.gradient = 'off',
+                          specn.factor = NA)
   
   seed = 999
   set.seed(seed)
