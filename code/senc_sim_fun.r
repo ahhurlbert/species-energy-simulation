@@ -380,10 +380,12 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 	## write outputs
 
+  sim_out_dir = dir.create(paste("./raw_sim_output/sim", sim, "_out", sep = ""))
+  
 	phylo.out = make.phylo.jimmy.fun(t = curr.time, edge.length.out = edge.length, edge.out = edge ,stem.depth.out = stem.depth )
-	write.csv(all.populations, paste("./raw_sim_output/SENC_all.pops_sim", sim, ".csv", sep=""), quote = F, row.names = F)
-	write.csv(time.richness, paste("./raw_sim_output/SENC_time.rich_sim", sim, ".csv", sep=""), quote = F, row.names = F)
-	write.tree(phylo.out, paste("./raw_sim_output/SENC_phylo_sim", sim, ".tre", sep = ""))
+	write.csv(all.populations, paste(sim_out_dir, "/SENC_all.pops_sim", sim, ".csv", sep=""), quote = F, row.names = F)
+	write.csv(time.richness, paste(sim_out_dir, "/SENC_time.rich_sim", sim, ".csv", sep=""), quote = F, row.names = F)
+	write.tree(phylo.out, paste(sim_out_dir, "/SENC_phylo_sim", sim, ".tre", sep = ""))
 	end.params = data.frame(sim.id = sim,
                           status = 'completed',
                           reg.of.origin = region.of.origin,
@@ -399,8 +401,10 @@ senc_sim_fun = function(sim.matrix, sim) {
                           max.richness = max.richness,
                           temperate_disturb_intensity = temperate_disturb_intensity,
                           tropical_disturb_intensity = tropical_disturb_intensity,
-                          disturb_frequency = disturb_frequency) 
-	write.csv(end.params,paste("./raw_sim_output/SENC_params.out_sim", sim, ".csv", sep = ""), quote = F, row.names = F)
+                          disturb_frequency = disturb_frequency,
+                          specn.gradient = specn.gradient,
+                          specn.factor = specn.factor) 
+	write.csv(end.params, paste(sim_out_dir, "/SENC_params.out_sim", sim, ".csv", sep = ""), quote = F, row.names = F)
 
 	return(list(all.populations = all.populations, 
               time.richness = time.richness,
