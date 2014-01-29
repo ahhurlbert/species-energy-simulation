@@ -2,6 +2,8 @@
 
 senc_sim_fun = function(sim.matrix, sim) {
 
+  set.seed(sim)
+  
   # Assign simulation parameters from the sim.matrix based on the sim.id
   # --------------------------------------------------------------------
   region.of.origin = sim.matrix$reg.of.origin[sim.matrix$sim.id == sim]  #'temperate' or 'tropical'
