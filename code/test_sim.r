@@ -4,7 +4,7 @@ test_sim = function() {
 
   require(ape)
   
-  sim_matrix = data.frame(sim.id = 0,
+  sim_matrix = data.frame(sim.id = 99999,
                           status = 'test',
                           reg.of.origin = 'tropical',
                           w = 3,
@@ -24,9 +24,7 @@ test_sim = function() {
                           specn.gradient = 'off',
                           specn.factor = NA)
   
-  seed = 999
-  set.seed(seed)
-  sim.results = senc_sim_fun(sim_matrix, sim = 0)
+  sim.results = senc_sim_fun(sim_matrix, sim = 99999)
       
   tot.uniq.spp = length(unique(sim.results$all.populations$spp.name))
   extant.spp = nrow(unique(sim.results$all.populations[ sim.results$all.populations$extant == 1, c('spp.name','extant')]))
@@ -34,10 +32,10 @@ test_sim = function() {
                                           !sim.results$time.richness$region %in% c(0,11),]
   gamma = gammaStat(sim.results$phylo)
   
-  if(tot.uniq.spp == 1945) { tot.uniq.check = 'PASS' } else { tot.uniq.check = 'FAIL' }
-  if(extant.spp == 1799) { extant.spp.check = 'PASS' } else { extant.spp.check = 'FAIL' }
-  if(ceiling(gamma*1e5)/1e5 == -22.27503) { gamma.check = 'PASS' } else { gamma.check = 'FAIL' }
-  if( identical(sim.results$time.richness$spp.rich[1190:1199], c(2, 47, 106, 174, 293, 359, 473, 565, 663, 713)) ) {
+  if(tot.uniq.spp == 1647) { tot.uniq.check = 'PASS' } else { tot.uniq.check = 'FAIL' }
+  if(extant.spp == 1449) { extant.spp.check = 'PASS' } else { extant.spp.check = 'FAIL' }
+  if(ceiling(gamma*1e5)/1e5 == -18.42047) { gamma.check = 'PASS' } else { gamma.check = 'FAIL' }
+  if( identical(sim.results$time.richness$spp.rich[1190:1199], c(0, 0, 6, 51, 85, 191, 370, 513, 693, 760)) ) {
     time.rich.check = 'PASS'
   } else { time.rich.check = 'FAIL' }
   
