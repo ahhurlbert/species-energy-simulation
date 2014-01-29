@@ -33,6 +33,8 @@ run_sim = function(which_sims,
       
     } #end foreach
     
+    stopCluster(cl)
+    
   } #end if(local)
 
   if(!local) {
@@ -56,8 +58,7 @@ run_sim = function(which_sims,
                       
     } #end foreach
     
-    
-    closeCluster(cl);
+    closeCluster(cl)
     mpi.finalize()
     
   } #end if(!local)
