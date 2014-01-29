@@ -382,8 +382,9 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 	## write outputs
 
-  sim_out_dir = dir.create(paste("./raw_sim_output/sim", sim, "_out", sep = ""))
-  
+  sim_out_dir = paste("./raw_sim_output/sim", sim, "_out", sep = "")
+  dir.create(sim_out_dir)
+    
 	phylo.out = make.phylo.jimmy.fun(t = curr.time, edge.length.out = edge.length, edge.out = edge ,stem.depth.out = stem.depth )
 	write.csv(all.populations, paste(sim_out_dir, "/SENC_all.pops_sim", sim, ".csv", sep=""), quote = F, row.names = F)
 	write.csv(time.richness, paste(sim_out_dir, "/SENC_time.rich_sim", sim, ".csv", sep=""), quote = F, row.names = F)
