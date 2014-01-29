@@ -27,7 +27,7 @@ source('code/supplemental_analysis_functions.r')
 args = commandArgs(trailingOnly = TRUE)
 
 which_sims = c()
-for (i in 1:length(args)/2) {
+for (i in 1:(length(args)/2)) {
   which_sims = c(which_sims, as.numeric( args[2*i - 1] ) : as.numeric( args[2*i]) )
 }
 
