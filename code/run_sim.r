@@ -11,58 +11,42 @@ run_sim = function(which_sims,
 {
 
   require(ape)
-  
-  sim_matrix = read.csv(sim_matrix_filename, header = T)
 
   if(local) {
-
     require(parallel)
     require(doParallel)
-    
     cl = makeCluster(num_cores)
     registerDoParallel(cl)
-    
-    #Create a log file for checking simulation progress
-    writeLines(c(""), "raw_sim_output/log.txt")
-    
-    foo = foreach(sim = which_sims, .packages = 'ape', .combine = "rbind", .export =
-                    "senc_sim_fun")  %dopar% {
-      
-      sink("raw_sim_output/log.txt", append = T)
-      cat(paste("Starting sim", sim, ",", date(), "\n"))
-      sim.results = senc_sim_fun(sim_matrix, sim = sim)
-      
-    } #end foreach
-    
-    stopCluster(cl)
-    
-  } #end if(local)
-
-  if(!local) {
-    library(doMPI)
+  } else {
+    require(doMPI)
     
     # create and register a doMPI cluster if necessary
     if (!identical(getDoParName(), 'doMPI')) {
       cl <- startMPIcluster()
       registerDoMPI(cl)
     }
+  }
     
-    #Create a log file for checking simulation progress
-    writeLines(c(""), "raw_sim_output/log.txt")
+  sim_matrix = read.csv(sim_matrix_filename, header = T)
+  
+  #Create a log file for checking simulation progress
+  writeLines(c(""), "raw_sim_output/log.txt")
     
-    foo = foreach(sim = which_sims, .packages = 'ape', .combine = "rbind", .export =
-                    "senc_sim_fun")  %dopar% {
-                      
-      sink("raw_sim_output/log.txt", append = T)
-      cat(paste("Starting sim", sim, ",", date(), "\n"))
-      sim.results = senc_sim_fun(sim_matrix, sim = sim)
-                      
-    } #end foreach
+  foo = foreach(sim = which_sims, .packages = 'ape', .combine = "rbind", .export =
+                  "senc_sim_fun")  %dopar% {
+      
+    sink("raw_sim_output/log.txt", append = T)
+    cat(paste("Starting sim", sim, ",", date(), "\n"))
+    sim.results = senc_sim_fun(sim_matrix, sim = sim)
+      
+  } #end foreach
     
+  if(local) {
+    stopCluster(cl)
+  } else {
     closeCluster(cl)
     mpi.finalize()
-    
-  } #end if(!local)
-  
+  }
+
 } #end function
 
