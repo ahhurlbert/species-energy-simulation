@@ -11,16 +11,17 @@ run_sim = function(which_sims,
 {
 
   require(ape)
-  require(parallel)
-  require(doParallel)
-  
-  cl = makeCluster(num_cores)
-  registerDoParallel(cl)
   
   sim_matrix = read.csv(sim_matrix_filename, header = T)
 
   if(local) {
 
+    require(parallel)
+    require(doParallel)
+    
+    cl = makeCluster(num_cores)
+    registerDoParallel(cl)
+    
     #Create a log file for checking simulation progress
     writeLines(c(""), "raw_sim_output/log.txt")
     
