@@ -40,4 +40,4 @@ for (i in 1:(length(args)/2)) {
   which_sims = c(which_sims, as.numeric( args[2*i - 1] ) : as.numeric( args[2*i]) )
 }
 
-analyze_sim(which_sims, "SENC_Master_Simulation_Matrix.csv", local = F)
+analyze_sim(which_sims, "SENC_Master_Simulation_Matrix.csv", local = F, sim_dir = "new")
