@@ -19,9 +19,7 @@ library(ncdf)
 
 
 source('code/run_sim.r')
-source('code/analyze_sim.r')
 source('code/senc_sim_fun.r')
-source('code/senc_analysis_fun.r')
 source('code/supplemental_analysis_functions.r')
 
 args = commandArgs(trailingOnly = TRUE)
