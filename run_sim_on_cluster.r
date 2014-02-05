@@ -1,3 +1,10 @@
+# R script to be called from the shell that will run the specified simulations
+# Typical call on the UNC KillDevil cluster (which uses LSF) would be
+#
+#   $bsub -o out.%J -n 100 -a openmpi mpirun Rscript run_sim_on_cluster.r 3765 3864
+#
+# which would use 100 nodes to run sims 3765:3864 
+
 library(ape)
 library(permute)
 library(nlme)
