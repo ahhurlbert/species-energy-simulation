@@ -39,20 +39,31 @@ analyze_sim = function(which_sims,
   
   package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools','apTreeshape')
   
-  sim_matrix = read.csv(sim_matrix_filename, header = T)
-  
-  # For parallel processing on a local machine
-  if (local) {
+  if(local) {
+    require(parallel)
+    require(doParallel)
     cl = makeCluster(num_cores)
     registerDoParallel(cl)
+  } else {
+    require(doMPI)
     
-    #Create a log file for checking simulation progress
-    writeLines(c(""), "analysis_output/analysis_log.txt")
+    # create and register a doMPI cluster if necessary
+    if (!identical(getDoParName(), 'doMPI')) {
+      cl <- startMPIcluster()
+      registerDoMPI(cl)
+    }
+  }
+  
+  
+  sim_matrix = read.csv(sim_matrix_filename, header = T)
+  
+  #Create a log file for checking simulation progress
+  writeLines(c(""), "analysis_output/analysis_log.txt")
     
-    foo = foreach(sim = which_sims, .packages = package.vector, .combine = "rbind",
-                  .export = c("analysis", "output.unzip", "regional.calc",
-                              "xregion.analysis", "extinct.calc",
-                              "maxlik.betasplit.AH")) %dopar% {
+  foo = foreach(sim = which_sims, .packages = package.vector, .combine = "rbind",
+                .export = c("analysis", "output.unzip", "regional.calc",
+                            "xregion.analysis", "extinct.calc",
+                            "maxlik.betasplit.AH")) %dopar% {
                                 
     sink("analysis_output/analysis_log.txt", append = T)
     cat(paste("Starting sim", sim, ",", date(), "\n"))
@@ -61,19 +72,14 @@ analyze_sim = function(which_sims,
              which.time.slices = which.time.slices, time.sequence = time.sequence, 
              min.num.spp = min.num.spp)
                                 
-    } #end foreach
-  } #end if local
+  } #end foreach
+
+  #stop or close clusters
+  if(local) {
+    stopCluster(cl)
+  } else {
+    closeCluster(cl)
+    mpi.finalize()
+  }
   
-  # Pass arguments from shell on cluster:
-  ############# NEEDS REVISION ############
-  if (!local) {
-    #sim = commandArgs()
-    #sim = as.numeric(sim[length(sim)])
-    
-    #analysis(sim, sim.matrix, root.only = 1, num.of.time.slices = 1, 
-    #         which.time.slices = NA, time.sequence = NA, min.num.spp = 8)
-    
-    
-  } #end if not local
 } #end function
-  
