@@ -8,6 +8,9 @@
 #   which.time.slices:   which points in time to analyze if irregularly spaced
 #   time.sequence:       which points in time to analyze if regularly spaced
 #   min.num.spp:         min num of spp in a clade needed to proceed with analysis
+#   sim_dir:             directory where raw simulation output reside ('archived' for example
+#                          output from the published paper, 'new' for simulation output created
+#                          by the user)
 
 analyze_sim = function(which_sims, 
                        sim_matrix_filename = "SENC_Master_Simulation_Matrix.csv", 
@@ -17,7 +20,8 @@ analyze_sim = function(which_sims,
                        num.of.time.slices = 1, 
                        which.time.slices = NA, 
                        time.sequence = NA,  
-                       min.num.spp = 8) 
+                       min.num.spp = 8,
+                       sim_dir = 'archived') 
 {
 
   require(mnormt)
@@ -70,7 +74,7 @@ analyze_sim = function(which_sims,
                                 
     analysis(sim, sim_matrix, root.only = root.only, num.of.time.slices = num.of.time.slices, 
              which.time.slices = which.time.slices, time.sequence = time.sequence, 
-             min.num.spp = min.num.spp)
+             min.num.spp = min.num.spp, sim_dir = sim_dir)
                                 
   } #end foreach
 
