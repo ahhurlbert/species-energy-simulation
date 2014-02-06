@@ -77,9 +77,14 @@ analysis = function(sim,                    #simulation ID to analyze
         most.recent.spp = sub.phylo$tip.label[as.numeric(names(which.max(dist.nodes(sub.phylo)[1:Ntip(sub.phylo), Ntip(sub.phylo) + 1])))]
         extinct.time.most.recent = unique(all.populations$time.of.sp.extinction[all.populations$spp.name == most.recent.spp])
         sub.phylo$root.time = temp.root.time + max(c(0, max.time.actual - extinct.time.most.recent))
-        sub.phylo = collapse.singles(timeSliceTree(sub.phylo, sliceTime = (max.time.actual - t), plot = F, drop.extinct = T))
-        num.of.spp = length(sub.phylo$tip.label)
         
+        # For points in time prior to the final timepoint of the simulation,
+        # the tree is sliced off to provide the phylogeny of species extant at time t
+        if (t < max.time.actual) {
+          sub.phylo = collapse.singles(timeSliceTree(sub.phylo, sliceTime = (max.time.actual - t), plot = F, drop.extinct = T))
+        }
+          
+        num.of.spp = length(sub.phylo$tip.label)
         
         # The 'c' loop repeats the basic analysis for every node in the tree (if root.only = 0)
         # or just for the overall root clade (if root.only = 1)
