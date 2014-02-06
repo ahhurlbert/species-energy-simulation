@@ -35,10 +35,10 @@ source('code/supplemental_analysis_functions.r')
 
 Cloning the Github repository will set up the following subdirectories:  
 
-    -code: most of the R scripts and functions  
-    -archived_sim_output: zipped simulation output for a subset of the sims conducted in the paper  
-    -raw_sim_output: folder in which new simulation output will be stored  
-    -analysis_output: folder in which new analysis output will be stored  
++code: most of the R scripts and functions  
++archived_sim_output: zipped simulation output for a subset of the sims conducted in the paper  
++raw_sim_output: folder in which new simulation output will be stored  
++analysis_output: folder in which new analysis output will be stored  
 
 
 ##Run simulations
