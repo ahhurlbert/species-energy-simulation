@@ -302,15 +302,15 @@ which handles the parallelization of the computing.
 
 To run simulations on the UNC KillDevil cluster (which uses LSF to execute batch jobs), 
 first clone the repository, and then from the repository home directory, type  
-`$bsub -o out.%J -n 100 -a openmpi mpirun Rscript run_sim_on_cluster.r 3765 3864'  
+`$bsub -o out.%J -n 100 -a openmpi mpirun Rscript run_sim_on_cluster.r 3765 3864`  
 
 In this example, this command requests 100 nodes to run simulations 3765 to 3864. A job output file
-is created called out.%J where %J is the job number. Similarly, to analyze simulations on the cluster
+is created called 'out.%J' where %J is the job number. Similarly, to analyze simulations on the cluster:
 
-`$bsub -o out.%J -n 100 -a openmpi mpirun Rscript run_analysis_on_cluster.r 3765 3864'  
+`$bsub -o out.%J -n 100 -a openmpi mpirun Rscript run_analysis_on_cluster.r 3765 3864`  
 
-Whether running simulations or conducting analyses, results will be stored in the 'raw_sim_output' or
-'analysis_output' subdirectories.
+Whether running simulations or conducting analyses, results will be stored in the `raw_sim_output` or
+`analysis_output` subdirectories.
 
 
 ##Duplicating manuscript figures
