@@ -1,17 +1,7 @@
-Allen = 1;
+#Animation run in R window showing how the geographic pattern of richness varies thru time
 
-if (Allen == 1) {
-  github_dir = 'C:/Documents and Settings/Hurlbert/species-energy-simulation'
-  sim_dir = 'c:/sencoutput' #directory with simulation output
-}
-
-if (Allen == 0) {
-  github_dir = 'C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation'
-  sim_dir = 'C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204' #directory with simulation output
-}
-
-source(paste(github_dir,'/unzipping_files.r',sep=''))
-sim.matrix = read.csv(paste(github_dir,'/SENC_Master_Simulation_Matrix.csv',sep=''), header=T)
+source('code/supplemental_analysis_functions.r')
+sim.matrix = read.csv('SENC_Master_Simulation_Matrix.csv', header = T)
 
 # Function that shows a time lapse movie of the development of the latitudinal gradient in species richness.
 # Arguments include the simID, sim.matrix, directory in which simulation files are stored, 
@@ -26,8 +16,8 @@ lat.grad.movie.comp = function(sims, sim.matrix, sim_dir, time.step, time.max, u
     all.populations1 = sim.out1$all.populations
     all.populations2 = sim.out2$all.populations
   } else { 
-    all.populations1 = read.csv(paste(sim_dir,'/SENC_all.pops_sim',sims[1],'.csv',sep=''), header=T)
-    all.populations2 = read.csv(paste(sim_dir,'/SENC_all.pops_sim',sims[2],'.csv',sep=''), header=T)
+    all.populations1 = read.csv(paste('raw_sim_output/sim', sims[1], '_out/SENC_all.pops_sim',sims[1],'.csv',sep=''), header=T)
+    all.populations2 = read.csv(paste('raw_sim_output/sim', sims[2], '_out/SENC_all.pops_sim',sims[2],'.csv',sep=''), header=T)
   }
   
   params1 = sim.matrix[sim.matrix$sim.id==sims[1],]
