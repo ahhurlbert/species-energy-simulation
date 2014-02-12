@@ -3,19 +3,6 @@ require(abind)
 require(apTreeshape)
 require(ape)
 
-Allen = 0;
-
-#New parameter for taking into account which of us is running this code
-if(Allen==1) {
-  setwd('c:/documents and settings/hurlbert/species-energy-simulation')
-  sim_dir = "C:/SENCoutput"
-  analysis_dir = "//bioark.bio.unc.edu/hurlbertallen/manuscripts/cladevscommunity/analyses/summaryplots"
-} else {
-  setwd('C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/species-energy-simulation')
-  sim_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204" #wherever all of your zipped output files are
-  analysis_dir = "C:/Users/steg815/Desktop/Stegen_PNNL/Spp-Energy-Niche-Conserv/sims.out.130204" #wherever you want to store the results of these analyses
-}
-
 #Energy gradient sims
 # currently has 100 sims
 trop.sims = c(4065:4074, 4185:4274)
@@ -26,27 +13,20 @@ temp.sims = c(4075:4084, 4275:4364)
 Ttrop.sims = 3465:3564
 Ttemp.sims = 3565:3664
 
-# next 5 lines are temporary
-#run.sims = list.files(path = "//constance/people/steg815/senc.analysis", pattern='_time_seq_root_only.csv');
-#run.sims = sub('SENC_Stats_sim','',run.sims);
-#run.sims = as.numeric(sub('_time_seq_root_only.csv','',run.sims)); head(run.sims);
-#Ttrop.sims = run.sims[run.sims <= 3564]; length(Ttrop.sims);
-#Ttemp.sims = run.sims[run.sims >= 3565]; length(Ttemp.sims);
-
 sim.matrix = read.csv("SENC_Master_Simulation_Matrix.csv",header=T);
 
-metric.abind.new = function(sims, scenario = "K", min.div.regions = 4, min.richness = 30) {
+# Function for abinding simulation output (the "stats" files where rows are points in time)
+# across all of the replicates with identical parameters
+metric.abind.new = function(sims, min.div.regions = 4, min.richness = 30) {
   num.cols = 41
   metrics = matrix(NA, nrow = 100, ncol = num.cols)
   for (i in sims) {
-    #if (scenario == "K") {
-    #  temp = read.csv(paste(sim_dir,"/NEW_Stats_sim",i,"_mult_times.csv",sep=""),header=T)
-    #} else if (scenario == "T") {
-      temp = read.csv(paste(sim_dir,"/lbeta_Stats_sim",i,"_time_seq_root_only.csv",sep=""),header=T)
-    #}
+    statsfile = list.files(path = "analysis_output", pattern = paste("Stats_sim", i, "_rootclade", sep = ""))
+    temp = read.csv(paste("analysis_output/", statsfile, sep = ""), header = T)
     temp$r.lat.rich = -temp$r.env.rich
     temp$scaled.MRD.range = temp$MRD.range/temp$max.RD
     temp$scaled.MRD.rich.slope = temp$MRD.rich.slope/temp$max.RD
+
     # There is no output for timesteps in which no correlations could be calculated
     # so we add the relevant number of rows of data with NA's in that case
     if (nrow(temp) < 100) {
@@ -62,7 +42,6 @@ metric.abind.new = function(sims, scenario = "K", min.div.regions = 4, min.richn
       temp[which(temp$global.richness < min.richness),] = NA
     }
     metrics = abind(metrics, temp, along = 3)
-    #print(c(i,range(temp$global.richness,na.rm=T),range(temp$n.div.regions,na.rm=T)))
   }
   return(metrics[,,-1]) #don't include the first slice of NAs
 }
@@ -203,7 +182,7 @@ error = 2 # error bars in SD units (+/-)
 # Figure 2
 # Plotting metrics over the course of the simulation: global richness, the latitude-richness correlation 
 # Means +/- 2 SD are shown.
-pdf(paste(analysis_dir,'/rich_latrich_thru_time_',Sys.Date(), '.pdf', sep = ""), height = 5, width = 10)
+pdf(paste('rich_latrich_thru_time_',Sys.Date(), '.pdf', sep = ""), height = 5, width = 10)
 par(mfrow = c(1, 2), mar = c(4, 6, 1, 1), oma = c(2, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 x.offset = min(Ttemp.metrics.mean$time, na.rm = T)
@@ -352,7 +331,7 @@ seb.MRD.rich.slope.scaled = seb.MRD.rich.slope / max(root.dist)
 seb.PSV.rich.slope = coefficients(lm(PSV ~ S, data = output2))[2]
 
 # plot
-pdf(paste(analysis_dir, '/metrics_thru_time_', Sys.Date(), '.pdf', sep = ""), height = 8, width = 10)
+pdf(paste('metrics_thru_time_', Sys.Date(), '.pdf', sep = ""), height = 8, width = 10)
 par(mfrow = c(2, 2), mar = c(4, 6, 1, 2), oma = c(2, 0, 2, 0), cex.lab = 1.7, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 x.offset = min(Ttemp.metrics.mean$time, na.rm = T)
