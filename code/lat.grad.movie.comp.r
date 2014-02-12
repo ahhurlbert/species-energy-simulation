@@ -8,7 +8,7 @@ sim.matrix = read.csv('SENC_Master_Simulation_Matrix.csv', header = T)
 # temporal resolution and duration of the movie, and whether the sim files need to be unzipped or not.
 # Now modified to compare two simulations at once.
 
-lat.grad.movie.comp = function(sims, sim.matrix, sim_dir, time.step, time.max, unzip=F) {
+lat.grad.movie.comp = function(sims, sim.matrix, time.step, time.max, unzip=F) {
   
   if(unzip) {
     sim.out1 = output.unzip(sim_dir, sims[1])
@@ -45,13 +45,14 @@ lat.grad.movie.comp = function(sims, sim.matrix, sim_dir, time.step, time.max, u
     Sys.sleep(0)
     # Panel 1: richness gradient
     plot(11 - all.reg.rich1$region, log10(all.reg.rich1$total.rich), type='b', lwd = 4, cex = .5, col = 'red',
-         xlim = c(0,11), ylim=c(0, log10(max.rich)+.5), xlab="Latitude",ylab = "log10 Species richness",
+         xlim = c(0,11), ylim=c(0, log10(max.rich)+1), xlab="Latitude",ylab = "log10 Species richness",
          main=paste(params1[1,3],"origin; K", params1[1,8], "; w =",params1[1,4],"; sigma = ",params1[1,7]))
     points(11 - all.reg.rich2$region, log10(all.reg.rich2$total.rich), type='b', lwd = 4, cex = .5, col = 'blue',
            xlim = c(0,11), ylim=c(0, log10(max.rich)+.5))
     legend('topleft',c(paste('freq =', params1[1,15],'; magn =', params1[1,16]),
                               paste('freq =', params2[1,15],'; magn =', params2[1,16])), lwd=4, col = c('red','blue'))
-    text(10, log10(max.rich)+.5, paste("t =", t))
+    axis(4, at = seq(0, ceiling(2*(log10(max.rich) + 1))/2, by = 0.5), tck = .03)
+    text(10, log10(max.rich) + 1, paste("t =", t))
     
     # Panel 2: environmental optima
     regions = c(1,4,7,10)
@@ -73,6 +74,6 @@ lat.grad.movie.comp = function(sims, sim.matrix, sim_dir, time.step, time.max, u
   }
 }
 
-# Example for plotting movie for comparing sims 3035 and 3095
-lat.grad.movie.comp(sims = c(3035, 3095), sim.matrix, sim_dir, 50,time.max=30000)
+# Example for plotting movie for comparing sims 4565 and 4685
+lat.grad.movie.comp(sims = c(4565, 4685), sim.matrix, 500, time.max = 30000)
 
