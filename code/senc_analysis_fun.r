@@ -175,10 +175,10 @@ analysis = function(sim,                    #simulation ID to analyze
 
     #write all of this output to files
     if (root.only == 0) {
-      write.csv(output, paste("analysis_output/Stats_sim", sim, "_all_subclades.csv", sep = ""), quote = F, row.names = F)
+      write.csv(output, paste("analysis_output/Stats_sim", sim, "_all_subclades_", num.of.time.slices, "_times.csv", sep = ""), quote = F, row.names = F)
     }
     if (root.only == 1) {
-      write.csv(output, paste("analysis_output/Stats_sim", sim, "_rootclade_only.csv", sep = ""), quote = F, row.names = F)
+      write.csv(output, paste("analysis_output/Stats_sim", sim, "_rootclade_only_", num.of.time.slices, "_times.csv", sep = ""), quote = F, row.names = F)
     }
     
     analysis.end = date()
