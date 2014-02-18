@@ -32,7 +32,7 @@ analyze_sim = function(which_sims,
   require(parallel)
   require(doParallel)
   
-  package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools','apTreeshape')
+  package.vector = c('ape','caper','paleotree','plyr')
   
   if(local) {
     require(parallel)
