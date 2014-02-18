@@ -24,24 +24,15 @@ analyze_sim = function(which_sims,
                        sim_dir = 'archived') 
 {
 
-  require(mnormt)
-  require(rgl)
   require(ape)
-  require(permute)
-  require(nlme)
-  require(vegan)
-  require(picante)
-  require(mvtnorm)
   require(caper)
   require(paleotree)
   require(plyr)
-  require(phytools)
-  require(apTreeshape)
   require(foreach)
   require(parallel)
   require(doParallel)
   
-  package.vector = c('ape','permute','nlme','vegan','picante','mvtnorm','caper','paleotree','plyr','phytools','apTreeshape')
+  package.vector = c('ape','caper','paleotree','plyr')
   
   if(local) {
     require(parallel)
