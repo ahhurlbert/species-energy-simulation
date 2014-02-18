@@ -14,12 +14,12 @@ library(mvtnorm)
 library(caper)
 library(paleotree)
 library(plyr)
-library(phytools)
+#library(phytools)
 library(foreach)
 library(doParallel)
 library(apTreeshape)
 library(mnormt)
-library(rgl)
+#library(rgl)
 library(apTreeshape)
 library(R.utils)
 library(ncdf)
@@ -40,6 +40,6 @@ for (i in 1:((length(args) - 1)/2)) {
   which_sims = c(which_sims, as.numeric( args[2*i - 1] ) : as.numeric( args[2*i]) )
 }
 
-times = args[length(args)]
+times = as.numeric(args[length(args)])
 
 analyze_sim(which_sims, "SENC_Master_Simulation_Matrix.csv", local = F, sim_dir = "new", num.of.time.slices = times)
