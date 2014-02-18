@@ -6,21 +6,10 @@
 # which would use 100 nodes to analyze sims 3765:3864 at 30 evenly spaced time points
 
 library(ape)
-library(permute)
-library(nlme)
-library(vegan)
-library(picante)
-library(mvtnorm)
 library(caper)
 library(paleotree)
-library(plyr)
-#library(phytools)
 library(foreach)
 library(doParallel)
-library(apTreeshape)
-library(mnormt)
-#library(rgl)
-library(apTreeshape)
 library(R.utils)
 library(ncdf)
 
