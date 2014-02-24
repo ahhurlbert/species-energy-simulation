@@ -26,7 +26,10 @@ analysis = function(sim,                    #simulation ID to analyze
   if(sim_dir == 'new') { directory = paste('raw_sim_output/sim', sim, '_out', sep = '')}
   sim.results = output.unzip(directory, sim)
   
-  if ( !is.null(sim.results) ) {
+  if ( is.null(sim.results) ) {
+    errorMsg = paste("No simulation output exists to analyze for simID", sim)
+    write.table(errorMsg, paste("analysis_output/Stats_sim", sim, "_error.txt", sep = ""))
+  } else {
     all.populations = sim.results$all.populations
     time.richness = sim.results$time.richness
     phylo.out = sim.results$phylo.out
