@@ -5,15 +5,6 @@
 #
 # which would use 100 nodes to analyze sims 3765:3864 at 30 evenly spaced time points
 
-library(ape)
-library(caper)
-library(paleotree)
-library(foreach)
-library(doParallel)
-library(R.utils)
-library(ncdf)
-
-
 source('code/analyze_sim.r')
 source('code/senc_analysis_fun.r')
 source('code/supplemental_analysis_functions.r')
@@ -21,9 +12,9 @@ source('code/supplemental_analysis_functions.r')
 args = commandArgs(trailingOnly = TRUE)
 
 # Specify a vector of sim.id's to run in the command line call
-# --if a simple sequence, then arguments are simply the first and last sims
+# --if a simple sequence, then arguments are simply the first and second sims
 # --if more complex set, then arguments are paired to represent subsequences, and then catenated
-# --e.g. R script run_sim_on_cluster.r 1 18 26 29  would run c(1:18, 26:29)
+# --e.g. R script run_sim_on_cluster.r 1 18 26 29 5 would run c(1:18, 26:29) at 5 points in time
 which_sims = c()
 for (i in 1:((length(args) - 1)/2)) {
   which_sims = c(which_sims, as.numeric( args[2*i - 1] ) : as.numeric( args[2*i]) )
