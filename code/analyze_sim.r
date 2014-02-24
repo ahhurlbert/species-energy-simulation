@@ -29,10 +29,6 @@ analyze_sim = function(which_sims,
   require(paleotree)
   require(plyr)
   require(foreach)
-  require(parallel)
-  require(doParallel)
-  
-  package.vector = c('ape','caper','paleotree','plyr')
   
   if(local) {
     require(parallel)
@@ -54,11 +50,14 @@ analyze_sim = function(which_sims,
   
   #Create a log file for checking simulation progress
   writeLines(c(""), "analysis_output/analysis_log.txt")
-    
+  sink("analysis_output/analysis_log.txt", append = T)
+  
+  package.vector = c('ape','caper','paleotree','plyr')
+  export.vector = c("analysis", "output.unzip", "regional.calc",
+                    "xregion.analysis", "extinct.calc", "maxlik.betasplit.AH")
+  
   foo = foreach(sim = which_sims, .packages = package.vector, .combine = "rbind",
-                .export = c("analysis", "output.unzip", "regional.calc",
-                            "xregion.analysis", "extinct.calc",
-                            "maxlik.betasplit.AH")) %dopar% {
+                .export = export.vector) %dopar% {
                                 
     sink("analysis_output/analysis_log.txt", append = T)
     cat(paste("Starting sim", sim, ",", date(), "\n"))
