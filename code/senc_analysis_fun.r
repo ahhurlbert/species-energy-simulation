@@ -28,7 +28,7 @@ analysis = function(sim,                    #simulation ID to analyze
   
   if ( is.null(sim.results) ) {
     errorMsg = paste("No simulation output exists to analyze for simID", sim)
-    write.table(errorMsg, paste("analysis_output/Stats_sim", sim, "_error.txt", sep = ""))
+    write.table(errorMsg, paste("analysis_output/Stats_sim", sim, "_error.txt", sep = ""), row.names = F)
   } else {
     all.populations = sim.results$all.populations
     time.richness = sim.results$time.richness
