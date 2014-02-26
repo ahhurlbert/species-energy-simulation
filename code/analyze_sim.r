@@ -24,6 +24,7 @@ analyze_sim = function(which_sims,
                        sim_dir = 'archived') 
 {
 
+  require(methods)
   require(ape)
   require(caper)
   require(paleotree)
