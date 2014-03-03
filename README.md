@@ -2,25 +2,17 @@
 
 
 Code for conducting eco-evolutionary simulations of diversification and dispersal of species with 
-and without energetic constraints as described in Hurlbert & Stegen, *Ecology Letters*. DOI: 10.1111/ele.12240
+and without energetic constraints as described in Hurlbert & Stegen, 2014, "When should species 
+richness be energy limited, and how would we know?" *Ecology Letters*. DOI: 10.1111/ele.12240
 
 ##Setup
 Requirements: R 3.0 or greater with the following packages installed and the following scripts sourced:
 
 ```R
-package.vector = c('mnormt',
-		   'rgl',
-		   'ape',
-		   'permute',
-		   'nlme',
-		   'vegan',
-		   'picante',
-		   'mvtnorm',
+package.vector = c('ape',
 		   'caper',
 		   'paleotree',
 		   'plyr',
-		   'phytools',
-		   'apTreeshape',
 		   'foreach',
 		   'doParallel')
 
@@ -307,10 +299,11 @@ first clone the repository, and then from the repository home directory, type
 In this example, this command requests 100 nodes to run simulations 3765 to 3864. A job output file
 is created called 'out.%J' where %J is the job number. Similarly, to analyze simulations on the cluster:
 
-`$ bsub -o out.%J -n 100 -a openmpi mpirun Rscript run_analysis_on_cluster.r 3765 3864`  
+`$ bsub -o out.%J -n 100 -a openmpi mpirun Rscript run_analysis_on_cluster.r 3765 3864 30`  
 
-Whether running simulations or conducting analyses, results will be stored in the `raw_sim_output` or
-`analysis_output` subdirectories.
+In this case, an additional parameter at the end (here, 30) specifies the number of points in time over
+which to analyze simulation output. Whether running simulations or conducting analyses, results will be 
+stored in the `raw_sim_output` or `analysis_output` subdirectories.
 
 
 ##Duplicating manuscript figures
