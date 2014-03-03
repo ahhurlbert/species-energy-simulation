@@ -5,29 +5,7 @@
 #
 # which would use 100 nodes to run sims 3765:3864 
 
-library(ape)
-library(permute)
-library(nlme)
-library(vegan)
-library(picante)
-library(mvtnorm)
-library(caper)
-library(paleotree)
-library(plyr)
-library(phytools)
-library(foreach)
-library(doParallel)
-library(apTreeshape)
-library(mnormt)
-library(rgl)
-library(apTreeshape)
-library(R.utils)
-library(ncdf)
-
-
 source('code/run_sim.r')
-source('code/senc_sim_fun.r')
-source('code/supplemental_analysis_functions.r')
 
 args = commandArgs(trailingOnly = TRUE)
 
