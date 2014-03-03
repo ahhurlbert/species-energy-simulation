@@ -3,7 +3,9 @@
 test_sim = function() {
 
   require(ape)
-  
+  source('code/senc_sim_fun.r')
+  source('code/supplemental_analysis_functions.r')
+    
   sim_matrix = data.frame(sim.id = 99999,
                           status = 'test',
                           reg.of.origin = 'tropical',
