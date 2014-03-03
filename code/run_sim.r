@@ -11,7 +11,9 @@ run_sim = function(which_sims,
 {
 
   require(ape)
-
+  source('code/senc_sim_fun.r')
+  source('code/supplemental_analysis_functions.r')
+  
   if(local) {
     require(parallel)
     require(doParallel)
