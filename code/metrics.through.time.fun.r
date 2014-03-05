@@ -83,7 +83,7 @@ plot.metrics.thru.time = function(trop.sims,
                     expression(beta))
 
   pdf(paste('analysis_output/', pdf.out, sep = ''), width = 11, height = 8)
-  par(mfrow = c(2, 3), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+  par(mfrow = c(2, 3), mar = c(5, 6, 1, 1), oma = c(5, 0, 5, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
   error = 2 # error bars in SD units (+/-)
   for (curr.metric in metric.names) {
@@ -104,5 +104,10 @@ plot.metrics.thru.time = function(trop.sims,
     if(curr.metric == 'gamma.stat') { abline(h = 0, lty = 'dashed')}
   } 
   mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 1.5) 
+  sim.params = sim.matrix[sim.matrix$sim.id == trop.sims[1], ]
+  if (sim.params$disturb_frequency == 0) {disturb = 'yes'} else {disturb = 'no'}
+  mtext(paste("Energetic constraint", sim.params$carry.cap[1], "; K gradient", sim.params$energy.gradient[1], "; w =",
+        sim.params$w[1], ";\nsigma =", sim.params$sigma_E[1], "; disturbance =", disturb, "; speciation gradient", 
+        sim.params$specn.gradient[1]), 3, outer=T, line = 1)
   dev.off()
 }
