@@ -9,9 +9,22 @@
 output.unzip = function(output_dir, sim_ID) {
   require(ape)
   
-  #check that zip file exists (returns value of 0 when mode=0 if file exists)
-  if( file.access(paste(output_dir,'/senc.out.',sim_ID,'.zip',sep=''), mode=0) == 0 ) {
-    unzipped.filenames = unzip(paste(output_dir,'/senc.out.',sim_ID,'.zip',sep=''), exdir = output_dir)
+  # check that raw simulation output files exist
+  # file.access() returns value of 0 when mode=0 if file exists
+  if (file.access(paste(output_dir, '/sim', sim_ID, '_out/SENC_all.pops_sim', sim_ID, '.csv', sep = ''), mode = 0) == 0) { 
+    
+    all.populations = read.csv(paste(output_dir, '/sim', sim_ID, '_out/SENC_all.pops_sim', sim_ID, '.csv', sep = ''), header=T)
+    params.out = read.csv(paste(output_dir, '/sim', sim_ID, '_out/SENC_params.out_sim', sim_ID, '.csv', sep = ''), header=T)
+    phylo.out = read.tree(paste(output_dir, '/sim', sim_ID, '_out/SENC_phylo_sim', sim_ID, '.tre', sep = ''))
+    time.richness = read.csv(paste(output_dir, '/sim', sim_ID, '_out/SENC_time.rich_sim', sim_ID, '.csv', sep = ''), header=T)
+    sim.results = list(all.populations=all.populations, 
+                       params.out=params.out, 
+                       phylo.out=phylo.out, 
+                       time.richness=time.richness)
+  } else if( file.access(paste(output_dir,'/senc.out.',sim_ID,'.zip',sep=''), mode=0) == 0 ) {
+    #if not, then what about zipped sim output?
+    unzipped.filenames = unzip(paste(output_dir,'/senc.out.',sim_ID,'.zip',sep=''), 
+                               exdir = paste(output_dir, '/sim', sim_ID, '_out', sep = ''))
     all.populations = read.csv(unzipped.filenames[1], header=T)
     params.out = read.csv(unzipped.filenames[2],header=T)
     phylo.out = read.tree(unzipped.filenames[3])
@@ -20,18 +33,8 @@ output.unzip = function(output_dir, sim_ID) {
                        params.out=params.out, 
                        phylo.out=phylo.out, 
                        time.richness=time.richness)
-  } else if (file.access(paste(output_dir, '/sim', sim, '_out/SENC_all.pops_sim', sim_ID, '.csv', sep = ''), mode = 0) == 0) { 
-    #if sim output data are not zipped, then just read in raw files
-    all.populations = read.csv(paste(output_dir, '/SENC_all.pops_sim', sim_ID, '.csv', sep = ''), header=T)
-    params.out = read.csv(paste(output_dir, '/SENC_params.out_sim', sim_ID, '.csv', sep = ''), header=T)
-    phylo.out = read.tree(paste(output_dir, '/SENC_phylo_sim', sim_ID, '.tre', sep = ''))
-    time.richness = read.csv(paste(output_dir, '/SENC_time.rich_sim', sim_ID, '.csv', sep = ''), header=T)
-    sim.results = list(all.populations=all.populations, 
-                       params.out=params.out, 
-                       phylo.out=phylo.out, 
-                       time.richness=time.richness)
   } else {
-    print("No simulation output exists for that sim ID")
+    print("No simulation output exists for that sim ID in the directory specified")
     sim.results = NULL
   }
     return(sim.results)
