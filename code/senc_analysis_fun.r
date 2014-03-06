@@ -23,7 +23,7 @@ analysis = function(sim,                    #simulation ID to analyze
   
   # read in simulation results for specified simulation from the output zip file, or the raw output files
   if(sim_dir == 'archived') { directory = 'archived_sim_output'}
-  if(sim_dir == 'new') { directory = paste('raw_sim_output/sim', sim, '_out', sep = '')}
+  if(sim_dir == 'new') { directory = 'raw_sim_output'}
   sim.results = output.unzip(directory, sim)
   
   if ( is.null(sim.results) ) {

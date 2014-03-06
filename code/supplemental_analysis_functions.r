@@ -20,7 +20,7 @@ output.unzip = function(output_dir, sim_ID) {
                        params.out=params.out, 
                        phylo.out=phylo.out, 
                        time.richness=time.richness)
-  } else if (file.access(paste(output_dir, '/SENC_all.pops_sim', sim_ID, '.csv', sep = ''), mode = 0) == 0) { 
+  } else if (file.access(paste(output_dir, '/sim', sim, '_out/SENC_all.pops_sim', sim_ID, '.csv', sep = ''), mode = 0) == 0) { 
     #if sim output data are not zipped, then just read in raw files
     all.populations = read.csv(paste(output_dir, '/SENC_all.pops_sim', sim_ID, '.csv', sep = ''), header=T)
     params.out = read.csv(paste(output_dir, '/SENC_params.out_sim', sim_ID, '.csv', sep = ''), header=T)
