@@ -105,7 +105,7 @@ plot.metrics.thru.time = function(trop.sims,
   } 
   mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 1.5) 
   sim.params = sim.matrix[sim.matrix$sim.id == trop.sims[1], ]
-  if (sim.params$disturb_frequency == 0) {disturb = 'yes'} else {disturb = 'no'}
+  if (sim.params$disturb_frequency == 0) {disturb = 'no'} else {disturb = 'yes'}
   mtext(paste("Energetic constraint", sim.params$carry.cap[1], "; K gradient", sim.params$energy.gradient[1], "; w =",
         sim.params$w[1], ";\nsigma =", sim.params$sigma_E[1], "; disturbance =", disturb, "; speciation gradient", 
         sim.params$specn.gradient[1]), 3, outer=T, line = 1)
