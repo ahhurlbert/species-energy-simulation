@@ -214,7 +214,7 @@ You can also specify whether to analyze some of the example simulation output th
 run (sim_dir = "archived") or simulation output that you have newly created (sim_dir = "new"). The
 'archived_sim_output' folder contains simulation output for 10 of the 100 simulations for each of the
 4 combinations of region of origin and zero sum condition. The entire simulation output (~7 GB) can be
-found in the Dryad Data Repository associated with this paper [insert link here].
+found in the [Dryad Data Repository associated with this paper](http://datadryad.org/resource/doi:10.5061/dryad.4r8p3).
 
 For example, to analyze simulation output for sim IDs 4065:4074 for all possible subclades but for
 just the final timeslice on your local machine, parallelizing over 2 processors, type 
