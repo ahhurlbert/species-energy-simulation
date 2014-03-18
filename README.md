@@ -3,7 +3,7 @@
 
 Code for conducting eco-evolutionary simulations of diversification and dispersal of species with 
 and without energetic constraints as described in Hurlbert & Stegen, 2014, "When should species 
-richness be energy limited, and how would we know?" *Ecology Letters*. DOI: 10.1111/ele.12240
+richness be energy limited, and how would we know?" *Ecology Letters*. [DOI: 10.1111/ele.12240](http://onlinelibrary.wiley.com/doi/10.1111/ele.12240/abstract)
 
 ##Setup
 Requirements: R 3.0 or greater with the following packages installed and the following scripts sourced:
