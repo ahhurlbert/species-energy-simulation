@@ -14,6 +14,8 @@ senc_sim_fun = function(sim.matrix, sim) {
   
   beta = sim.matrix$beta[sim.matrix$sim.id == sim]  #per capita dispersal rate to adjacent region
   
+  gamma = sim.matrix$gamma[sim.matrix$sim.id == sim]  #exponential rate of decay in extinction probability with population size
+  
   sigma_E = sim.matrix$sigma_E[sim.matrix$sim.id == sim]  #strength of niche conservatism (smaller values = stronger)
   
   carry.cap = sim.matrix$carry.cap[sim.matrix$sim.id == sim]  #'on' if limits exist to community abundance; else 'off'
@@ -61,8 +63,6 @@ senc_sim_fun = function(sim.matrix, sim) {
   # abiotic environmental gradient, ranging from 0 to 40 C
   min.env = 0
   max.env = 40
-  
-  gamma = 0.1 # exponential rate of decrease in extinction probability as population size increases
   
   total.mutations = 0 # the cumulative number of mutations
 
