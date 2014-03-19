@@ -166,6 +166,24 @@ analysis = function(sim,                    #simulation ID to analyze
               tree.beta = NA
             }
             
+            #Global origins and extinctions per timeslice
+            glob.pops = unique(subset.populations[, c('spp.name', 'time.of.sp.origin', 'time.of.sp.extinction')])
+            if (num.of.timeslices == 1) {
+              glob.pops = unique(all.populations[, c('spp.name', 'time.of.sp.origin', 'time.of.sp.extinction')])
+              origins = length(glob.pops$spp.name[glob.pops$time.of.sp.extinction > t])
+              extincts = length(glob.pops$spp.name[glob.pops$time.of.sp.extinction < t])
+            } else {
+              origin.pops = unique(all.populations[all.populations$time.of.sp.origin > max(c(0, timeslices[timeslices <t])) &
+                                                     all.populations$time.of.sp.origin < t &
+                                                     all.populations$time.of.sp.extinction > t, 
+                                                   c('spp.name', 'time.of.sp.origin', 'time.of.sp.extinction')])
+              origins = nrow(origin.pops)
+              ###extinct.pops = unique(all.populations[all.populations$time.of.sp.origin > max(c(0, timeslices[timeslices <t])) &
+                                                      all.populations$time.of.sp.origin < t &
+                                                      all.populations$time.of.sp.extinction > t, 
+                                                    c('spp.name', 'time.of.sp.origin', 'time.of.sp.extinction')])
+            }
+            
             output = rbind(output, cbind(sim = sim, clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
                                          clade.richness = length(unique(sub.populations$spp.name)), 
                                          tree.beta = tree.beta))
