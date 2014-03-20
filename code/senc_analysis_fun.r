@@ -166,27 +166,29 @@ analysis = function(sim,                    #simulation ID to analyze
               tree.beta = NA
             }
             
-            #Global origins and extinctions per timeslice
-            glob.pops = unique(subset.populations[, c('spp.name', 'time.of.sp.origin', 'time.of.sp.extinction')])
+            #Global origins and extinctions per timeslice (time chunks demarcated by 'timeslices')
+            #--the number of species that originated within and persisted throughout a given timeslice
+            #  and the number of species that existed at the beginning of the timeslice and went extinct within it
+            #--thus, this measure is not capturing the rapid turnover of nearly instantaneous speciation and extinction
+            #  events
+            glob.pops = unique(all.populations[, c('spp.name', 'time.of.sp.origin', 'time.of.sp.extinction')])
             if (num.of.timeslices == 1) {
-              glob.pops = unique(all.populations[, c('spp.name', 'time.of.sp.origin', 'time.of.sp.extinction')])
               origins = length(glob.pops$spp.name[glob.pops$time.of.sp.extinction > t])
               extincts = length(glob.pops$spp.name[glob.pops$time.of.sp.extinction < t])
             } else {
-              origin.pops = unique(all.populations[all.populations$time.of.sp.origin > max(c(0, timeslices[timeslices <t])) &
-                                                     all.populations$time.of.sp.origin < t &
-                                                     all.populations$time.of.sp.extinction > t, 
-                                                   c('spp.name', 'time.of.sp.origin', 'time.of.sp.extinction')])
+              origin.pops = subset(glob.pops, time.of.sp.origin >= max(c(0, timeslices[timeslices < t])) &
+                                              time.of.sp.origin < t &
+                                              time.of.sp.extinction > t)
               origins = nrow(origin.pops)
-              ###extinct.pops = unique(all.populations[all.populations$time.of.sp.origin > max(c(0, timeslices[timeslices <t])) &
-                                                      all.populations$time.of.sp.origin < t &
-                                                      all.populations$time.of.sp.extinction > t, 
-                                                    c('spp.name', 'time.of.sp.origin', 'time.of.sp.extinction')])
+              extinct.pops = subset(glob.pops, time.of.sp.origin <= max(c(0, timeslices[timeslices <t])) &
+                                                      time.of.sp.extinction >= max(c(0, timeslices[timeslices < t])) &
+                                                      time.of.sp.extinction < t)
+              extincts = nrow(extinct.pops)
             }
             
             output = rbind(output, cbind(sim = sim, clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
                                          clade.richness = length(unique(sub.populations$spp.name)), 
-                                         tree.beta = tree.beta))
+                                         tree.beta = tree.beta, glob.origins = origins, glob.extinctions = extincts)))
             print(paste(sim, sub.clade.loop.end, c, t, date(), length(sub.clade.phylo$tip.label), sep="   "))
             flush.console()
           } # end third else
