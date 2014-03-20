@@ -171,24 +171,38 @@ analysis = function(sim,                    #simulation ID to analyze
             #  and the number of species that existed at the beginning of the timeslice and went extinct within it
             #--thus, this measure is not capturing the rapid turnover of nearly instantaneous speciation and extinction
             #  events
+            #Raw rates are then normalized by the duration of the time chunk, and the number of species present
+            # globally at the beginning of the window
             glob.pops = unique(all.populations[, c('spp.name', 'time.of.sp.origin', 'time.of.sp.extinction')])
-            if (num.of.timeslices == 1) {
+            t0 = max(c(0, timeslices[timeslices < t]))
+            if (num.of.time.slices == 1) {
               origins = length(glob.pops$spp.name[glob.pops$time.of.sp.extinction > t])
               extincts = length(glob.pops$spp.name[glob.pops$time.of.sp.extinction < t])
             } else {
-              origin.pops = subset(glob.pops, time.of.sp.origin >= max(c(0, timeslices[timeslices < t])) &
+              origin.pops = subset(glob.pops, time.of.sp.origin >= t0 &
                                               time.of.sp.origin < t &
                                               time.of.sp.extinction > t)
               origins = nrow(origin.pops)
-              extinct.pops = subset(glob.pops, time.of.sp.origin <= max(c(0, timeslices[timeslices <t])) &
-                                                      time.of.sp.extinction >= max(c(0, timeslices[timeslices < t])) &
+              extinct.pops = subset(glob.pops, time.of.sp.origin <= t0 &
+                                                      time.of.sp.extinction >= t0 &
                                                       time.of.sp.extinction < t)
               extincts = nrow(extinct.pops)
             }
+            time.interval = t - t0
+            richness.t0 = nrow( subset(glob.pops, time.of.sp.origin <= t0 & time.of.sp.extinction > t0) )
             
-            output = rbind(output, cbind(sim = sim, clade.id = c, time = t, corr.results, gamma.stat = Gamma.stat,
+            # combine all output together
+            output = rbind(output, cbind(sim = sim, 
+                                         clade.id = c, 
+                                         time = t, 
+                                         corr.results, 
+                                         gamma.stat = Gamma.stat,
                                          clade.richness = length(unique(sub.populations$spp.name)), 
-                                         tree.beta = tree.beta, glob.origins = origins, glob.extinctions = extincts)))
+                                         tree.beta = tree.beta, 
+                                         glob.origins = origins, 
+                                         glob.extinctions = extincts,
+                                         glob.orig.rate = origins/time.interval/richness.t0,
+                                         glob.ext.rate = extincts/time.interval/richness.t0) )
             print(paste(sim, sub.clade.loop.end, c, t, date(), length(sub.clade.phylo$tip.label), sep="   "))
             flush.console()
           } # end third else
