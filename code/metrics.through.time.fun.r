@@ -73,17 +73,21 @@ plot.metrics.thru.time = function(trop.sims,
                    'gamma.stat',
                    'scaled.MRD.rich.slope',
                    'PSV.rich.slope',
-                   'tree.beta')
+                   'tree.beta',
+                   'glob.orig.rate',
+                   'glob.ext.rate')
   
   metric.labels = c('Global richness', 
                     expression(italic(r)[latitude-richness]), 
                     expression(gamma), 
                     'MRD-Richness slope',
                     'PSV-Richness slope',
-                    expression(beta))
+                    expression(beta),
+                    'Origination rate',
+                    'Extinction rate')
 
   pdf(paste('analysis_output/', pdf.out, sep = ''), width = 11, height = 8)
-  par(mfrow = c(2, 3), mar = c(5, 6, 1, 1), oma = c(5, 0, 5, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+  par(mfrow = c(3, 3), mar = c(5, 6, 1, 1), oma = c(5, 0, 5, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
   error = 2 # error bars in SD units (+/-)
   for (curr.metric in metric.names) {
@@ -102,12 +106,12 @@ plot.metrics.thru.time = function(trop.sims,
     points(temp.metrics.mean$time/1000, temp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3)
     
     if(curr.metric == 'gamma.stat') { abline(h = 0, lty = 'dashed')}
-  } 
+  }
   mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 1.5) 
   sim.params = sim.matrix[sim.matrix$sim.id == trop.sims[1], ]
   if (sim.params$disturb_frequency == 0) {disturb = 'no'} else {disturb = 'yes'}
-  mtext(paste("Energetic constraint", sim.params$carry.cap[1], "; K gradient", sim.params$energy.gradient[1], "; w =",
-        sim.params$w[1], "; gamma =", sim.params$gamma[1], ";\nsigma =", sim.params$sigma_E[1], "; disturbance =", 
+  mtext(paste("Sims", min(c(temp.sims, trop.sims)), "-", max(c(temp.sims, trop.sims)), "; Energetic constraint", sim.params$carry.cap[1], "; K gradient", sim.params$energy.gradient[1], "; w =",
+        sim.params$w[1], ";\ngamma =", sim.params$gamma[1], "; sigma =", sim.params$sigma_E[1], "; disturbance =", 
         disturb, "; speciation gradient", sim.params$specn.gradient[1]), 3, outer=T, line = 1)
   dev.off()
 }
