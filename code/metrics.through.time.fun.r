@@ -4,7 +4,7 @@
 # across all of the replicates with identical parameters
 metric.abind.new = function(sims, min.div.regions = 4, min.richness = 30) {
   require(abind)
-  num.cols = 41 #current stats output is 38 cols, plus 3 more cols which are created below
+  num.cols = 44 #current stats output is 42 cols, plus 3 more cols which are created below
   metrics = matrix(NA, nrow = 100, ncol = num.cols)
   for (i in sims) {
     statsfile = list.files(path = "analysis_output", pattern = paste("Stats_sim", i, "_rootclade", sep = ""))
@@ -107,7 +107,7 @@ plot.metrics.thru.time = function(trop.sims,
   sim.params = sim.matrix[sim.matrix$sim.id == trop.sims[1], ]
   if (sim.params$disturb_frequency == 0) {disturb = 'no'} else {disturb = 'yes'}
   mtext(paste("Energetic constraint", sim.params$carry.cap[1], "; K gradient", sim.params$energy.gradient[1], "; w =",
-        sim.params$w[1], ";\nsigma =", sim.params$sigma_E[1], "; disturbance =", disturb, "; speciation gradient", 
-        sim.params$specn.gradient[1]), 3, outer=T, line = 1)
+        sim.params$w[1], "; gamma =", sim.params$gamma[1], ";\nsigma =", sim.params$sigma_E[1], "; disturbance =", 
+        disturb, "; speciation gradient", sim.params$specn.gradient[1]), 3, outer=T, line = 1)
   dev.off()
 }
