@@ -4,7 +4,7 @@
 # across all of the replicates with identical parameters
 metric.abind.new = function(sims, min.div.regions = 4, min.richness = 30) {
   require(abind)
-  num.cols = 44 #current stats output is 42 cols, plus 3 more cols which are created below
+  num.cols = 45 #current stats output is 42 cols, plus 3 more cols which are created below
   metrics = matrix(NA, nrow = 100, ncol = num.cols)
   for (i in sims) {
     statsfile = list.files(path = "analysis_output", pattern = paste("Stats_sim", i, "_rootclade", sep = ""))
