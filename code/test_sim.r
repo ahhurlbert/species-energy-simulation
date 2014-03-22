@@ -24,7 +24,8 @@ test_sim = function() {
                           temperate_disturb_intensity = 0,
                           tropical_disturb_intensity = 0,
                           specn.gradient = 'off',
-                          specn.factor = NA)
+                          specn.factor = NA,
+                          gamma = 0.1)
   
   sim.results = senc_sim_fun(sim_matrix, sim = 99999)
       
