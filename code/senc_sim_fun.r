@@ -319,10 +319,17 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 		#if (is.element(curr.time,print.times)==T) {print(c(curr.time,nrow(all.populations),date(),tot.richness))} else{}
 
+<<<<<<< HEAD
     #Create a sim-specific subdirectory for storing temporary files, and eventually sim output
 		sim_out_dir = paste("./raw_sim_output/sim", sim, "_out", sep = "")
 		if (!file.exists(sim_out_dir)) { dir.create(sim_out_dir) }
 		
+=======
+		## create separate subdirectory for each sim for writing output
+		sim_out_dir = paste("./raw_sim_output/sim", sim, "_out", sep = "")
+		if (!file.exists(sim_out_dir)) { dir.create(sim_out_dir) }
+		    
+>>>>>>> b3b0c0a57a003137daa9795deb4aff7c350b1931
     # weed out extinct populations from all.populations, but keep track of the number of extinct pops
     # and the timing of their extinction
     if (length(all.populations$extant[all.populations$extant == 0]) > 500) {
@@ -383,7 +390,11 @@ senc_sim_fun = function(sim.matrix, sim) {
 	# exclude the two extreme spatial bins which may suffer boundary effects (regions 0 and 11 for our implementation)
   all.populations = subset(all.populations, region %in% 1:(num.of.bins - 1))
 
+<<<<<<< HEAD
 	## write outputs 
+=======
+	## write outputs
+>>>>>>> b3b0c0a57a003137daa9795deb4aff7c350b1931
 	phylo.out = make.phylo.jimmy.fun(t = curr.time, edge.length.out = edge.length, edge.out = edge ,stem.depth.out = stem.depth )
 	write.csv(all.populations, paste(sim_out_dir, "/SENC_all.pops_sim", sim, ".csv", sep=""), quote = F, row.names = F)
 	write.csv(time.richness, paste(sim_out_dir, "/SENC_time.rich_sim", sim, ".csv", sep=""), quote = F, row.names = F)
