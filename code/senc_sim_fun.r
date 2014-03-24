@@ -319,17 +319,10 @@ senc_sim_fun = function(sim.matrix, sim) {
 
 		#if (is.element(curr.time,print.times)==T) {print(c(curr.time,nrow(all.populations),date(),tot.richness))} else{}
 
-<<<<<<< HEAD
-    #Create a sim-specific subdirectory for storing temporary files, and eventually sim output
-		sim_out_dir = paste("./raw_sim_output/sim", sim, "_out", sep = "")
-		if (!file.exists(sim_out_dir)) { dir.create(sim_out_dir) }
-		
-=======
 		## create separate subdirectory for each sim for writing output
 		sim_out_dir = paste("./raw_sim_output/sim", sim, "_out", sep = "")
 		if (!file.exists(sim_out_dir)) { dir.create(sim_out_dir) }
 		    
->>>>>>> b3b0c0a57a003137daa9795deb4aff7c350b1931
     # weed out extinct populations from all.populations, but keep track of the number of extinct pops
     # and the timing of their extinction
     if (length(all.populations$extant[all.populations$extant == 0]) > 500) {
