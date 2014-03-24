@@ -383,11 +383,7 @@ senc_sim_fun = function(sim.matrix, sim) {
 	# exclude the two extreme spatial bins which may suffer boundary effects (regions 0 and 11 for our implementation)
   all.populations = subset(all.populations, region %in% 1:(num.of.bins - 1))
 
-<<<<<<< HEAD
-	## write outputs 
-=======
 	## write outputs
->>>>>>> b3b0c0a57a003137daa9795deb4aff7c350b1931
 	phylo.out = make.phylo.jimmy.fun(t = curr.time, edge.length.out = edge.length, edge.out = edge ,stem.depth.out = stem.depth )
 	write.csv(all.populations, paste(sim_out_dir, "/SENC_all.pops_sim", sim, ".csv", sep=""), quote = F, row.names = F)
 	write.csv(time.richness, paste(sim_out_dir, "/SENC_time.rich_sim", sim, ".csv", sep=""), quote = F, row.names = F)
