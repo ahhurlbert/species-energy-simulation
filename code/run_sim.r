@@ -40,7 +40,7 @@ run_sim = function(which_sims,
     sink("raw_sim_output/log.txt", append = T)
     cat(paste("Starting sim", sim, ",", date(), "\n"))
     sim.results = senc_sim_fun(sim_matrix, sim = sim)
-    cat(paste("Finished sim", sim, ",", date(), "\n")  
+    cat(paste("Finished sim", sim, ",", date(), "\n"))  
   } #end foreach
     
   if(local) {
