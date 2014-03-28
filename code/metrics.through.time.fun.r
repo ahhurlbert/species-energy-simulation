@@ -72,22 +72,16 @@ plot.metrics.thru.time = function(trop.sims,
                    'r.lat.rich', 
                    'gamma.stat',
                    'scaled.MRD.rich.slope',
-                   'PSV.rich.slope',
-                   'tree.beta',
-                   'glob.orig.rate',
-                   'glob.ext.rate')
+                   'tree.beta')
   
   metric.labels = c('Global richness', 
                     expression(italic(r)[latitude-richness]), 
                     expression(gamma), 
                     'MRD-Richness slope',
-                    'PSV-Richness slope',
-                    expression(beta),
-                    'Origination rate',
-                    'Extinction rate')
+                    expression(beta))
 
-  pdf(paste('analysis_output/', pdf.out, sep = ''), width = 11, height = 8)
-  par(mfrow = c(3, 3), mar = c(5, 6, 1, 1), oma = c(5, 0, 5, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+  pdf(paste('analysis_output/', pdf.out, sep = ''), width = 8, height = 6)
+  par(mfrow = c(2, 3), mar = c(5, 6, 1, 1), oma = c(5, 0, 5, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
   error = 2 # error bars in SD units (+/-)
   for (curr.metric in metric.names) {
@@ -105,8 +99,17 @@ plot.metrics.thru.time = function(trop.sims,
     points(trop.metrics.mean$time/1000, trop.metrics.mean[, curr.metric], type = 'l', col = 'red', lwd = 3)
     points(temp.metrics.mean$time/1000, temp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3)
     
-    if(curr.metric == 'gamma.stat') { abline(h = 0, lty = 'dashed')}
+    if(curr.metric != 'global.richness' { abline(h = 0, lty = 'dashed')}
   }
+  # extinction and origination rates panel
+  rate.range = log10(range(c(temp.metrics.mean$glob.orig.rate, temp.metrics.mean$glob.ext.rate[temp.metrics.mean$glob.ext.rate > 0])))
+  plot(temp.metrics.mean$time, log10(temp.metrics.mean$glob.orig.rate), type = 'l', col = 'blue', lwd =3, 
+       xlab = "", ylab = "Rate", ylim = rate.range)
+  points(temp.metrics.mean$time, log10(temp.metrics.mean$glob.ext.rate), type = 'l', col = 'blue', lwd =3, lty = 'dashed')
+  points(trop.metrics.mean$time, log10(trop.metrics.mean$glob.orig.rate), type = 'l', col = 'red', lwd =3)
+  points(trop.metrics.mean$time, log10(trop.metrics.mean$glob.ext.rate), type = 'l', col = 'red', lwd =3, lty = 'dashed')
+  legend("topright", c('origination rate', 'extinction rate'), lty = c('solid', 'dashed'))
+  
   mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 1.5) 
   sim.params = sim.matrix[sim.matrix$sim.id == trop.sims[1], ]
   if (sim.params$disturb_frequency == 0) {disturb = 'no'} else {disturb = 'yes'}
