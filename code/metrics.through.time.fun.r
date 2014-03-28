@@ -2,9 +2,11 @@
 
 # Function for abinding simulation output (the "stats" files where rows are points in time)
 # across all of the replicates with identical parameters
-metric.abind.new = function(sims, min.div.regions = 4, min.richness = 30) {
+# --current stats output is 42 cols, plus 3 more cols which are created within the function
+# --older stats output may have fewer cols
+
+metric.abind.new = function(sims, min.div.regions = 4, min.richness = 30, num.cols = 45) {
   require(abind)
-  num.cols = 45 #current stats output is 42 cols, plus 3 more cols which are created below
   metrics = matrix(NA, nrow = 100, ncol = num.cols)
   for (i in sims) {
     statsfile = list.files(path = "analysis_output", pattern = paste("Stats_sim", i, "_rootclade", sep = ""))
@@ -54,13 +56,14 @@ plot.metrics.thru.time = function(trop.sims,
                                   min.num.regions = 5,
                                   min.num.div.regions = 5, 
                                   min.global.richness = 30,
-                                  min.num.datapts = 10)
+                                  min.num.datapts = 10,
+                                  num.cols = 45)
 {
   #require(apTreeshape)
   #require(ape)
 
-  temp.metrics = metric.abind.new(temp.sims, min.div.regions = min.num.div.regions, min.richness = min.global.richness)
-  trop.metrics = metric.abind.new(trop.sims, min.div.regions = min.num.div.regions, min.richness = min.global.richness)
+  temp.metrics = metric.abind.new(temp.sims, min.div.regions = min.num.div.regions, min.richness = min.global.richness, num.cols = num.cols)
+  trop.metrics = metric.abind.new(trop.sims, min.div.regions = min.num.div.regions, min.richness = min.global.richness, num.cols = num.cols)
   
   temp.metrics.mean = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
   temp.metrics.sd = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
@@ -80,7 +83,7 @@ plot.metrics.thru.time = function(trop.sims,
                     'MRD-Richness slope',
                     expression(beta))
 
-  pdf(paste('analysis_output/', pdf.out, sep = ''), width = 8, height = 6)
+  pdf(paste('analysis_output/', pdf.out, sep = ''), width = 11, height = 8)
   par(mfrow = c(2, 3), mar = c(5, 6, 1, 1), oma = c(5, 0, 5, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
   error = 2 # error bars in SD units (+/-)
@@ -103,11 +106,11 @@ plot.metrics.thru.time = function(trop.sims,
   }
   # extinction and origination rates panel
   rate.range = log10(range(c(temp.metrics.mean$glob.orig.rate, temp.metrics.mean$glob.ext.rate[temp.metrics.mean$glob.ext.rate > 0])))
-  plot(temp.metrics.mean$time, log10(temp.metrics.mean$glob.orig.rate), type = 'l', col = 'blue', lwd =3, 
+  plot(temp.metrics.mean$time/1000, log10(temp.metrics.mean$glob.orig.rate), type = 'l', col = 'blue', lwd =3, 
        xlab = "", ylab = "Rate", ylim = rate.range)
-  points(temp.metrics.mean$time, log10(temp.metrics.mean$glob.ext.rate), type = 'l', col = 'blue', lwd =3, lty = 'dashed')
-  points(trop.metrics.mean$time, log10(trop.metrics.mean$glob.orig.rate), type = 'l', col = 'red', lwd =3)
-  points(trop.metrics.mean$time, log10(trop.metrics.mean$glob.ext.rate), type = 'l', col = 'red', lwd =3, lty = 'dashed')
+  points(temp.metrics.mean$time/1000, log10(temp.metrics.mean$glob.ext.rate), type = 'l', col = 'blue', lwd =3, lty = 'dashed')
+  points(trop.metrics.mean$time/1000, log10(trop.metrics.mean$glob.orig.rate), type = 'l', col = 'red', lwd =3)
+  points(trop.metrics.mean$time/1000, log10(trop.metrics.mean$glob.ext.rate), type = 'l', col = 'red', lwd =3, lty = 'dashed')
   legend("topright", c('origination rate', 'extinction rate'), lty = c('solid', 'dashed'))
   
   mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 1.5) 
