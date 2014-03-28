@@ -99,7 +99,7 @@ plot.metrics.thru.time = function(trop.sims,
     points(trop.metrics.mean$time/1000, trop.metrics.mean[, curr.metric], type = 'l', col = 'red', lwd = 3)
     points(temp.metrics.mean$time/1000, temp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3)
     
-    if(curr.metric != 'global.richness' { abline(h = 0, lty = 'dashed')}
+    if(curr.metric != 'global.richness') { abline(h = 0, lty = 'dashed')}
   }
   # extinction and origination rates panel
   rate.range = log10(range(c(temp.metrics.mean$glob.orig.rate, temp.metrics.mean$glob.ext.rate[temp.metrics.mean$glob.ext.rate > 0])))
