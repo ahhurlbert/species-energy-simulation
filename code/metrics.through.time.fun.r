@@ -85,37 +85,48 @@ plot.metrics.thru.time = function(trop.sims,
   pdf(paste('analysis_output/', pdf.out, sep = ''), width = 11, height = 8)
   par(mfrow = c(2, 3), mar = c(5, 6, 1, 1), oma = c(5, 0, 5, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
+  sim.params = sim.matrix[sim.matrix$sim.id == trop.sims[1], ]
+  if (sim.params$disturb_frequency == 0) {disturb = 'no'} else {disturb = 'yes'}
+  if (sim.params$carry.cap == 'off') { 
+    x.offset.tmp = min(temp.metrics.mean$time, na.rm = T)
+    x.offset.trp = min(trop.metrics.mean$time, na.rm = T)
+    x.scale = 1
+  } else {
+    x.offset.tmp = 0
+    x.offset.trp = 0
+    x.scale = 1000
+  }
+  
   error = 2 # error bars in SD units (+/-)
   for (curr.metric in metric.names) {
-    plot(trop.metrics.mean$time/1000, trop.metrics.mean[, curr.metric], xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/1000), 
+    plot(trop.metrics.mean$time/x.scale - x.offset.tmp, trop.metrics.mean[, curr.metric], 
+         xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/x.scale - x.offset.tmp), 
          ylim = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ]), na.rm= T), type = "n",
          ylab = metric.labels[metric.names == curr.metric], xlab = "")
-    polygon(c(trop.metrics.mean$time/1000, rev(trop.metrics.mean$time/1000)), 
+    polygon(c(trop.metrics.mean$time/x.scale - x.offset.trp, rev(trop.metrics.mean$time/x.scale - x.offset.trp)), 
             c(trop.metrics.mean[, curr.metric] - error*trop.metrics.sd[, curr.metric], 
               rev(trop.metrics.mean[, curr.metric] + error*trop.metrics.sd[, curr.metric])), 
             col = rgb(.8, 0, 0, .3), border = NA)
-    polygon(c(temp.metrics.mean$time/1000, rev(temp.metrics.mean$time/1000)), 
+    polygon(c(temp.metrics.mean$time/x.scale - x.offset.tmp, rev(temp.metrics.mean$time/x.scale - x.offset.tmp)), 
             c(temp.metrics.mean[, curr.metric] - error*temp.metrics.sd[, curr.metric], 
               rev(temp.metrics.mean[, curr.metric] + error*temp.metrics.sd[, curr.metric])), 
             col = rgb(0, 0, .8, .3), border = NA)
-    points(trop.metrics.mean$time/1000, trop.metrics.mean[, curr.metric], type = 'l', col = 'red', lwd = 3)
-    points(temp.metrics.mean$time/1000, temp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3)
+    points(trop.metrics.mean$time/x.scale - x.offset.trp, trop.metrics.mean[, curr.metric], type = 'l', col = 'red', lwd = 3)
+    points(temp.metrics.mean$time/x.scale - x.offset.tmp, temp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3)
     
     if(curr.metric != 'global.richness') { abline(h = 0, lty = 'dashed')}
   }
   # extinction and origination rates panel
   rate.range = log10(range(c(temp.metrics.mean$glob.orig.rate[temp.metrics.mean$glob.orig.rate > 0], 
                              temp.metrics.mean$glob.ext.rate[temp.metrics.mean$glob.ext.rate > 0])))
-  plot(temp.metrics.mean$time/1000, log10(temp.metrics.mean$glob.orig.rate), type = 'l', col = 'blue', lwd =3, 
+  plot(temp.metrics.mean$time/x.scale - x.offset.tmp, log10(temp.metrics.mean$glob.orig.rate), type = 'l', col = 'blue', lwd =3, 
        xlab = "", ylab = "Rate", ylim = rate.range)
-  points(temp.metrics.mean$time/1000, log10(temp.metrics.mean$glob.ext.rate), type = 'l', col = 'blue', lwd =3, lty = 'dashed')
-  points(trop.metrics.mean$time/1000, log10(trop.metrics.mean$glob.orig.rate), type = 'l', col = 'red', lwd =3)
-  points(trop.metrics.mean$time/1000, log10(trop.metrics.mean$glob.ext.rate), type = 'l', col = 'red', lwd =3, lty = 'dashed')
+  points(temp.metrics.mean$time/x.scale - x.offset.tmp, log10(temp.metrics.mean$glob.ext.rate), type = 'l', col = 'blue', lwd =3, lty = 'dashed')
+  points(trop.metrics.mean$time/x.scale - x.offset.trp, log10(trop.metrics.mean$glob.orig.rate), type = 'l', col = 'red', lwd =3)
+  points(trop.metrics.mean$time/x.scale - x.offset.trp, log10(trop.metrics.mean$glob.ext.rate), type = 'l', col = 'red', lwd =3, lty = 'dashed')
   legend("topright", c('origination rate', 'extinction rate'), lty = c('solid', 'dashed'))
   
-  mtext("Time (x1000)", 1, outer=T, cex = 1.75, line = 1.5) 
-  sim.params = sim.matrix[sim.matrix$sim.id == trop.sims[1], ]
-  if (sim.params$disturb_frequency == 0) {disturb = 'no'} else {disturb = 'yes'}
+  mtext("Time", 1, outer=T, cex = 1.75, line = 1.5) 
   mtext(paste("Sims", min(c(temp.sims, trop.sims)), "-", max(c(temp.sims, trop.sims)), "; Energetic constraint", sim.params$carry.cap[1], "; K gradient", sim.params$energy.gradient[1], "; w =",
         sim.params$w[1], ";\ngamma =", sim.params$gamma[1], "; sigma =", sim.params$sigma_E[1], "; disturbance =", 
         disturb, "; speciation gradient", sim.params$specn.gradient[1]), 3, outer=T, line = 1)
