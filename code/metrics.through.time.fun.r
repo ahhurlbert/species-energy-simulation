@@ -117,8 +117,10 @@ plot.metrics.thru.time = function(trop.sims,
     if(curr.metric != 'global.richness') { abline(h = 0, lty = 'dashed')}
   }
   # extinction and origination rates panel
-  rate.range = log10(range(c(temp.metrics.mean$glob.orig.rate[temp.metrics.mean$glob.orig.rate > 0], 
-                             temp.metrics.mean$glob.ext.rate[temp.metrics.mean$glob.ext.rate > 0])))
+  rate.range = log10(range(c(temp.metrics.mean$glob.orig.rate[temp.metrics.mean$glob.orig.rate > 0 & 
+                                                                is.na(temp.metrics.mean$glob.orig.rate) == F], 
+                             temp.metrics.mean$glob.ext.rate[temp.metrics.mean$glob.ext.rate > 0 & 
+                                                               is.na(temp.metrics.mean$glob.orig.rate) == F])))
   plot(temp.metrics.mean$time/x.scale - x.offset.tmp, log10(temp.metrics.mean$glob.orig.rate), type = 'l', col = 'blue', lwd =3, 
        xlab = "", ylab = "Rate", ylim = rate.range)
   points(temp.metrics.mean$time/x.scale - x.offset.tmp, log10(temp.metrics.mean$glob.ext.rate), type = 'l', col = 'blue', lwd =3, lty = 'dashed')
