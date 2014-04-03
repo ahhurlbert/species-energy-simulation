@@ -87,6 +87,7 @@ plot.metrics.thru.time = function(trop.sims,
 
   sim.params = sim.matrix[sim.matrix$sim.id == trop.sims[1], ]
   if (sim.params$disturb_frequency == 0) {disturb = 'no'} else {disturb = 'yes'}
+  if (sim.params$specn.gradient == 'off') {spec.grad = 'off'} else {spec.grad = paste(sim.params$specn.factor, "x", sep = "")}
   if (sim.params$carry.cap == 'off') { 
     x.offset.tmp = min(temp.metrics.mean$time, na.rm = T)
     x.offset.trp = min(trop.metrics.mean$time, na.rm = T)
@@ -131,6 +132,6 @@ plot.metrics.thru.time = function(trop.sims,
   mtext("Time", 1, outer=T, cex = 1.75, line = 1.5) 
   mtext(paste("Sims", min(c(temp.sims, trop.sims)), "-", max(c(temp.sims, trop.sims)), "; Energetic constraint", sim.params$carry.cap[1], "; K gradient", sim.params$energy.gradient[1], "; w =",
         sim.params$w[1], ";\ngamma =", sim.params$gamma[1], "; sigma =", sim.params$sigma_E[1], "; disturbance =", 
-        disturb, "; speciation gradient", sim.params$specn.gradient[1]), 3, outer=T, line = 1)
+        disturb, "; speciation gradient", spec.grad), 3, outer=T, line = 1)
   dev.off()
 }
