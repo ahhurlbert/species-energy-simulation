@@ -40,7 +40,7 @@ sim.abun.dist = function(sim, sim_dir, sim.matrix) {
   carry.cap = params$carry.cap
   
   pops.extant = subset(all.pops, time.of.extinction > 100000, 
-                       select = c('spp.name', 'region', 'env.opt','reg.env','carry.cap'))
+                       select = c('spp.name', 'region', 'env.opt','reg.env','carry.cap','time.of.sp.origin','time.of.origin'))
   pops.extant$pop.size = exp(-(pops.extant$env.opt - pops.extant$reg.env)^2/(w^2)) * 
     pops.extant$carry.cap
   reg.pop.sizes = as.data.frame(tapply(pops.extant$pop.size, pops.extant$region, FUN = sum))
@@ -63,7 +63,7 @@ sim.abun.dist = function(sim, sim_dir, sim.matrix) {
     hist(pops.extant$real.pop.size[pops.extant$region==i], xlab = "", main="", ylab="")
     mtext(paste("Sim", sim, "abundance distribution at end"), 3, outer = T)
   }
-  
+  return(pops.extant)
 }
 
 ##################
@@ -95,3 +95,7 @@ plot(jitter(data.out$carry.cap), data.out$rich, pch = 16, xlab = "K",
 data.K22 = subset(data.out, carry.cap == 22000)
 plot(data.K22$reg.alpha, data.K22$rich, pch = 16, xlab = "alpha", 
      ylab = "S", col = data.K22$col)
+
+abun4065 = sim.abun.dist(sim.matrix = sim.matrix, sim_dir = '//bioark.bio.unc.edu/hurlbertallen/sencoutput/hurlbert_and_stegen_2014/raw_sim_output', sim = 4065)
+par(mfrow=c(1,1), mar=c(4,4,1,1))
+plot(log10(100001 - abun4065$time.of.origin), abun4065$real.pop.size, xlab = "Species age", ylab = "Abundance")
