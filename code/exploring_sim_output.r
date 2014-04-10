@@ -1,7 +1,7 @@
 setwd('//bioark.bio.unc.edu/hurlbertallen/manuscripts/frontierstropicaldiversity')
-source('C:/species-energy-simulation/code/supplemental_analysis_functions.r')
+source('code/supplemental_analysis_functions.r')
 
-sim.matrix = read.csv('C:/species-energy-simulation/SENC_Master_Simulation_Matrix.csv')
+sim.matrix = read.csv('SENC_Master_Simulation_Matrix.csv')
 
 
 # function for adding region-specific alpha and carrying capacity to all.populations
@@ -99,3 +99,16 @@ plot(data.K22$reg.alpha, data.K22$rich, pch = 16, xlab = "alpha",
 abun4065 = sim.abun.dist(sim.matrix = sim.matrix, sim_dir = '//bioark.bio.unc.edu/hurlbertallen/sencoutput/hurlbert_and_stegen_2014/raw_sim_output', sim = 4065)
 par(mfrow=c(1,1), mar=c(4,4,1,1))
 plot(log10(100001 - abun4065$time.of.origin), abun4065$real.pop.size, xlab = "Species age", ylab = "Abundance")
+
+# Probability that no species go extinct over a fixed period of time given that all species have 
+# equal abundances under the overall constraint. (A more even abundance distribution results in more extinction.)
+S = 1:200
+K = 7273
+
+p.no.extinct = function(gamma = 0.1, K, S, t) { ((1 - exp(-gamma*(K/S)))^S)^t }
+plot(S, p.no.extinct(K = K, S= S, t = 100), type = 'l', ylab = 'Prob of no extinction')
+
+# This is a steep sigmoidal function as a function of S where the inflection point varies
+# with gamma. Basically goes from 0 probability of any extinction for low S to perfect certainty
+# of extinction. Alpha (speciation parameter) does not factor in, should only determine how 
+# quickly this equilibrium value is achieved.
