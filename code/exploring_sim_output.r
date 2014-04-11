@@ -32,14 +32,20 @@ alpha.K = function(sim.matrix, sim) {
   return(reg.alpha.K)
 }
 
+# Function to plot regional abundance distributions (histograms) at the end of the simulation
+# --sim: simulation ID
+# --sim_dir: path in which sim output folders are stored
+# --sim.matrix
+
 sim.abun.dist = function(sim, sim_dir, sim.matrix) {
   simdata = output.unzip(sim_dir, sim)
   all.pops = simdata$all.populations
   params = sim.matrix[sim.matrix$sim.id == sim,]
   w = params$w
   carry.cap = params$carry.cap
+  time = params$max.time
   
-  pops.extant = subset(all.pops, time.of.extinction > 100000, 
+  pops.extant = subset(all.pops, time.of.extinction > time, 
                        select = c('spp.name', 'region', 'env.opt','reg.env','carry.cap','time.of.sp.origin','time.of.origin'))
   pops.extant$pop.size = exp(-(pops.extant$env.opt - pops.extant$reg.env)^2/(w^2)) * 
     pops.extant$carry.cap
