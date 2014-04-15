@@ -25,7 +25,7 @@ realPopSize = function(all.pops, time, suppress.warning = F) {
 
 # Within a specified region, calculate individual species abundances at each point in time
 # over a particular time series
-abundanceThruTime = function(all.pops, params, Region, startTime, endTime, timeStep, dataFrameOut = T) {
+abundanceThruTime = function(all.pops, params, Region, startTime, endTime, timeStep, dataFrameOut = T, dots = T) {
   regPops = subset(all.pops, region == Region)
   
   regPops$rawPopSize = env.fit.fun(params$w, regPops$reg.env, regPops$env.opt) * regPops$carry.cap
@@ -45,25 +45,27 @@ abundanceThruTime = function(all.pops, params, Region, startTime, endTime, timeS
   sapply(uniq.spp, function(x) { temp = subset(popsAbundThruTime, spp.name == x); 
                                  points(temp$time, log10(temp$realPopSize), type = 'l')})
   
-  # Place small red dots at the time of last occurrence for each species lasting longer than one timestep
-  popsDurableSpp = subset(popsAbundThruTime, popsAbundThruTime$time.of.extinction - popsAbundThruTime$time.of.origin > timeStep)
-  time.extinct = aggregate(popsDurableSpp$time, by = list(popsDurableSpp$spp.name), max)
-  names(time.extinct) = c('spp.name', 'time')
-  extinct.spp = time.extinct$spp.name[time.extinct$time < endTime]
-  sapply(extinct.spp, function(x) { 
-    preExtinctAbund = popsDurableSpp$realPopSize[popsDurableSpp$spp.name == x & 
-                                                      popsDurableSpp$time == time.extinct$time[time.extinct$spp.name == x]]
-    points(time.extinct$time[time.extinct$spp.name == x], log10(preExtinctAbund), pch = 16, cex = .5, col = 'red') })
-
-  # Place small blue dots at first time of occurrence for each species lasting longer than one timeStep
-  time.origin = aggregate(popsDurableSpp$time, by = list(popsDurableSpp$spp.name), min)
-  names(time.origin) = c('spp.name', 'time')
-  new.spp = time.origin$spp.name[time.origin$time > startTime]
-  sapply(new.spp, function(x) { 
-    originalAbund = popsDurableSpp$realPopSize[popsDurableSpp$spp.name == x & 
-                                                      popsDurableSpp$time == time.origin$time[time.origin$spp.name == x]]
-    points(time.origin$time[time.origin$spp.name == x], log10(originalAbund), pch = 16, cex = .5, col = 'blue') })
-  
+  # Plot dots indicating origins and extinctions if dots == T
+  if (dots) {
+    # Place small red dots at the time of last occurrence for each species lasting longer than one timestep
+    popsDurableSpp = subset(popsAbundThruTime, popsAbundThruTime$time.of.extinction - popsAbundThruTime$time.of.origin > timeStep)
+    time.extinct = aggregate(popsDurableSpp$time, by = list(popsDurableSpp$spp.name), max)
+    names(time.extinct) = c('spp.name', 'time')
+    extinct.spp = time.extinct$spp.name[time.extinct$time < endTime]
+    sapply(extinct.spp, function(x) { 
+      preExtinctAbund = popsDurableSpp$realPopSize[popsDurableSpp$spp.name == x & 
+                                                     popsDurableSpp$time == time.extinct$time[time.extinct$spp.name == x]]
+      points(time.extinct$time[time.extinct$spp.name == x], log10(preExtinctAbund), pch = 16, cex = .5, col = 'red') })
+    
+    # Place small blue dots at first time of occurrence for each species lasting longer than one timeStep
+    time.origin = aggregate(popsDurableSpp$time, by = list(popsDurableSpp$spp.name), min)
+    names(time.origin) = c('spp.name', 'time')
+    new.spp = time.origin$spp.name[time.origin$time > startTime]
+    sapply(new.spp, function(x) { 
+      originalAbund = popsDurableSpp$realPopSize[popsDurableSpp$spp.name == x & 
+                                                   popsDurableSpp$time == time.origin$time[time.origin$spp.name == x]]
+      points(time.origin$time[time.origin$spp.name == x], log10(originalAbund), pch = 16, cex = .5, col = 'blue') })
+  }
   if (dataFrameOut) {
     return(popsAbundThruTime)  
   }
