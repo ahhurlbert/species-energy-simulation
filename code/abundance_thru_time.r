@@ -25,13 +25,18 @@ realPopSize = function(all.pops, time, suppress.warning = F) {
 
 # Within a specified region, calculate individual species abundances at each point in time
 # over a particular time series
-abundanceThruTime = function(all.pops, params, Region, startTime, endTime, timeStep, dataFrameOut = T, dots = T) {
+abundanceThruTime = function(simData, Region, startTime, endTime, timeStep, dataFrameOut = T, dots = T, richnessPlot = T) {
+  params = simData$params.out
+  all.pops = simData$all.populations
+  time.rich = simData$time.richness
+  
   regPops = subset(all.pops, region == Region)
   
   regPops$rawPopSize = env.fit.fun(params$w, regPops$reg.env, regPops$env.opt) * regPops$carry.cap
   
   times = seq(startTime, endTime, by = timeStep)
   
+  #abundances
   popsAbundThruTime = c()
   for (t in times) {
     popsAbund = realPopSize(regPops, t, suppress.warning = T)
@@ -39,13 +44,14 @@ abundanceThruTime = function(all.pops, params, Region, startTime, endTime, timeS
   }
   
   # Abundance trajectories
-  plot(range(times), range(log10(popsAbundThruTime$realPopSize)), type = "n", xlab = "time", ylab = "log10 N",
-       main = paste("Sim", params$sim.id))
+  par(mar = c(4,4,4,4), las = 1)
+  plot(range(times), range(log10(popsAbundThruTime$realPopSize)), type = "n", xlab = "Time", 
+       ylab = expression(paste(plain(log)[10]," Abundance")), main = paste("Sim", params$sim.id))
   uniq.spp = unique(popsAbundThruTime$spp.name)
   sapply(uniq.spp, function(x) { temp = subset(popsAbundThruTime, spp.name == x); 
                                  points(temp$time, log10(temp$realPopSize), type = 'l')})
   
-  # Plot dots indicating origins and extinctions if dots == T
+   # Plot dots indicating origins and extinctions if dots == T
   if (dots) {
     # Place small red dots at the time of last occurrence for each species lasting longer than one timestep
     popsDurableSpp = subset(popsAbundThruTime, popsAbundThruTime$time.of.extinction - popsAbundThruTime$time.of.origin > timeStep)
@@ -65,6 +71,15 @@ abundanceThruTime = function(all.pops, params, Region, startTime, endTime, timeS
       originalAbund = popsDurableSpp$realPopSize[popsDurableSpp$spp.name == x & 
                                                    popsDurableSpp$time == time.origin$time[time.origin$spp.name == x]]
       points(time.origin$time[time.origin$spp.name == x], log10(originalAbund), pch = 16, cex = .5, col = 'blue') })
+  }
+  # Richness trajectory
+  if (richnessPlot) {
+    regTimeRich = subset(time.rich, region == Region & time %in% times)
+    par(new = T)
+    plot(regTimeRich$time, regTimeRich$spp.rich, xaxt = "n", yaxt = "n", 
+         xlab = "", ylab = "", type = 'l', lwd = 5, col = 'gray90')
+    axis(4)
+    mtext("Richness", 4, las = 0, line = 3)
   }
   if (dataFrameOut) {
     return(popsAbundThruTime)  
