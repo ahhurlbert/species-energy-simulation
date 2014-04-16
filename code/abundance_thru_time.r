@@ -54,22 +54,18 @@ abundanceThruTime = function(simData, Region, startTime, endTime, timeStep, data
    # Plot dots indicating origins and extinctions if dots == T
   if (dots) {
     # Place small red dots at the time of last occurrence for each species lasting longer than one timestep
-    popsDurableSpp = subset(popsAbundThruTime, popsAbundThruTime$time.of.extinction - popsAbundThruTime$time.of.origin > timeStep)
-    time.extinct = aggregate(popsDurableSpp$time, by = list(popsDurableSpp$spp.name), max)
+    # and small blue dots at the first time of occurrence
+    time.extinct = aggregate(popsAbundThruTime$time, by = list(popsAbundThruTime$spp.name), max)
     names(time.extinct) = c('spp.name', 'time')
-    extinct.spp = time.extinct$spp.name[time.extinct$time < endTime]
-    sapply(extinct.spp, function(x) { 
-      preExtinctAbund = popsDurableSpp$realPopSize[popsDurableSpp$spp.name == x & 
-                                                     popsDurableSpp$time == time.extinct$time[time.extinct$spp.name == x]]
-      points(time.extinct$time[time.extinct$spp.name == x], log10(preExtinctAbund), pch = 16, cex = .5, col = 'red') })
-    
-    # Place small blue dots at first time of occurrence for each species lasting longer than one timeStep
-    time.origin = aggregate(popsDurableSpp$time, by = list(popsDurableSpp$spp.name), min)
+    time.origin = aggregate(popsAbundThruTime$time, by = list(popsAbundThruTime$spp.name), min)
     names(time.origin) = c('spp.name', 'time')
-    new.spp = time.origin$spp.name[time.origin$time > startTime]
-    sapply(new.spp, function(x) { 
-      originalAbund = popsDurableSpp$realPopSize[popsDurableSpp$spp.name == x & 
-                                                   popsDurableSpp$time == time.origin$time[time.origin$spp.name == x]]
+    durableSpp = time.extinct$spp.name[time.extinct$time - time.origin$time > timeStep]
+    sapply(durableSpp, function(x) { 
+      preExtinctAbund = popsAbundThruTime$realPopSize[popsAbundThruTime$spp.name == x & 
+                                                     popsAbundThruTime$time == time.extinct$time[time.extinct$spp.name == x]]
+      points(time.extinct$time[time.extinct$spp.name == x], log10(preExtinctAbund), pch = 16, cex = .5, col = 'red') 
+      originalAbund = popsAbundThruTime$realPopSize[popsAbundThruTime$spp.name == x & 
+                                                   popsAbundThruTime$time == time.origin$time[time.origin$spp.name == x]]
       points(time.origin$time[time.origin$spp.name == x], log10(originalAbund), pch = 16, cex = .5, col = 'blue') })
   }
   # Richness trajectory
