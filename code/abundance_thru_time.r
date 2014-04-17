@@ -44,9 +44,9 @@ abundanceThruTime = function(simData, Region, startTime, endTime, timeStep, data
   }
   
   # Abundance trajectories
-  par(mar = c(4,4,4,4), las = 1)
+  par(mar = c(4,5,4,4), las = 1)
   plot(range(times), range(log10(popsAbundThruTime$realPopSize)), type = "n", xlab = "Time", 
-       ylab = expression(paste(plain(log)[10]," Abundance")), main = paste("Sim", params$sim.id))
+       ylab = expression(paste(plain(log)[10]," Abundance")), main = paste("Sim", params$sim.id, ", region", Region))
   uniq.spp = unique(popsAbundThruTime$spp.name)
   sapply(uniq.spp, function(x) { temp = subset(popsAbundThruTime, spp.name == x); 
                                  points(temp$time, log10(temp$realPopSize), type = 'l')})
@@ -81,3 +81,12 @@ abundanceThruTime = function(simData, Region, startTime, endTime, timeStep, data
     return(popsAbundThruTime)  
   }
 }
+
+pdf('abund_thru_time_sims3865_4065.pdf', height = 8, width = 10)
+par(mfrow = c(2,2))
+abundanceThruTime(sim3865, 10, startTime = 100, endTime = 10000, timeStep = 100, dataFrameOut = F)
+abundanceThruTime(sim3865, 1, startTime = 8000, endTime = 30000, timeStep = 100, dataFrameOut = F)
+abundanceThruTime(sim4065, 10, startTime = 100, endTime = 10000, timeStep = 100, dataFrameOut = F)
+abundanceThruTime(sim4065, 1, startTime = 8000, endTime = 30000, timeStep = 100, dataFrameOut = F)
+dev.off()
+
