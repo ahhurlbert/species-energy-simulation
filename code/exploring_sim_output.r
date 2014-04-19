@@ -1,5 +1,5 @@
 setwd('//bioark.bio.unc.edu/hurlbertallen/manuscripts/frontierstropicaldiversity')
-source('code/supplemental_analysis_functions.r')
+source('//bioark.bio.unc.edu/hurlbertallen/git/species-energy-simulation/code/supplemental_analysis_functions.r')
 
 sim.matrix = read.csv('SENC_Master_Simulation_Matrix.csv')
 
@@ -108,13 +108,53 @@ plot(log10(100001 - abun4065$time.of.origin), abun4065$real.pop.size, xlab = "Sp
 
 # Probability that no species go extinct over a fixed period of time given that all species have 
 # equal abundances under the overall constraint. (A more even abundance distribution results in more extinction.)
-S = 1:200
-K = 7273
+S = 1:600
 
-p.no.extinct = function(gamma = 0.1, K, S, t) { ((1 - exp(-gamma*(K/S)))^S)^t }
-plot(S, p.no.extinct(K = K, S= S, t = 100), type = 'l', ylab = 'Prob of no extinction')
+# Expected waiting time until new species arises = 1/(K*alpha)
+p.no.extinct = function(gamma = 0.1, K, S, alpha = 1e-6) { ((1 - exp(-gamma*(K/S)))^S)^(1/(K*alpha)) }
+plot(S, p.no.extinct(K = K, S= S), type = 'l', ylab = 'Prob of no extinction')
 
 # This is a steep sigmoidal function as a function of S where the inflection point varies
 # with gamma. Basically goes from 0 probability of any extinction for low S to perfect certainty
 # of extinction. Alpha (speciation parameter) does not factor in, should only determine how 
 # quickly this equilibrium value is achieved.
+
+#At equilibrium under zero sum energy gradient scenario:
+
+Ks = seq(4000, 40000, length.out = 12)[2:11] #because bins 0 and 11 were excluded
+pinkred = colorRampPalette(c('pink','red','darkred'))
+blues = colorRampPalette(c('lightblue', 'blue','darkblue'))
+
+# In reds, the effect of varying K on equilibrial S is shown for alpha = 1e-6.
+# In blues, it is shown for alpha = 1e-5
+pdf('effectsOf_AlphaGammaK_on_equilibRichness.pdf', height = 6, width = 18)
+par(mfrow = c(1, 3), mar = c(6,6,1,1), cex.lab = 2, cex.axis = 2, las = 1, mgp = c(4, 1, 0))
+plot(S, p.no.extinct(K = K, S= S), type = 'n', ylab = 'Prob of no extinction')
+sapply(1:10, function(x) points(S, p.no.extinct(K = Ks[x], S = S, alpha = 1e-6), 
+                                type = 'l', col = pinkred(10)[x], lwd = 3))
+sapply(1:10, function(x) points(S, p.no.extinct(K = Ks[x], S = S, alpha = 1e-5), 
+                                type = 'l', col = blues(10)[x], lwd = 5, lty = 'dotted'))
+abline(h= .5)
+points(1:5*100, rep(.5, 5), pch = 15)
+legend('topright', lwd = 4, col = c('red','blue','gray90','gray40'), lty = c('solid','dotted','solid','solid'),
+       legend = c('alpha = 1e-6', 'alpha = 1e-5', 'K = 7273', 'K = 36727'))
+
+# The effect of varying alpha on equilibrial S is shown for K = 20000
+alphas = seq(1e-6, 1e-4, length.out = 12)[2:11]
+plot(S, p.no.extinct(K = 20000, S= S, alpha = 1e-5), type = 'n', ylab = 'Prob of no extinction')
+sapply(1:10, function(x) points(S, p.no.extinct(K = 20000, S = S, alpha = alphas[x]), 
+                                type = 'l', col = pinkred(10)[x], lwd = 3))
+abline(h= .5)
+points(1:5*100, rep(.5, 5), pch = 15)
+legend('topright', lwd = 4, col = c('pink', 'darkred'), legend = c('alpha = 1e-5', 'alpha = 9e-5'))
+
+# The effect of varying alpha on equilibrial S is shown for K = 20000
+gammas = c(0.02, 0.05, 0.1, 0.2, 0.3)
+plot(S, p.no.extinct(K = 20000, S= S, alpha = 1e-6), type = 'n', ylab = 'Prob of no extinction')
+sapply(1:5, function(x) points(S, p.no.extinct(K = 20000, S = S, alpha = 1e-6, gamma = gammas[x]), 
+                                type = 'l', col = pinkred(5)[x], lwd = 3))
+abline(h= .5)
+points(1:5*100, rep(.5, 5), pch = 15)
+legend('topright', lwd = 4, col = c('pink', 'red', 'darkred'), 
+       legend = c('gamma = 0.02', 'gamma = 0.1', 'gamma = 0.3'))
+dev.off()
