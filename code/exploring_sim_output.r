@@ -132,7 +132,7 @@ S = 1:600
 
 pdf('effectsOf_AlphaGammaK_on_equilibRichness.pdf', height = 6, width = 18)
 par(mfrow = c(1, 3), mar = c(6,6,1,1), cex.lab = 2, cex.axis = 2, las = 1, mgp = c(4, 1, 0))
-plot(S, p.extinct(K = K, S= S), type = 'n', ylab = 'Prob of extinction before next new species',
+plot(S, p.extinct(K = Ks[1], S= S), type = 'n', ylab = 'Prob of extinction before next new species',
      xlab = "")
 sapply(1:10, function(x) points(S, p.extinct(K = Ks[x], S = S, alpha = 1e-6), 
                                 type = 'l', col = pinkred(12)[x], lwd = 3))
@@ -143,22 +143,26 @@ points(1:5*100, rep(.5, 5), pch = 15)
 legend('bottomright', lwd = c(4,2,4,4), col = c('red','blue','gray90','gray40'), lty = c('solid','dashed','solid','solid'),
        legend = c('alpha = 1e-6', 'alpha = 1e-5', 'K = 7273', 'K = 36727'))
 
-# The effect of varying alpha on equilibrial S is shown for K = 20000
-alphas = seq(1e-6, 1e-4, length.out = 12)[2:11]
-plot(S, p.extinct(K = 20000, S= S, alpha = 1e-5), type = 'n', xlab = 'Species richness', ylab = '')
-sapply(1:10, function(x) points(S, p.extinct(K = 20000, S = S, alpha = alphas[x]), 
+# The effect of varying alpha on equilibrial S is shown for K = 22000
+K.panels23 = 22000
+alpha.param = 1e-6
+specn.grad.factor = 100
+alphas = seq(alpha.param/(specn.grad.factor^0.5), alpha.param*(specn.grad.factor^0.5), length.out = 12)[2:11]
+plot(S, p.extinct(K = K.panels23, S= S, alpha = alpha.param), type = 'n', xlab = 'Species richness', ylab = '')
+sapply(1:10, function(x) points(S, p.extinct(K = K.panels23, S = S, alpha = alphas[x]), 
                                 type = 'l', col = pinkred(12)[x], lwd = 3))
 abline(h= .5)
 points(1:5*100, rep(.5, 5), pch = 15)
-legend('bottomright', lwd = 4, col = c('pink', 'darkred'), legend = c('alpha = 1e-5', 'alpha = 9e-5'))
+legend('bottomright', lwd = 4, col = c('pink', 'darkred', 'white'), 
+       legend = c(paste('alpha =', alphas[1]), paste('alpha =', alphas[10]), paste('K =', K.panels23)))
 
 # The effect of varying alpha on equilibrial S is shown for K = 20000
-gammas = c(0.02, 0.05, 0.1, 0.2, 0.3)
-plot(S, p.extinct(K = 20000, S= S, alpha = 1e-6), type = 'n', xlab = '', ylab = '')
-sapply(1:5, function(x) points(S, p.extinct(K = 20000, S = S, alpha = 1e-6, gamma = gammas[x]), 
+gammas = c(0.02, 0.05, 0.1, 0.15, 0.2)
+plot(S, p.extinct(K = K.panels23, S= S, alpha = 1e-6), type = 'n', xlab = '', ylab = '')
+sapply(1:5, function(x) points(S, p.extinct(K = K.panels23, S = S, alpha = 1e-6, gamma = gammas[x]), 
                                 type = 'l', col = pinkred(6)[x], lwd = 3))
 abline(h= .5)
 points(1:5*100, rep(.5, 5), pch = 15)
 legend('bottomright', lwd = 4, col = pinkred(6)[c(1,3,5)], 
-       legend = c('gamma = 0.02', 'gamma = 0.1', 'gamma = 0.3'))
+       legend = c(paste('gamma =', gammas[1]), paste('gamma =', gammas[3]), paste('gamma =', gammas[5])))
 dev.off()
