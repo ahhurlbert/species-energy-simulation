@@ -132,6 +132,7 @@ plot.metrics.thru.time = function(trop.sims,
   mtext("Time", 1, outer=T, cex = 1.75, line = 1.5) 
   mtext(paste("Sims", min(c(temp.sims, trop.sims)), "-", max(c(temp.sims, trop.sims)), "; Energetic constraint", sim.params$carry.cap[1], "; K gradient", sim.params$energy.gradient[1], "; w =",
         sim.params$w[1], ";\ngamma =", sim.params$gamma[1], "; sigma =", sim.params$sigma_E[1], "; disturbance =", 
-        disturb, "; speciation gradient", spec.grad), 3, outer=T, line = 1)
+        disturb, "; speciation gradient", spec.grad,
+        ";\nalpha =", sim.params$alpha[1], "; disp =", sim.params$beta[1]), 3, outer=T, line = 1)
   dev.off()
 }
