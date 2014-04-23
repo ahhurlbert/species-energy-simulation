@@ -56,13 +56,16 @@ plot.metrics.thru.time = function(trop.sims,
                                   min.div.regions = 4,
                                   min.richness = 30,
                                   min.num.datapts = 10,
-                                  num.cols = 45)
+                                  num.cols = 45,
+                                  num.rows = 100)
 {
   #require(apTreeshape)
   #require(ape)
 
-  temp.metrics = metric.abind.new(temp.sims, min.div.regions = min.div.regions, min.richness = min.richness, num.cols = num.cols)
-  trop.metrics = metric.abind.new(trop.sims, min.div.regions = min.div.regions, min.richness = min.richness, num.cols = num.cols)
+  temp.metrics = metric.abind.new(temp.sims, min.div.regions = min.div.regions, min.richness = min.richness, 
+                                  num.cols = num.cols, num.rows = num.rows)
+  trop.metrics = metric.abind.new(trop.sims, min.div.regions = min.div.regions, min.richness = min.richness, 
+                                  num.cols = num.cols, num.rows = num.rows)
   
   temp.metrics.mean = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
   temp.metrics.sd = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
