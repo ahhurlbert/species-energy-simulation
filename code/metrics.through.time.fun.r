@@ -5,9 +5,9 @@
 # --current stats output is 42 cols, plus 3 more cols which are created within the function
 # --older stats output may have fewer cols
 
-metric.abind.new = function(sims, min.div.regions = 4, min.richness = 30, num.cols = 45) {
+metric.abind.new = function(sims, min.div.regions = 4, min.richness = 30, num.cols = 45, num.rows = 100) {
   require(abind)
-  metrics = matrix(NA, nrow = 100, ncol = num.cols)
+  metrics = matrix(NA, nrow = num.rows, ncol = num.cols)
   for (i in sims) {
     statsfile = list.files(path = "analysis_output", pattern = paste("Stats_sim", i, "_rootclade", sep = ""))
     temp = read.csv(paste("analysis_output/", statsfile, sep = ""), header = T)
@@ -17,8 +17,8 @@ metric.abind.new = function(sims, min.div.regions = 4, min.richness = 30, num.co
 
     # There is no output for timesteps in which no correlations could be calculated
     # so we add the relevant number of rows of data with NA's in that case
-    if (nrow(temp) < 100) {
-      temp.top = data.frame(matrix(NA, nrow = 100 - nrow(temp), ncol = num.cols))
+    if (nrow(temp) < num.rows) {
+      temp.top = data.frame(matrix(NA, nrow = num.rows - nrow(temp), ncol = num.cols))
       names(temp.top) = names(temp)
       temp = rbind(temp.top, temp)
     }
