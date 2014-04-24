@@ -1,0 +1,1 @@
+# This folder contains raw simulation output, with results from each simulation in its own folder
