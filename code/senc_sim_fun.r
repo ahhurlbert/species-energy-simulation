@@ -139,12 +139,14 @@ senc_sim_fun = function(sim.matrix, sim) {
 	
   # dispersal function
   dispersal.fun = function (population.size, beta.param) { 
-    apply(as.matrix(population.size), 1, function(p) sum(rbinom(p, 1, beta.param))) 
+    df = cbind(population.size, beta.param)
+    apply(df, 1, function(x) sum(rbinom(x[1], 1, x[2]))) 
 	}
   
 	# mutation function leading to differentiated species
   mutation.fun = function (population.size, alpha.param) { 
-    apply(as.matrix(population.size), 1, function(p) sum(rbinom(p, 1, alpha.param))) 
+    df = cbind(population.size, alpha.param)
+    apply(df, 1, function(x) sum(rbinom(x[1], 1, x[2]))) 
 	}
 
   # environmental fit function used in determining population sizes
