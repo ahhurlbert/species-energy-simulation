@@ -386,10 +386,8 @@ senc_sim_fun = function(sim.matrix, sim) {
   all.populations = subset(all.populations, region %in% 1:(num.of.bins - 1))
 
 	## write outputs
-	phylo.out = make.phylo.jimmy.fun(t = curr.time, edge.length.out = edge.length, edge.out = edge ,stem.depth.out = stem.depth )
 	write.csv(all.populations, paste(sim_out_dir, "/SENC_all.pops_sim", sim, ".csv", sep=""), quote = F, row.names = F)
 	write.csv(time.richness, paste(sim_out_dir, "/SENC_time.rich_sim", sim, ".csv", sep=""), quote = F, row.names = F)
-	write.tree(phylo.out, paste(sim_out_dir, "/SENC_phylo_sim", sim, ".tre", sep = ""))
 	end.params = data.frame(sim.id = sim,
                           status = 'completed',
                           reg.of.origin = region.of.origin,
@@ -409,7 +407,9 @@ senc_sim_fun = function(sim.matrix, sim) {
                           specn.gradient = specn.gradient,
                           specn.factor = specn.factor) 
 	write.csv(end.params, paste(sim_out_dir, "/SENC_params.out_sim", sim, ".csv", sep = ""), quote = F, row.names = F)
-
+  phylo.out = make.phylo.jimmy.fun(t = curr.time, edge.length.out = edge.length, edge.out = edge ,stem.depth.out = stem.depth )
+  write.tree(phylo.out, paste(sim_out_dir, "/SENC_phylo_sim", sim, ".tre", sep = ""))
+  
 	return(list(all.populations = all.populations, 
               time.richness = time.richness,
               phylo.out = phylo.out,
