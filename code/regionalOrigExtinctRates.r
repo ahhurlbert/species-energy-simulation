@@ -1,7 +1,7 @@
 
 
 regionalRates = function(all.pops, whichRegions, timeslices) {
-  glob.pops = unique(all.populations[, c('spp.name', 'region', 'time.of.origin', 'time.of.extinction')])
+  glob.pops = unique(all.pops[, c('spp.name', 'region', 'time.of.origin', 'time.of.extinction')])
   
   # Calculate origination and extinction rates for a given region only for the populations
   # that originated and went extinct in that region. That is, ignore originations due to 
@@ -31,5 +31,8 @@ regionalRates = function(all.pops, whichRegions, timeslices) {
   } #end time loop
   dataOut = data.frame(dataOut)
   names(dataOut) = c('region', 'time', 'raw.origins', 'raw.extinctions', 'richness.t0', 'time.interval')  
+  dataOut$reg.orig.rate = dataOut$raw.origins/dataOut$richness.t0/dataOut$time.interval
+  dataOut$reg.ext.rate = dataOut$raw.extinctions/dataOut$richness.t0/dataOut$time.interval
+  return(dataOut)
 }
 
