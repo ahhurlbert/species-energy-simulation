@@ -82,11 +82,13 @@ abundanceThruTime = function(simData, Region, startTime, endTime, timeStep, data
   }
 }
 
-pdf('abund_thru_time_sims3865_4065.pdf', height = 8, width = 10)
-par(mfrow = c(2,2))
+pdf('abund_thru_time_sims3865_4065_5525.pdf', height = 12, width = 10)
+par(mfrow = c(3,2))
 abundanceThruTime(sim3865, 10, startTime = 100, endTime = 10000, timeStep = 100, dataFrameOut = F)
 abundanceThruTime(sim3865, 1, startTime = 8000, endTime = 30000, timeStep = 100, dataFrameOut = F)
 abundanceThruTime(sim4065, 10, startTime = 100, endTime = 10000, timeStep = 100, dataFrameOut = F)
 abundanceThruTime(sim4065, 1, startTime = 8000, endTime = 30000, timeStep = 100, dataFrameOut = F)
+abundanceThruTime(sim5525, 10, startTime = 100, endTime = 10000, timeStep = 100, dataFrameOut = F)
+abundanceThruTime(sim5525, 1, startTime = 8000, endTime = 30000, timeStep = 100, dataFrameOut = F)
 dev.off()
 
