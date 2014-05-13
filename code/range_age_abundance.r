@@ -15,3 +15,12 @@ ages.sd = aggregate(extant.pops$time.of.sp.origin, by = list(extant.pops$region)
   (var(max(extant.pops$time.of.extinction) - x))^0.5)
 
 #Abundance distributions
+
+meanAges = function(path, sim) {
+  simresults = output.unzip(path, sim)
+  all.pops = simresults$all.populations
+  extant.pops = subset(all.pops, extant == 1)
+  ages.mean = aggregate(extant.pops$time.of.sp.origin, by = list(extant.pops$region), function(x)
+                        mean(max(simresults$time.richness$time) - x))
+  return(ages.mean)
+}
