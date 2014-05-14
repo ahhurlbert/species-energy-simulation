@@ -305,6 +305,10 @@ In this case, an additional parameter at the end (here, 30) specifies the number
 which to analyze simulation output. Whether running simulations or conducting analyses, results will be 
 stored in the `raw_sim_output` or `analysis_output` subdirectories.
 
+Note: The analysis of large phylogenetic trees is memory-intensive. You may need to increase the memory allocation on the cluster using the -M option, in which you can set the memory limit in GB (default is 4):
+
+`$ bsub -M 8 -o out.%J -n 100 -a openmpi mpirun Rscript run_analysis_on_cluster.r 3765 3864 30`
+
 
 ##Duplicating manuscript figures
 
