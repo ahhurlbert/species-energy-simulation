@@ -3,6 +3,9 @@
 # Also returned is the equivalent all.populations dataframe at that time point.
 
 time.slice.phylo = function(simresults, t, memLimit = 4095) {
+  require(ape)
+  require(paleotree)
+  
   #increase memory limit (for timeSliceTree below)
   memory.limit(size = memLimit)
   
