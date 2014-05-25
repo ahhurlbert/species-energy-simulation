@@ -146,7 +146,8 @@ plot.metrics.thru.time = function(trop.sims,
 plot.metrics.thru.time2 = function(trop.sims, 
                                   temp.sims, 
                                   sim.matrix,
-                                  pdf.out,
+                                  pdf.out = F,
+                                  pdf.name = NULL,
                                   min.div.regions = 4,
                                   min.richness = 30,
                                   min.num.datapts = 10,
@@ -176,8 +177,9 @@ plot.metrics.thru.time2 = function(trop.sims,
                     expression(italic(r)[time-richness]), 
                     'MRD-Richness slope',
                     expression(beta))
-  
-  pdf(paste('analysis_output/', pdf.out, sep = ''), width = 8, height = 8)
+  if (pdf.out) {
+    pdf(paste('analysis_output/', pdf.name, sep = ''), width = 8, height = 8)
+  }
   par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 5, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
   
   sim.params = sim.matrix[sim.matrix$sim.id == trop.sims[1], ]
@@ -217,5 +219,7 @@ plot.metrics.thru.time2 = function(trop.sims,
               sim.params$w[1], ";\ngamma =", sim.params$gamma[1], "; sigma =", sim.params$sigma_E[1], "; disturbance =", 
               disturb, "; speciation gradient", spec.grad,
               ";\nalpha =", sim.params$alpha[1], "; disp =", sim.params$beta[1]), 3, outer=T, line = .5)
-  dev.off()
+  if (pdf.out) {
+    dev.off()
+  }
 }
