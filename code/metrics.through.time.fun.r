@@ -197,9 +197,15 @@ plot.metrics.thru.time2 = function(trop.sims,
   
   error = 2 # error bars in SD units (+/-)
   for (curr.metric in metric.names) {
+    if (substr(curr.metric, 1, 2) == 'r.') {
+      ylims = c(-1, 1)
+    } else {
+      ylims = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ]), na.rm= T)
+    }
+    
     plot(trop.metrics.mean$time/x.scale - x.offset.tmp, trop.metrics.mean[, curr.metric], 
          xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/x.scale - x.offset.tmp), 
-         ylim = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ]), na.rm= T), type = "n",
+         ylim = ylims, type = "n",
          ylab = metric.labels[metric.names == curr.metric], xlab = "")
     polygon(c(trop.metrics.mean$time/x.scale - x.offset.trp, rev(trop.metrics.mean$time/x.scale - x.offset.trp)), 
             c(trop.metrics.mean[, curr.metric] - error*trop.metrics.sd[, curr.metric], 
