@@ -178,7 +178,7 @@ plot.metrics.thru.time2 = function(trop.sims,
                     'MRD-Richness slope',
                     expression(beta))
   if (pdf.out) {
-    pdf(paste('analysis_output/', pdf.name, sep = ''), width = 8, height = 8)
+    pdf(pdf.name, width = 8, height = 8)
   }
   par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 5, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
   
