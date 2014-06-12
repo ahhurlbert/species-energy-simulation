@@ -44,3 +44,5 @@ for (i in 1:4) {
   temp = BKcalc(simdirs[i], sims[i], t = time)
   BK.output = rbind(BK.output, temp)
 }
+
+write.csv(BK.output, 'BlombergK_4scenarios.csv', row.names=F)
