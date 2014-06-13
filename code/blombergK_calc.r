@@ -3,7 +3,7 @@
 
 BKcalc = function(simdir, sim, t=30000) {
   require(picante)
-  source('Z:/git/species-energy-simulation/code/supplemental_analysis_functions.r')
+  source('code/supplemental_analysis_functions.r')
   simresults = output.unzip(simdir, sim)
   all.pops = simresults$all.populations
   extant.pops = subset(all.pops, time.of.origin < t & time.of.extinction > t)
@@ -32,8 +32,8 @@ BKcalc = function(simdir, sim, t=30000) {
   return(outdata)
 }
 
-simdirs = c('Z:/SENCoutput/Hurlbert_and_Stegen_2014/raw_sim_output',
-            'Z:/SENCoutput/Hurlbert_and_Stegen_2014/raw_sim_output',
+simdirs = c('raw_sim_output',
+            'raw_sim_output',
             'raw_sim_output',
             'raw_sim_output')
 sims = c(3465, 4065, 5525, 5625)
