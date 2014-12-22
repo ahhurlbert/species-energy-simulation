@@ -37,7 +37,7 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
     
   reg.rich.thru.time = data.frame(time=NA, region=NA, total.rich=NA)
   if(plot.pdf) {
-    pdf(paste(sim_dir,'/movie_sim',sim,'_timestep',time.step,'.pdf',sep=''), height=8, width=8)
+    pdf(paste(sim_dir,'/movie_sim',sim,'_timestep',time.step,'.pdf',sep=''), height=8, width=8, bg='white')
   }
   par(mfrow = c(2,1), mar = c(4,4,1,1), mgp = c(2.5,1,0))
   
@@ -80,7 +80,7 @@ lat.grad.movie(3345, sim.matrix, sim_dir, time.step=1000, time.max=30000, plot.p
 #This creates a multipage pdf when plot.pdf=T. To convert this to a gif animation, install ImageMagick and GhostScript,
 #both freely available. After they are installed, the following command will work.
 
-shell("convert -delay 50 -density 150 movie_sim3325_timestep1000.pdf movie_sim3325_timestep1000.gif")
+shell("convert -delay 50 -density 150 movie_sim3345_timestep500.pdf movie_sim3345_timestep500.gif")
 
 # -delay specifies the delay between frames in 1/100 s
 # -density specifies the dpi
@@ -90,3 +90,6 @@ shell("convert -delay 50 -density 150 movie_sim3325_timestep1000.pdf movie_sim33
 # Also, if this command only converts the first page of the pdf to a gif, then 
 # edit the delegates.xml file associated with ImageMagick, and change
 # "pngalpha" to "pnmraw".
+
+# Note that I now have to explicitly set the background color of the pdf to be "white" or else
+# the conversion to a .gif leads to a black background.
