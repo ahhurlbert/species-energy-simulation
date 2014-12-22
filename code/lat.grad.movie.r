@@ -60,7 +60,7 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
     reg.rich.thru.time = rbind(reg.rich.thru.time, cbind(time=rep(t,nrow(all.reg.rich)), all.reg.rich))
     
     # Panel 2: environmental optima
-    plot(1,1,type="n",xlim=c(0,40), ylim = c(0,0.4), xlab="Thermal Optimum (°C)", ylab = "Density", las = 1)
+    plot(1,1,type="n",xlim=c(0,40), ylim = c(0,0.4), xlab="Species' Thermal Optimum (°C)", ylab = "Density", las = 1)
     reg.env = unique(all.populations[all.populations$region %in% regions, c('region','reg.env')])
     abline(v = reg.env$reg.env, lty="dotted", col = reg.cols, lwd = 2)
     for (r in regions) {
