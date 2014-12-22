@@ -30,7 +30,11 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
   timeslices = seq(time.step, time.max, by=time.step)
 
   max.rich = max(table(all.populations[all.populations$time.of.extinction > 30000,'region']))
-  
+
+  # Regions for highlighting
+  regions = c(1,4,7,10)
+  reg.cols = c('lightslateblue', 'lightgreen', 'orange', 'red3')
+    
   reg.rich.thru.time = data.frame(time=NA, region=NA, total.rich=NA)
   if(plot.pdf) {
     pdf(paste(sim_dir,'/movie_sim',sim,'_timestep',time.step,'.pdf',sep=''), height=8, width=8)
@@ -44,23 +48,24 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
     names(all.reg.rich) = c('region','total.rich')
     all.reg.rich$region = as.numeric(as.character(all.reg.rich$region))
     Sys.sleep(0)
-    plot(all.reg.rich$region, log10(all.reg.rich$total.rich), type='b', lwd = 4, cex = .5, col = 'red',
-         xlim = c(0,11), ylim=c(0, log10(max.rich)+.5), xlab="Latitude",ylab = "log10 Species richness",
-         main=paste(params[1,3],"origin; K", params[1,8], "; w =",params[1,4],"; sigma = ",params[1,7]))
+    plot(all.reg.rich$region, log10(all.reg.rich$total.rich), type='b', lwd = 4, cex = .5, xlab = "",
+         xlim = c(0,11), ylim=c(0, log10(max.rich)+.5), ylab = expression("log"[10]*" Species richness"), xaxt = "n",
+         main=paste(params[1,3],"origin; K", params[1,8], "; w =",params[1,4],"; sigma = ",params[1,7]), las = 1)
+    points(all.reg.rich$region[all.reg.rich$region %in% regions], 
+           log10(all.reg.rich$total.rich[all.reg.rich$region %in% regions]), 
+           pch = 16, cex = 2, col = reg.cols)
     text(10, log10(max.rich)+.3, paste("t =", t))
-    mtext(c("Temperate","Tropics"),1,at=c(1,10),line=2.5)
+    mtext(c("Temperate","Tropics"),1,at=c(1.5,9.5),line=0.5, cex = 1.5)
     
     reg.rich.thru.time = rbind(reg.rich.thru.time, cbind(time=rep(t,nrow(all.reg.rich)), all.reg.rich))
     
     # Panel 2: environmental optima
-    regions = c(1,4,7,10)
-    
-    plot(1,1,type="n",xlim=c(-5,45), ylim = c(0,0.4), xlab="Thermal Optimum", ylab = "Density")
+    plot(1,1,type="n",xlim=c(0,40), ylim = c(0,0.4), xlab="Thermal Optimum (°C)", ylab = "Density", las = 1)
     reg.env = unique(all.populations[all.populations$region %in% regions, c('region','reg.env')])
     abline(v = reg.env$reg.env, lty="dotted")
     for (r in regions) {
       if (nrow(all.pops[all.pops$region==r,]) > 3) {
-        points(density(all.pops[all.pops$region==r, 'env.opt']), type = 'l', col = 'red')
+        points(density(all.pops[all.pops$region==r, 'env.opt']), type = 'l', col = reg.cols[r==regions], lwd = 4)
       }
     }
     
@@ -70,7 +75,7 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
 }
 
 # Example for plotting movie for sim 3345
-lat.grad.movie(3345, sim.matrix, sim_dir, time.step=1000, time.max=30000, plot.pdf=T)
+lat.grad.movie(3345, sim.matrix, sim_dir, time.step=1000, time.max=30000, plot.pdf=F)
 
 #This creates a multipage pdf when plot.pdf=T. To convert this to a gif animation, install ImageMagick and GhostScript,
 #both freely available. After they are installed, the following command will work.
