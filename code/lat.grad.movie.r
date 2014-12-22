@@ -37,7 +37,7 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
     
   reg.rich.thru.time = data.frame(time=NA, region=NA, total.rich=NA)
   if(plot.pdf) {
-    pdf(paste(sim_dir,'/movie_sim',sim,'_timestep',time.step,'.pdf',sep=''), height=8, width=8, bg='white')
+    pdf(paste(sim_dir,'/movies/movie_sim',sim,'_timestep',time.step,'.pdf',sep=''), height=8, width=8, bg='white')
   }
   par(mfrow = c(2,1), mar = c(4,4,1,1), mgp = c(2.5,1,0))
   
@@ -62,7 +62,7 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
     # Panel 2: environmental optima
     plot(1,1,type="n",xlim=c(0,40), ylim = c(0,0.4), xlab="Thermal Optimum (°C)", ylab = "Density", las = 1)
     reg.env = unique(all.populations[all.populations$region %in% regions, c('region','reg.env')])
-    abline(v = reg.env$reg.env, lty="dotted")
+    abline(v = reg.env$reg.env, lty="dotted", col = reg.cols, lwd = 2)
     for (r in regions) {
       if (nrow(all.pops[all.pops$region==r,]) > 3) {
         points(density(all.pops[all.pops$region==r, 'env.opt']), type = 'l', col = reg.cols[r==regions], lwd = 4)
@@ -75,7 +75,7 @@ lat.grad.movie = function(sim, sim.matrix, sim_dir, time.step, time.max, unzip=F
 }
 
 # Example for plotting movie for sim 3345
-lat.grad.movie(3345, sim.matrix, sim_dir, time.step=1000, time.max=30000, plot.pdf=F)
+lat.grad.movie(3345, sim.matrix, sim_dir, time.step=500, time.max=30000, plot.pdf=F)
 
 #This creates a multipage pdf when plot.pdf=T. To convert this to a gif animation, install ImageMagick and GhostScript,
 #both freely available. After they are installed, the following command will work.
