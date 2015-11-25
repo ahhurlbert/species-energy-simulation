@@ -1,0 +1,10 @@
+"model","name","LH","aicc","tau0","gamma","lamb0","mu0","alpha","beta","eps"
+"1","Equilibrium constant rate",39442.1889760049,-78882.3775528879,0.08201033203125,NA,NA,NA,NA,NA,NA
+"2","Equilibrium variable rate",42531.8812179119,-85059.7612383386,0.0544398671890222,0.0481314964902775,NA,NA,NA,NA,NA
+"3","Birth-death constant rates (coalescent approx)",42531.8817923667,-85059.7623872481,NA,NA,0.0544347809432584,0.00631967056827307,NA,NA,NA
+"4a","Birth-death varying speciation constant extinction (coalescent approx)",42533.6981444208,-85061.3938936319,NA,NA,0.0554237373609533,0.00989366921140061,0.00078945217342826,NA,NA
+"4b","Birth-death constant speciation varying extinction (coalescent approx)",42534.5928967072,-85063.1833982048,NA,NA,0.0559994962931814,0.0112288968061482,NA,-0.0099136575034036,NA
+"4c","Birth-death constant extinction fraction (coalescent approx)",42533.684110283,-85061.3658253564,NA,NA,0.0554150625663658,NA,0.000945147832768422,NA,0.180738774711049
+"4d","Birth-death varying speciation and extinction (coalescent approx)",42536.8554074072,-85065.7068224,NA,NA,0.0570414776496794,0.0139599526347,-0.000755170703018102,-0.0225569122821031,NA
+"5","Pure birth constant speciation (coalescent approx)",42516.797769757,-85031.595140392,NA,NA,0.0505625,NA,NA,NA,NA
+"6","Pure birth varying speciation (coalescent approx)",42524.2944718846,-85044.587746284,NA,NA,0.0519573214544217,NA,-0.000970676310564159,NA,NA
