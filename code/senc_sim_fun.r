@@ -413,7 +413,11 @@ senc_sim_fun = function(sim.matrix, sim) {
 	return(list(all.populations = all.populations, 
               time.richness = time.richness,
               phylo.out = phylo.out,
-              params.out = end.params))
+              params.out = end.params,
+              curr.time = curr.time,
+              edge.length = edge.length,
+              edge = edge,
+              stem.depth = stem.depth))
 
 } # end senc_sim_fun
 

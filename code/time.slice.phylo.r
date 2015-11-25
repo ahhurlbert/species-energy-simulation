@@ -2,9 +2,12 @@
 # and slices the simulation phylogeny to only depict species extant at that time point.
 # Also returned is the equivalent all.populations dataframe at that time point.
 
-time.slice.phylo = function(simresults, t) {
+time.slice.phylo = function(simresults, t, memLimit = 4095) {
+  require(ape)
+  require(paleotree)
+  
   #increase memory limit (for timeSliceTree below)
-  memory.limit(size = 4095)
+  memory.limit(size = memLimit)
   
   phylo.out = simresults$phylo.out
   all.populations = simresults$all.populations

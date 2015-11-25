@@ -48,7 +48,8 @@ calc.meanSD = function(x, stat = 'mean', min.num.nonNA = 10) {
   }
 }
 
-
+# Function for creating multi-panel diagnostic of multiple simulation metrics through time
+# Must be called when in the directory that houses the analysis_output folder and its 'stats' files
 plot.metrics.thru.time = function(trop.sims, 
                                   temp.sims, 
                                   sim.matrix,
@@ -138,4 +139,188 @@ plot.metrics.thru.time = function(trop.sims,
         disturb, "; speciation gradient", spec.grad,
         ";\nalpha =", sim.params$alpha[1], "; disp =", sim.params$beta[1]), 3, outer=T, line = .5)
   dev.off()
+}
+
+#Different version of the above function, plotting different metrics
+
+plot.metrics.thru.time2 = function(trop.sims, 
+                                  temp.sims, 
+                                  sim.matrix,
+                                  pdf.out = F,
+                                  pdf.name = NULL,
+                                  min.div.regions = 4,
+                                  min.richness = 30,
+                                  min.num.datapts = 10,
+                                  num.cols = 45,
+                                  num.rows = 100)
+{
+  #require(apTreeshape)
+  #require(ape)
+  
+  temp.metrics = metric.abind.new(temp.sims, min.div.regions = min.div.regions, min.richness = min.richness, 
+                                  num.cols = num.cols, num.rows = num.rows)
+  trop.metrics = metric.abind.new(trop.sims, min.div.regions = min.div.regions, min.richness = min.richness, 
+                                  num.cols = num.cols, num.rows = num.rows)
+  
+  temp.metrics.mean = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+  temp.metrics.sd = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+  
+  trop.metrics.mean = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+  trop.metrics.sd = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+  
+  metric.names = c('r.lat.rich', 
+                   'r.time.rich',
+                   'scaled.MRD.rich.slope',
+                   'tree.beta')
+  
+  metric.labels = c(expression(italic(r)[latitude-richness]), 
+                    expression(italic(r)[time-richness]), 
+                    'MRD-Richness slope',
+                    expression(beta))
+  if (pdf.out) {
+    pdf(pdf.name, width = 8, height = 8)
+  }
+  #par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 5, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+  
+  sim.params = sim.matrix[sim.matrix$sim.id == trop.sims[1], ]
+  if (sim.params$disturb_frequency == 0) {disturb = 'no'} else {disturb = 'yes'}
+  if (sim.params$specn.gradient == 'off') {spec.grad = 'off'} else {spec.grad = paste(sim.params$specn.factor, "x", sep = "")}
+  if (sim.params$carry.cap == 'off') { 
+    x.offset.tmp = min(temp.metrics.mean$time, na.rm = T)
+    x.offset.trp = min(trop.metrics.mean$time, na.rm = T)
+    x.scale = 1
+  } else {
+    x.offset.tmp = 0
+    x.offset.trp = 0
+    x.scale = 1000
+  }
+  
+  error = 2 # error bars in SD units (+/-)
+  for (curr.metric in metric.names) {
+    if (substr(curr.metric, 1, 2) == 'r.') {
+      ylims = c(-1, 1)
+    } else {
+      ylims = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ]), na.rm= T)
+    }
+    
+    plot(trop.metrics.mean$time/x.scale - x.offset.tmp, trop.metrics.mean[, curr.metric], 
+         xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/x.scale - x.offset.tmp), 
+         ylim = ylims, type = "n",
+         ylab = metric.labels[metric.names == curr.metric], xlab = "")
+    polygon(c(trop.metrics.mean$time/x.scale - x.offset.trp, rev(trop.metrics.mean$time/x.scale - x.offset.trp)), 
+            c(trop.metrics.mean[, curr.metric] - error*trop.metrics.sd[, curr.metric], 
+              rev(trop.metrics.mean[, curr.metric] + error*trop.metrics.sd[, curr.metric])), 
+            col = rgb(.8, 0, 0, .3), border = NA)
+    polygon(c(temp.metrics.mean$time/x.scale - x.offset.tmp, rev(temp.metrics.mean$time/x.scale - x.offset.tmp)), 
+            c(temp.metrics.mean[, curr.metric] - error*temp.metrics.sd[, curr.metric], 
+              rev(temp.metrics.mean[, curr.metric] + error*temp.metrics.sd[, curr.metric])), 
+            col = rgb(0, 0, .8, .3), border = NA)
+    points(trop.metrics.mean$time/x.scale - x.offset.trp, trop.metrics.mean[, curr.metric], type = 'l', col = 'red', lwd = 3)
+    points(temp.metrics.mean$time/x.scale - x.offset.tmp, temp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3)
+    
+    if(curr.metric != 'global.richness') { abline(h = 0, lty = 'dashed')}
+  }
+  mtext("Time", 1, outer=T, cex = 1.75, line = 1.5) 
+  mtext(paste("Sims", min(c(temp.sims, trop.sims)), "-", max(c(temp.sims, trop.sims)), "; Energetic constraint", sim.params$carry.cap[1], "; K gradient", sim.params$energy.gradient[1], "; w =",
+              sim.params$w[1], ";\ngamma =", sim.params$gamma[1], "; sigma =", sim.params$sigma_E[1], "; disturbance =", 
+              disturb, "; speciation gradient", spec.grad,
+              ";\nalpha =", sim.params$alpha[1], "; disp =", sim.params$beta[1]), 3, outer=T, line = .5)
+  if (pdf.out) {
+    dev.off()
+  }
+}
+
+# New version plotting 4 panels in a row and without axis labels
+plot.metrics.thru.time3 = function(trop.sims, 
+                                   temp.sims, 
+                                   sim.matrix,
+                                   pdf.out = F,
+                                   pdf.name = NULL,
+                                   min.div.regions = 4,
+                                   min.richness = 30,
+                                   min.num.datapts = 10,
+                                   num.cols = 45,
+                                   num.rows = 100,
+                                   show.ylab = F)
+{
+  #require(apTreeshape)
+  #require(ape)
+  
+  temp.metrics = metric.abind.new(temp.sims, min.div.regions = min.div.regions, min.richness = min.richness, 
+                                  num.cols = num.cols, num.rows = num.rows)
+  trop.metrics = metric.abind.new(trop.sims, min.div.regions = min.div.regions, min.richness = min.richness, 
+                                  num.cols = num.cols, num.rows = num.rows)
+  
+  temp.metrics.mean = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+  temp.metrics.sd = data.frame(apply(temp.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+  
+  trop.metrics.mean = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'mean', min.num.nonNA = min.num.datapts)))
+  trop.metrics.sd = data.frame(apply(trop.metrics, 1:2, function(x) calc.meanSD(x, stat = 'sd', min.num.nonNA = min.num.datapts)))
+  
+  metric.names = c('r.lat.rich', 
+                   'r.time.rich',
+                   'scaled.MRD.rich.slope',
+                   'tree.beta')
+  
+  metric.labels = c(expression(italic(r)[latitude-richness]), 
+                    expression(italic(r)[time-richness]), 
+                    'MRD-Richness slope',
+                    expression(beta))
+  if (pdf.out) {
+    pdf(pdf.name, width = 8, height = 8)
+  }
+  #par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 5, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
+  
+  sim.params = sim.matrix[sim.matrix$sim.id == trop.sims[1], ]
+  if (sim.params$disturb_frequency == 0) {disturb = 'no'} else {disturb = 'yes'}
+  if (sim.params$specn.gradient == 'off') {spec.grad = 'off'} else {spec.grad = paste(sim.params$specn.factor, "x", sep = "")}
+  if (sim.params$carry.cap == 'off') { 
+    x.offset.tmp = min(temp.metrics.mean$time, na.rm = T)
+    x.offset.trp = min(trop.metrics.mean$time, na.rm = T)
+    x.scale = 1
+  } else {
+    x.offset.tmp = 0
+    x.offset.trp = 0
+    x.scale = 1000
+  }
+  
+  error = 2 # error bars in SD units (+/-)
+  for (curr.metric in metric.names) {
+    if (substr(curr.metric, 1, 2) == 'r.') {
+      ylims = c(-1, 1)
+    } else if (curr.metric == 'tree.beta') {
+      ylims = c(-1.5, 1.5)
+    } else {
+      ylims = range(c(trop.metrics[, curr.metric, ], temp.metrics[, curr.metric, ]), na.rm= T)
+    }
+    if (show.ylab) {
+      y.labels = metric.labels[metric.names == curr.metric]
+    } else {
+      y.labels = ""
+    }
+    
+    plot(trop.metrics.mean$time/x.scale - x.offset.tmp, trop.metrics.mean[, curr.metric], 
+         xlim = c(0, max(trop.metrics.mean$time, na.rm=T)/x.scale - x.offset.tmp), 
+         ylim = ylims, type = "n", ylab = y.labels, xlab = "")
+    polygon(c(trop.metrics.mean$time/x.scale - x.offset.trp, rev(trop.metrics.mean$time/x.scale - x.offset.trp)), 
+            c(trop.metrics.mean[, curr.metric] - error*trop.metrics.sd[, curr.metric], 
+              rev(trop.metrics.mean[, curr.metric] + error*trop.metrics.sd[, curr.metric])), 
+            col = rgb(.8, 0, 0, .3), border = NA)
+    polygon(c(temp.metrics.mean$time/x.scale - x.offset.tmp, rev(temp.metrics.mean$time/x.scale - x.offset.tmp)), 
+            c(temp.metrics.mean[, curr.metric] - error*temp.metrics.sd[, curr.metric], 
+              rev(temp.metrics.mean[, curr.metric] + error*temp.metrics.sd[, curr.metric])), 
+            col = rgb(0, 0, .8, .3), border = NA)
+    points(trop.metrics.mean$time/x.scale - x.offset.trp, trop.metrics.mean[, curr.metric], type = 'l', col = 'red', lwd = 3)
+    points(temp.metrics.mean$time/x.scale - x.offset.tmp, temp.metrics.mean[, curr.metric], type = 'l', col = 'blue', lwd = 3)
+    
+    if(curr.metric != 'global.richness') { abline(h = 0, lty = 'dashed')}
+  }
+  #mtext("Time", 1, outer=T, cex = 1.75, line = 1.5) 
+  #mtext(paste("Sims", min(c(temp.sims, trop.sims)), "-", max(c(temp.sims, trop.sims)), "; Energetic constraint", sim.params$carry.cap[1], "; K gradient", sim.params$energy.gradient[1], "; w =",
+  #            sim.params$w[1], ";\ngamma =", sim.params$gamma[1], "; sigma =", sim.params$sigma_E[1], "; disturbance =", 
+  #            disturb, "; speciation gradient", spec.grad,
+  #            ";\nalpha =", sim.params$alpha[1], "; disp =", sim.params$beta[1]), 3, outer=T, line = .5)
+  if (pdf.out) {
+    dev.off()
+  }
 }
