@@ -62,44 +62,155 @@ result1 <- fit_coal_var(tree1, lamb0=0.01, alpha=-0.001, mu0=0.0, beta=0)
 
 
 multi.panda.fit = function(tree) {
+  
   # Model 1
-  m1 = fit_coal_cst(tree, tau0 = 1e-4, gamma = -1, cst.rate = TRUE)
+  m1 = tryCatch(
+    {
+      fit_coal_cst(tree, tau0 = 1e-4, gamma = -1, cst.rate = TRUE)
+    }, 
+    error = function(cond) {
+      message(paste("Error in Model 1:", cond))
+      list(model = "Equilibrium constant rate", LH = NA, aicc = NA, tau0 = NA)
+    },
+    warning = function(cond) {
+      message(paste("Warning in Model 1:", cond))
+    },
+    finally = message("Model 1 completed")
+  )
   
-  # Model 2
-  m2 = fit_coal_cst(tree, tau0 = 1e-4, gamma = -1, cst.rate = FALSE)
+  # Model 2  
+  m2 = tryCatch(
+    {
+      fit_coal_cst(tree, tau0 = 1e-4, gamma = -1, cst.rate = FALSE)
+    }, 
+    error = function(cond) {
+      message(paste("Error in Model 2:", cond))
+      list(model = "Equilibrium variable rate", LH = NA, aicc = NA, tau0 = NA, gamma = NA)
+    },
+    warning = function(cond) {
+      message(paste("Warning in Model 2:", cond))
+    },
+    finally = message("Model 2 completed")
+  )
   
-  # Models 3-6
-  #  Time runs from the present to the past. Hence, if alpha is estimated to be 
-  #  positive (for example), this means that the speciation rate decreases from 
-  #  past to present.
-  
-  # Model 3
-  m3 = fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
-                    cst.lamb = TRUE, cst.mu = TRUE)
+  # Model 3  
+  m3 = tryCatch(
+    {
+      fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
+                   cst.lamb = TRUE, cst.mu = TRUE)
+    }, 
+    error = function(cond) {
+      message(paste("Error in Model 3:", cond))
+      list(model = "Birth-death constant rates (coalescent approx)",
+           LH = NA, aicc = NA, lamb0 = NA, mu0 = NA)
+    },
+    warning = function(cond) {
+      message(paste("Warning in Model 3:", cond))
+    },
+    finally = message("Model 3 completed")
+  )
   
   # Model 4a
-  m4a = fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
-                     cst.lamb = FALSE, cst.mu = TRUE)
+  m4a = tryCatch(
+    {
+      fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
+                   cst.lamb = FALSE, cst.mu = TRUE)
+    }, 
+    error = function(cond) {
+      message(paste("Error in Model 4a:", cond))
+      list(model = "Birth-death varying speciation constant extinction (coalescent approx)",
+           LH = NA, aicc = NA, lamb0 = NA, mu0 = NA, alpha = NA)
+    },
+    warning = function(cond) {
+      message(paste("Warning in Model 4a:", cond))
+    },
+    finally = message("Model 4a completed")
+  )
   
   # Model 4b
-  m4b = fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
-                     cst.lamb = TRUE, cst.mu = FALSE)
-  
+  m4b = tryCatch(
+    {
+      fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
+                   cst.lamb = TRUE, cst.mu = FALSE)
+    }, 
+    error = function(cond) {
+      message(paste("Error in Model 4b:", cond))
+      list(model = "Birth-death constant speciation varying extinction (coalescent approx)",
+           LH = NA, aicc = NA, lamb0 = NA, mu0 = NA, beta = NA)
+    },
+    warning = function(cond) {
+      message(paste("Warning in Model 4b:", cond))
+    },
+    finally = message("Model 4b completed")
+  )
+
   # Model 4c
-  m4c = fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
-                     cst.lamb = FALSE, cst.mu = FALSE, fix.eps = TRUE)
-  
+  m4c = tryCatch(
+    {
+      fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
+                   cst.lamb = FALSE, cst.mu = FALSE, fix.eps = TRUE)
+    }, 
+    error = function(cond) {
+      message(paste("Error in Model 4c:", cond))
+      list(model = "Birth-death constant extinction fraction (coalescent approx)",
+           LH = NA, aicc = NA, lamb0 = NA, alpha = NA, eps = NA)
+    },
+    warning = function(cond) {
+      message(paste("Warning in Model 4c:", cond))
+    },
+    finally = message("Model 4c completed")
+  )  
+
   # Model 4d
-  m4d = fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
-                     cst.lamb = FALSE, cst.mu = FALSE, fix.eps = FALSE)
-  
+  m4d = tryCatch(
+    {
+      fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
+                   cst.lamb = FALSE, cst.mu = FALSE, fix.eps = FALSE)
+    }, 
+    error = function(cond) {
+      message(paste("Error in Model 4d:", cond))
+      list(model = "Birth-death varying speciation and extinction (coalescent approx)",
+           LH = NA, aicc = NA, lamb0 = NA, alpha = NA, mu0 = NA, beta = NA)
+    },
+    warning = function(cond) {
+      message(paste("Warning in Model 4d:", cond))
+    },
+    finally = message("Model 4d completed")
+  )
+   
   # Model 5
-  m5 = fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
-                    cst.lamb = TRUE, mu.0 = TRUE)
+  m5 = tryCatch(
+    {
+      fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
+                   cst.lamb = TRUE, mu.0 = TRUE)
+    }, 
+    error = function(cond) {
+      message(paste("Error in Model 5:", cond))
+      list(model = "Pure birth constant speciation (coalescent approx)",
+           LH = NA, aicc = NA, lamb0 = NA)
+    },
+    warning = function(cond) {
+      message(paste("Warning in Model 5:", cond))
+    },
+    finally = message("Model 5 completed")
+  )   
   
   # Model 6
-  m6 = fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
-                    cst.lamb = FALSE, mu.0 = TRUE)
+  m6 = tryCatch(
+    {
+      fit_coal_var(tree, lamb0 = 0.01, alpha = -0.001, mu0 = 0.0, beta = 0,
+                   cst.lamb = FALSE, mu.0 = TRUE)
+    }, 
+    error = function(cond) {
+      message(paste("Error in Model 6:", cond))
+      list(model = "Pure birth varying speciation (coalescent approx)",
+           LH = NA, aicc = NA, lamb0 = NA, alpha = NA)
+    },
+    warning = function(cond) {
+      message(paste("Warning in Model 6:", cond))
+    },
+    finally = message("Model 6 completed")
+  )   
 
   out = data.frame(model = c('1', '2', '3', '4a', '4b', '4c', '4d', '5', '6'),
                    name = c(m1$model, m2$model, m3$model, m4a$model, m4b$model, 
@@ -118,10 +229,9 @@ multi.panda.fit = function(tree) {
                              NA, m6$alpha),
                    beta = c(NA, NA, NA, NA, m4b$beta, NA, m4d$beta, NA, NA),
                    eps = c(rep(NA, 5), m4c$eps, rep(NA, 3)))
-                   
+
   return(out)                 
-                   
-                   
+
 }
 
 
