@@ -2,8 +2,10 @@
 
 
 Code for conducting eco-evolutionary simulations of diversification and dispersal of species with 
-and without energetic constraints as described in Hurlbert & Stegen, 2014, "When should species 
-richness be energy limited, and how would we know?" *Ecology Letters*. [DOI: 10.1111/ele.12240](http://onlinelibrary.wiley.com/doi/10.1111/ele.12240/abstract)
+and without energetic constraints as described in Hurlbert & Stegen, 2014a, "When should species 
+richness be energy limited, and how would we know?" *Ecology Letters*. [DOI: 10.1111/ele.12240](http://onlinelibrary.wiley.com/doi/10.1111/ele.12240/abstract) and in Hurlbert & 
+Stegen, 2014b, "On the processes generating latitudinal richness gradients: identifying diagnostic
+patterns and predictions", *Frontiers in Genetics*. [http://dx.doi.org/10.3389/fgene.2014.00420](http://journal.frontiersin.org/Journal/10.3389/fgene.2014.00420/abstract)
 
 ##Setup
 Requirements: R 3.0 or greater with the following packages installed and the following scripts sourced:
@@ -79,10 +81,6 @@ file. These parameters include:
     <td>num of individuals that can be supported in region with the highest carrying capacity</td>
   </tr>
   <tr>
-    <td>min.K</td>
-    <td>num of individuals that can be supported in region with the lowest carrying capacity</td>
-  </tr>
-  <tr>
     <td>num.of.bins</td>
     <td>number of spatial bins</td>
   </tr>
@@ -99,6 +97,10 @@ file. These parameters include:
     <td>replicate ID if simulation is a repeat of an existing parameter combination</td>
   </tr>
   <tr>
+    <td>disturb_frequency</td>
+    <td>frequency of disturbance in number of time steps</td>
+  </tr>
+  <tr>
     <td>temperate_disturb_intensity</td>
     <td>fraction of individuals killed in disturbance event at temperate end of gradient</td>
   </tr>
@@ -107,17 +109,51 @@ file. These parameters include:
     <td>fraction of individuals killed in disturbance event at tropical end of gradient</td>
   </tr>
   <tr>
-    <td>disturb_frequency</td>
-    <td>frequency of disturbance in number of time steps</td>
+    <td>specn.gradient</td>
+    <td>"on" if speciation rate (per individual probability) varies linearly across the gradient; else "off"</td>
+  </tr>
+  <tr>
+    <td>specn.factor</td>
+    <td>factor by which speciation rate varies from the highest to the lowest end of the gradient</td>
+  </tr>
+  <tr>
+    <td>gamma</td>
+    <td>The exponential decay rate describing how extinction probability decreases with population size</td>
   </tr>
 </table>
 
-The simulations reported on in the paper correspond to the following sim.id's:
+The simulations reported on in the [*Ecology Letters*](http://onlinelibrary.wiley.com/doi/10.1111/ele.12240/abstract) paper correspond to the following sim.id's:
 
 Zero sum energy gradient, temperate origin: c(4075:4084, 4275:4364)  
 Zero sum energy gradient, tropical origin: c(4065:4074, 4185:4274)  
 No zero sum constraint, temperate origin: c(3565:3664)  
 No zero sum constraint, tropical origin: c(3465:3564)  
+
+The simulations reported on in the [*Frontiers in Genetics*](http://journal.frontiersin.org/article/10.3389/fgene.2014.00420/abstract) paper correspond to the following sim.id's:
+
+Energy gradient, temperate origin: c(4075:4084)  
+Energy gradient, tropical origin: c(4065:4074)  
+Pure niche conservatism, temperate origin: c(3565:3574)  
+Pure niche conservatism, tropical origin: c(3465:3474)  
+Speciation gradient, temperate origin: c(5535:5544)  
+Speciation gradient, tropical origin: c(5525:5534)  
+Disturbance gradient, temperate origin: c(5635:5644)  
+Disturbance gradient, tropical origin: c(5625:5634)
+
+(Note that phylogenies in Figure 2 were estimated at 30,000 timesteps rather than 100,000 for the Energy, Disturbance, and 
+Speciation Gradient scenarios. For the Disturbance Gradient, this is analogous to examining sim 3865 instead of 5625. For Energy
+and Speciation Gradient scenarios, a phylogeny of species extant at t=30,000 was created using code like this:
+```
+sim = output.unzip('raw_sim_output', simID)
+all.pops = sim$all.populations
+extant.pops = subset(all.pops, time.of.origin <= 30000 & time.of.extinction > 30000)
+phy = sim$phylo.out
+extant_phy = drop.tip(phy, phy$tip.label[!phy$tip.label %in% extant.pops$spp.name])
+```
+The extant phylogenies were then analyzed using [BAMM](http://bamm-project.org/) and [BAMMtools](http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12199/abstract). See this [Github repo]
+(https://github.com/ahhurlbert/bamm-simulations) for BAMM-related analysis code.)
+
+-----
 
 To run simulations with novel parameter combinations, add a line or lines specifying those parameter combos
 to the SENC_Master_Simulation_Matrix.csv file.  
@@ -310,7 +346,7 @@ Note: The analysis of large phylogenetic trees is memory-intensive. You may need
 `$ bsub -M 8 -o out.%J -n 100 -a openmpi mpirun Rscript run_analysis_on_cluster.r 3765 3864 30`
 
 
-##Duplicating manuscript figures
+##Duplicating manuscript figures from Hurlbert & Stegen 2014a, *Ecology Letters*:
 
 ###Figures 2 and 4
 metrics.through.time.r
