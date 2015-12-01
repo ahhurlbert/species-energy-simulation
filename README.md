@@ -127,11 +127,22 @@ Energy gradient, temperate origin: c(4075:4084)
 Energy gradient, tropical origin: c(4065:4074)  
 Pure niche conservatism, temperate origin: c(3565:3574)  
 Pure niche conservatism, tropical origin: c(3465:3474)  
-Speciation gradient, temperate origin: c(5455:5464)  
-Speciation gradient, tropical origin: c(5445:5454)  
+Speciation gradient, temperate origin: c(5535:5544)  
+Speciation gradient, tropical origin: c(5525:5534)  
 Disturbance gradient, temperate origin: c(5635:5644)  
 Disturbance gradient, tropical origin: c(5625:5634)
 
+(Note that phylogenies in Figure 2 were estimated at 30,000 timesteps rather than 100,000 for the Energy, Disturbance, and 
+Speciation Gradient scenarios. For the Disturbance Gradient, this is analogous to examining sim 3865 instead of 5625. For Energy
+and Speciation Gradient scenarios, a phylogeny of species extant at t=30,000 was created using code like this:
+```
+sim = output.unzip('raw_sim_output', simID)
+all.pops = sim$all.populations
+extant.pops = subset(all.pops, time.of.origin <= 30000 & time.of.extinction > 30000)
+phy = sim$phylo.out
+extant_phy = drop.tip(phy, phy$tip.label[!phy$tip.label %in% extant.pops$spp.name])
+```
+The extant phylogenies were then analyzed using [BAMM](http://bamm-project.org/) and [BAMMtools](http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12199/abstract).)
 
 To run simulations with novel parameter combinations, add a line or lines specifying those parameter combos
 to the SENC_Master_Simulation_Matrix.csv file.  
