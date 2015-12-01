@@ -2,8 +2,10 @@
 
 
 Code for conducting eco-evolutionary simulations of diversification and dispersal of species with 
-and without energetic constraints as described in Hurlbert & Stegen, 2014, "When should species 
-richness be energy limited, and how would we know?" *Ecology Letters*. [DOI: 10.1111/ele.12240](http://onlinelibrary.wiley.com/doi/10.1111/ele.12240/abstract)
+and without energetic constraints as described in Hurlbert & Stegen, 2014a, "When should species 
+richness be energy limited, and how would we know?" *Ecology Letters*. [DOI: 10.1111/ele.12240](http://onlinelibrary.wiley.com/doi/10.1111/ele.12240/abstract) and in Hurlbert & 
+Stegen, 2014b, "On the processes generating latitudinal richness gradients: identifying diagnostic
+patterns and predictions", *Frontiers in Genetics*. [http://dx.doi.org/10.3389/fgene.2014.00420](http://journal.frontiersin.org/Journal/10.3389/fgene.2014.00420/abstract)
 
 ##Setup
 Requirements: R 3.0 or greater with the following packages installed and the following scripts sourced:
@@ -112,12 +114,24 @@ file. These parameters include:
   </tr>
 </table>
 
-The simulations reported on in the paper correspond to the following sim.id's:
+The simulations reported on in the [*Ecology Letters*](http://onlinelibrary.wiley.com/doi/10.1111/ele.12240/abstract) paper correspond to the following sim.id's:
 
 Zero sum energy gradient, temperate origin: c(4075:4084, 4275:4364)  
 Zero sum energy gradient, tropical origin: c(4065:4074, 4185:4274)  
 No zero sum constraint, temperate origin: c(3565:3664)  
 No zero sum constraint, tropical origin: c(3465:3564)  
+
+The simulations reported on in the [*Frontiers in Genetics*](http://journal.frontiersin.org/article/10.3389/fgene.2014.00420/abstract) paper correspond to the following sim.id's:
+
+Energy gradient, temperate origin: c(4075:4084)  
+Energy gradient, tropical origin: c(4065:4074)
+Pure niche conservatism, temperate origin: c(3565:3574)  
+Pure niche conservatism, tropical origin: c(3465:3474)  
+Speciation gradient, temperate origin: c(5455:5464)  
+Speciation gradient, tropical origin: c(5445:5454)
+Disturbance gradient, temperate origin: c(5635:5644)  
+Disturbance gradient, tropical origin: c(5625:5634)
+
 
 To run simulations with novel parameter combinations, add a line or lines specifying those parameter combos
 to the SENC_Master_Simulation_Matrix.csv file.  
@@ -310,7 +324,7 @@ Note: The analysis of large phylogenetic trees is memory-intensive. You may need
 `$ bsub -M 8 -o out.%J -n 100 -a openmpi mpirun Rscript run_analysis_on_cluster.r 3765 3864 30`
 
 
-##Duplicating manuscript figures
+##Duplicating manuscript figures from Hurlbert & Stegen 2014a, *Ecology Letters*:
 
 ###Figures 2 and 4
 metrics.through.time.r
