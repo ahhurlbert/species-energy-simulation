@@ -23,43 +23,32 @@ tree2 = read.tree('raw_sim_output/sim3465_out/SENC_phylo_sim3465.tre')
 tree1p = drop.extinct(tree1) #took ~2 hrs
 tree2p = drop.extinct(tree2) #took ~15 min
 
-# Using sim analysis code:
-sim_dir = 'z:/SENCoutput/Hurlbert_and_Stegen_2014/raw_sim_output/senc.out.4065'
-all.populations = read.csv(paste(sim_dir,'/SENC_all.pops_sim',sim,'.csv',sep=''), header=T)
-time.richness = read.csv(paste(sim_dir,'/SENC_time.rich_sim',sim,'.csv',sep=''), header=T)
-phylo.out = read.tree(paste(sim_dir,'/SENC_phylo_sim',sim,'.tre',sep=''))
-params.out = read.csv(paste(sim_dir,'/SENC_params.out_sim',sim,'.csv',sep=''), header=T)
 
-t=params.out$max.time
-sub.species = as.character(unique(subset(all.populations,time.of.sp.origin <= t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
-# Some species may be extant globally (extant==1) but in our boundary regions (0,11) only;
-# we need to eliminate species that are not extant within regions 1-10 (which is all that is
-# reflected in the all.populations dataframe)
-time.slice.populations = all.populations;
-time.slice.populations$extant = 0;
-time.slice.populations$extant[time.slice.populations$time.of.origin <= t & time.slice.populations$time.of.extinction > t] = 1
-extant.ornot = aggregate(time.slice.populations$extant,by=list(time.slice.populations$spp.name),sum)
-extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
-sub.species2 = sub.species[!sub.species %in% extinct.species]
-tips.to.drop = as.character(phylo.out$tip.label[!phylo.out$tip.label %in% sub.species2]);
-sub.phylo = drop.tip(phylo.out,tips.to.drop);
-sub.phylo$Nnode
-
-
-
-# Following doesn't work with tau0 = .01, try other values besides 1e-4
-result1p = fit_coal_cst(tree1.2, tau0 = 1e-4, gamma = 1, cst.rate = TRUE)
-
-# This takes ~2 hours:
-result2 <- fit_coal_var(tree2, lamb0=0.01, alpha=-0.001, mu0=0.0, beta=0)
-# This one is instantaneous:
-result2.cst = fit_coal_cst(tree2, tau0 = 0.01, gamma = 1, cst.rate = TRUE)
-
-# This one results in an error:
-# Error in optim(init, optimLH.coalBD, method = meth, control = list(ndeps = 10^(-4))) : 
-# function cannot be evaluated at initial parameters
-result1 <- fit_coal_var(tree1, lamb0=0.01, alpha=-0.001, mu0=0.0, beta=0)
-
+# Function that analyzes simulation output and spits out a phylogenetic tree
+# in which extinct species, and species only occurring in regions 0 or 11
+# are pruned out.
+pruneExtinctAndExtraRegional = function(sim, outputDir = 'z:/SENCoutput/Hurlbert_and_Stegen_2014/raw_sim_output') {
+  
+  sim_dir = paste(outputDir, '/senc.out.', sim, sep = '')
+  all.populations = read.csv(paste(sim_dir,'/SENC_all.pops_sim',sim,'.csv',sep=''), header=T)
+  phylo.out = read.tree(paste(sim_dir,'/SENC_phylo_sim',sim,'.tre',sep=''))
+  params.out = read.csv(paste(sim_dir,'/SENC_params.out_sim',sim,'.csv',sep=''), header=T)
+  
+  t=params.out$max.time
+  sub.species = as.character(unique(subset(all.populations,time.of.sp.origin <= t & time.of.sp.extinction > t, select = 'spp.name'))[,1]);
+  # Some species may be extant globally (extant==1) but in our boundary regions (0,11) only;
+  # we need to eliminate species that are not extant within regions 1-10 (which is all that is
+  # reflected in the all.populations dataframe)
+  time.slice.populations = all.populations;
+  time.slice.populations$extant = 0;
+  time.slice.populations$extant[time.slice.populations$time.of.origin <= t & time.slice.populations$time.of.extinction > t] = 1
+  extant.ornot = aggregate(time.slice.populations$extant,by=list(time.slice.populations$spp.name),sum)
+  extinct.species = as.character(extant.ornot[extant.ornot$x==0,'Group.1'])
+  sub.species2 = sub.species[!sub.species %in% extinct.species]
+  tips.to.drop = as.character(phylo.out$tip.label[!phylo.out$tip.label %in% sub.species2]);
+  sub.phylo = drop.tip(phylo.out,tips.to.drop);
+  return(sub.phylo)
+}
 
 multi.panda.fit = function(tree) {
   
@@ -234,7 +223,39 @@ multi.panda.fit = function(tree) {
 
 }
 
+# Fit the 9 models from Morlon et al. 2010 to the 4 diversification scenarios
+# from Hurlbert & Stegen 2014, Frontiers in Genetics
 
+#Energy gradient
+t4065.30k = read.tree('z:/git/bamm-simulations/sim4065-30k/extant_phy4065_30k.tre')
+#Speciation gradient
+t5525 = read.tree('z:/git/bamm-simulations/sim5525/extant_phy5525.tre')
+t5525.30k = read.tree('z:/git/bamm-simulations/sim5525-30k/run7/extant_phy5525_30k.tre')
+#Disturbance gradient
+t3865 = read.tree('z:/git/bamm-simulations/sim3865/extant_phy3865.tre')
+#Niche conservatism
+t3465 = read.tree('z:/git/bamm-simulations/sim3465/run3/extant_phy3465.tre')
+
+# Scale trees to have max branch length of 100
+# (advice from Dan Rabosky to get BAMM to fit trees better without getting stuck
+# on local optima)
+t4065.30ksc = t4065.30k
+t4065.30ksc$edge.length = 100*t4065.30ksc$edge.length/max(t4065.30ksc$edge.length)
+
+t5525sc = t5525
+t5525sc$edge.length = 100*t5525sc$edge.length/max(t5525sc$edge.length)
+
+t5525.30ksc = t5525.30k
+t5525.30ksc$edge.length = 100*t5525.30ksc$edge.length/max(t5525.30ksc$edge.length)
+
+t3865sc = t3865
+t3865sc$edge.length = 100*t3865sc$edge.length/max(t3865sc$edge.length)
+
+panda4065.30k = multi.panda.fit(t4065.30ksc)
+panda5525sc = multi.panda.fit(t5525sc)
+panda3865 = multi.panda.fit(t3865sc)
+panda5525.30k = multi.panda.fit(t5525.30ksc)
+panda3465 = multi.panda.fit(t3465)
 
 
 write.csv(out, 'analysis_output/RPANDA_analysis/sim3465_panda.csv', row.names=F)
