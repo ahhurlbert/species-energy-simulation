@@ -159,6 +159,8 @@ multi.panda.fit = function(tree) {
     finally = message("Model 6 completed")
   )   
 
+  aiccs = c(m1$aicc, m2$aicc, m3$aicc, m4a$aicc, m4b$aicc, m4c$aicc,
+            m4d$aicc, m5$aicc, m6$aicc)
   out = data.frame(model = c('1', '2', '3', '4a', '4b', '4c', '4d', '5', '6'),
                    name = c(m1$model, m2$model, m3$model, m4a$model, m4b$model, 
                             m4c$model, m4d$model, m5$model, m6$model),
@@ -166,6 +168,15 @@ multi.panda.fit = function(tree) {
                             m4c$LH, m4d$LH, m5$LH, m6$LH),
                    aicc = c(m1$aicc, m2$aicc, m3$aicc, m4a$aicc, m4b$aicc, 
                             m4c$aicc, m4d$aicc, m5$aicc, m6$aicc),
+                   delta.aicc = c(m1$aicc - min(aiccs, na.rm = T),
+                                  m2$aicc - min(aiccs, na.rm = T),
+                                  m3$aicc - min(aiccs, na.rm = T),
+                                  m4a$aicc - min(aiccs, na.rm = T),
+                                  m4b$aicc - min(aiccs, na.rm = T),
+                                  m4c$aicc - min(aiccs, na.rm = T),
+                                  m4d$aicc - min(aiccs, na.rm = T),
+                                  m5$aicc - min(aiccs, na.rm = T),
+                                  m6$aicc - min(aiccs, na.rm = T)),
                    tau0 = c(m1$tau0, m2$tau0, rep(NA, 7)),
                    gamma = c(NA, m2$gamma, rep(NA, 7)),
                    lamb0 = c(NA, NA, m3$lamb0, m4a$lamb0, m4b$lamb0, 
@@ -179,6 +190,12 @@ multi.panda.fit = function(tree) {
 
   return(out)                 
 
+}
+
+rescaleBranchLengths = function(tree, maxLength = 100) {
+  tree.out = tree
+  tree.out$edge.length = maxLength * tree$edge.length/max(tree$edge.length)
+  return(tree.out)
 }
 
 # Fit the 9 models from Morlon et al. 2010 to the 4 diversification scenarios
@@ -197,17 +214,10 @@ t3465 = read.tree('z:/git/bamm-simulations/sim3465/run3/extant_phy3465.tre')
 # Scale trees to have max branch length of 100
 # (advice from Dan Rabosky to get BAMM to fit trees better without getting stuck
 # on local optima)
-t4065.30ksc = t4065.30k
-t4065.30ksc$edge.length = 100*t4065.30ksc$edge.length/max(t4065.30ksc$edge.length)
-
-t5525sc = t5525
-t5525sc$edge.length = 100*t5525sc$edge.length/max(t5525sc$edge.length)
-
-t5525.30ksc = t5525.30k
-t5525.30ksc$edge.length = 100*t5525.30ksc$edge.length/max(t5525.30ksc$edge.length)
-
-t3865sc = t3865
-t3865sc$edge.length = 100*t3865sc$edge.length/max(t3865sc$edge.length)
+t4065.30ksc = rescaleBranchLengths(t4065.30k)
+t5525sc = rescaleBranchLengths(t5525)
+t5525.30ksc = rescaleBranchLengths(t5525.30k)
+t3865sc = rescaleBranchLengths(t3865)
 
 panda4065.30k = multi.panda.fit(t4065.30ksc)
 panda5525sc = multi.panda.fit(t5525sc)
@@ -217,7 +227,7 @@ panda3465 = multi.panda.fit(t3465)
 
 combined = rbind(panda4065.30k, panda5525sc, panda5525.30k, panda3865, panda3465)
 combined$sim.id = rep(c('4065-30k', '5525', '5525-30k', '3865', '3465'), each = 9)
-combined = combined[, c(12, 1:11)]
-combined[,6:12] = signif(combined[, 6:12], 3)
+combined = combined[, c(13, 1:12)]
+combined[,6:13] = signif(combined[, 6:1], 3)
 
 write.csv(combined, 'analysis_output/RPANDA_analysis/panda_output.csv', row.names=F)
