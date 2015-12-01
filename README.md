@@ -142,7 +142,8 @@ extant.pops = subset(all.pops, time.of.origin <= 30000 & time.of.extinction > 30
 phy = sim$phylo.out
 extant_phy = drop.tip(phy, phy$tip.label[!phy$tip.label %in% extant.pops$spp.name])
 ```
-The extant phylogenies were then analyzed using [BAMM](http://bamm-project.org/) and [BAMMtools](http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12199/abstract).)
+The extant phylogenies were then analyzed using [BAMM](http://bamm-project.org/) and [BAMMtools](http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12199/abstract). See this [Github repo]
+(https://github.com/ahhurlbert/bamm-simulations) for BAMM-related analysis code.)
 
 -----
 
