@@ -218,5 +218,6 @@ panda3465 = multi.panda.fit(t3465)
 combined = rbind(panda4065.30k, panda5525sc, panda5525.30k, panda3865, panda3465)
 combined$sim.id = rep(c('4065-30k', '5525', '5525-30k', '3865', '3465'), each = 9)
 combined = combined[, c(12, 1:11)]
+combined[,6:12] = signif(combined[, 6:12], 3)
 
 write.csv(combined, 'analysis_output/RPANDA_analysis/panda_output.csv', row.names=F)
