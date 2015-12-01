@@ -81,10 +81,6 @@ file. These parameters include:
     <td>num of individuals that can be supported in region with the highest carrying capacity</td>
   </tr>
   <tr>
-    <td>min.K</td>
-    <td>num of individuals that can be supported in region with the lowest carrying capacity</td>
-  </tr>
-  <tr>
     <td>num.of.bins</td>
     <td>number of spatial bins</td>
   </tr>
@@ -101,6 +97,10 @@ file. These parameters include:
     <td>replicate ID if simulation is a repeat of an existing parameter combination</td>
   </tr>
   <tr>
+    <td>disturb_frequency</td>
+    <td>frequency of disturbance in number of time steps</td>
+  </tr>
+  <tr>
     <td>temperate_disturb_intensity</td>
     <td>fraction of individuals killed in disturbance event at temperate end of gradient</td>
   </tr>
@@ -109,8 +109,16 @@ file. These parameters include:
     <td>fraction of individuals killed in disturbance event at tropical end of gradient</td>
   </tr>
   <tr>
-    <td>disturb_frequency</td>
-    <td>frequency of disturbance in number of time steps</td>
+    <td>specn.gradient</td>
+    <td>"on" if speciation rate (per individual probability) varies linearly across the gradient; else "off"</td>
+  </tr>
+  <tr>
+    <td>specn.factor</td>
+    <td>factor by which speciation rate varies from the highest to the lowest end of the gradient</td>
+  </tr>
+  <tr>
+    <td>gamma</td>
+    <td>The exponential decay rate describing how extinction probability decreases with population size</td>
   </tr>
 </table>
 
