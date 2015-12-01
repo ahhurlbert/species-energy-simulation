@@ -124,11 +124,11 @@ No zero sum constraint, tropical origin: c(3465:3564)
 The simulations reported on in the [*Frontiers in Genetics*](http://journal.frontiersin.org/article/10.3389/fgene.2014.00420/abstract) paper correspond to the following sim.id's:
 
 Energy gradient, temperate origin: c(4075:4084)  
-Energy gradient, tropical origin: c(4065:4074)
+Energy gradient, tropical origin: c(4065:4074)  
 Pure niche conservatism, temperate origin: c(3565:3574)  
 Pure niche conservatism, tropical origin: c(3465:3474)  
 Speciation gradient, temperate origin: c(5455:5464)  
-Speciation gradient, tropical origin: c(5445:5454)
+Speciation gradient, tropical origin: c(5445:5454)  
 Disturbance gradient, temperate origin: c(5635:5644)  
 Disturbance gradient, tropical origin: c(5625:5634)
 
