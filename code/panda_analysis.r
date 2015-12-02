@@ -161,6 +161,7 @@ multi.panda.fit = function(tree) {
 
   aiccs = c(m1$aicc, m2$aicc, m3$aicc, m4a$aicc, m4b$aicc, m4c$aicc,
             m4d$aicc, m5$aicc, m6$aicc)
+
   out = data.frame(model = c('1', '2', '3', '4a', '4b', '4c', '4d', '5', '6'),
                    name = c(m1$model, m2$model, m3$model, m4a$model, m4b$model, 
                             m4c$model, m4d$model, m5$model, m6$model),
@@ -168,15 +169,8 @@ multi.panda.fit = function(tree) {
                             m4c$LH, m4d$LH, m5$LH, m6$LH),
                    aicc = c(m1$aicc, m2$aicc, m3$aicc, m4a$aicc, m4b$aicc, 
                             m4c$aicc, m4d$aicc, m5$aicc, m6$aicc),
-                   delta.aicc = c(m1$aicc - min(aiccs, na.rm = T),
-                                  m2$aicc - min(aiccs, na.rm = T),
-                                  m3$aicc - min(aiccs, na.rm = T),
-                                  m4a$aicc - min(aiccs, na.rm = T),
-                                  m4b$aicc - min(aiccs, na.rm = T),
-                                  m4c$aicc - min(aiccs, na.rm = T),
-                                  m4d$aicc - min(aiccs, na.rm = T),
-                                  m5$aicc - min(aiccs, na.rm = T),
-                                  m6$aicc - min(aiccs, na.rm = T)),
+                   delta.aicc = aiccs - min(aiccs, na.rm = T),
+                   w = round(exp(-0.5*delta.aicc)/sum(exp(-0.5*delta.aicc)), 2),
                    tau0 = c(m1$tau0, m2$tau0, rep(NA, 7)),
                    gamma = c(NA, m2$gamma, rep(NA, 7)),
                    lamb0 = c(NA, NA, m3$lamb0, m4a$lamb0, m4b$lamb0, 
@@ -227,7 +221,8 @@ panda3465 = multi.panda.fit(t3465)
 
 combined = rbind(panda4065.30k, panda5525sc, panda5525.30k, panda3865, panda3465)
 combined$sim.id = rep(c('4065-30k', '5525', '5525-30k', '3865', '3465'), each = 9)
-combined = combined[, c(13, 1:12)]
-combined[,6:13] = signif(combined[, 6:1], 3)
+combined = combined[, c(14, 1:5, 13, 6:12)]
+combined[,7:14] = signif(combined[, 7:14], 3)
+combined$w = round(combined$w, 2)
 
 write.csv(combined, 'analysis_output/RPANDA_analysis/panda_output.csv', row.names=F)
