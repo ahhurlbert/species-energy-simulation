@@ -4,11 +4,28 @@
 # (2010, PLoS Biology) RPANDA package
 
 # Set working directory to species-energy-simulation repo
+setwd('z:/git/species-energy-simulation')
 
+source('code/unzipping_files.r')
 library(RPANDA)
 library(geiger)
 
-multi.panda.fit = function(tree) {
+# Function for rescaling the branch lengths, with a default setting
+# the maximum branch length to 100
+rescaleBranchLengths = function(tree, maxLength = 100) {
+  tree.out = tree
+  tree.out$edge.length = maxLength * tree$edge.length/max(tree$edge.length)
+  return(tree.out)
+}
+
+
+# If append = TRUE, then results will be appended to data.frame
+# called prevOutput which must have the same column names
+multi.panda.fit = function(simID, tree, scale = TRUE, append = FALSE, prevOutput) {
+  
+  if(scale) {
+    tree = rescaleBranchLengths(tree)
+  }
   
   # Model 1
   m1 = tryCatch(
@@ -162,7 +179,8 @@ multi.panda.fit = function(tree) {
   aiccs = c(m1$aicc, m2$aicc, m3$aicc, m4a$aicc, m4b$aicc, m4c$aicc,
             m4d$aicc, m5$aicc, m6$aicc)
 
-  out = data.frame(model = c('1', '2', '3', '4a', '4b', '4c', '4d', '5', '6'),
+  out = data.frame(sim.id = rep(simID, 9),
+                   model = c('1', '2', '3', '4a', '4b', '4c', '4d', '5', '6'),
                    name = c(m1$model, m2$model, m3$model, m4a$model, m4b$model, 
                             m4c$model, m4d$model, m5$model, m6$model),
                    LH = c(m1$LH, m2$LH, m3$LH, m4a$LH, m4b$LH, 
@@ -182,21 +200,26 @@ multi.panda.fit = function(tree) {
                    beta = c(NA, NA, NA, NA, m4b$beta, NA, m4d$beta, NA, NA),
                    eps = c(rep(NA, 5), m4c$eps, rep(NA, 3)))
 
+  if(append) {
+    out = rbind(prevOutput, out)
+  }
+  
   return(out)                 
-
 }
 
-rescaleBranchLengths = function(tree, maxLength = 100) {
-  tree.out = tree
-  tree.out$edge.length = maxLength * tree$edge.length/max(tree$edge.length)
-  return(tree.out)
-}
+
+
+# Important to set stringsAsFactors to FALSE or else new simID's will prevent
+# rbinding
+prevOutput = read.csv('z:/git/species-energy-simulation/analysis_output/RPANDA_analysis/panda_output.csv', 
+                      header=T, stringsAsFactors = FALSE)
 
 # Fit the 9 models from Morlon et al. 2010 to the 4 diversification scenarios
 # from Hurlbert & Stegen 2014, Frontiers in Genetics
 
 #Energy gradient
 t4065.30k = read.tree('z:/git/bamm-simulations/sim4065-30k/extant_phy4065_30k.tre')
+t4065 = read.tree('z:/git/bamm-simulations/sim4065/run6/extant_phy4065_scaled.tre')
 #Speciation gradient
 t5525 = read.tree('z:/git/bamm-simulations/sim5525/extant_phy5525.tre')
 t5525.30k = read.tree('z:/git/bamm-simulations/sim5525-30k/run7/extant_phy5525_30k.tre')
@@ -213,16 +236,43 @@ t5525sc = rescaleBranchLengths(t5525)
 t5525.30ksc = rescaleBranchLengths(t5525.30k)
 t3865sc = rescaleBranchLengths(t3865)
 
-panda4065.30k = multi.panda.fit(t4065.30ksc)
-panda5525sc = multi.panda.fit(t5525sc)
-panda3865 = multi.panda.fit(t3865sc)
-panda5525.30k = multi.panda.fit(t5525.30ksc)
-panda3465 = multi.panda.fit(t3465)
+panda4065.30k = multi.panda.fit('4065-30k', t4065.30ksc)
+panda5525sc = multi.panda.fit('5525', t5525sc)
+panda3865 = multi.panda.fit('3865', t3865sc)
+panda5525.30k = multi.panda.fit('5525-30k', t5525.30ksc)
+panda3465 = multi.panda.fit('3465', t3465)
+panda4065 = multi.panda.fit('4065', t4065)
+
 
 combined = rbind(panda4065.30k, panda5525sc, panda5525.30k, panda3865, panda3465)
-combined$sim.id = rep(c('4065-30k', '5525', '5525-30k', '3865', '3465'), each = 9)
-combined = combined[, c(14, 1:5, 13, 6:12)]
 combined[,7:14] = signif(combined[, 7:14], 3)
 combined$w = round(combined$w, 2)
 
 write.csv(combined, 'analysis_output/RPANDA_analysis/panda_output.csv', row.names=F)
+
+
+
+# Workflow for many sims
+
+# Shell commands for unzipping sim output folders
+# for ((i=3565; i<=3574; i++)); do unzip senc.out.$i.zip; done
+sims = 4067:4084
+
+# Read in existing panda output
+prevOutput = read.csv('z:/species-energy-simulation/analysis_output/RPANDA_analysis/panda_output.csv', 
+                      header=T, stringsAsFactors = FALSE)
+
+for (s in sims) {
+  simoutput = output.unzip('z:/sencoutput/', s)
+  phy = simoutput$phylo.out
+  all.pops = simoutput$all.populations
+  max.time = max(all.pops$time.of.origin)
+  extant.pops = subset(all.pops, extant==1)
+  extant.phy = drop.tip(phy, phy$tip.label[!phy$tip.label %in% extant.pops$spp.name])
+  
+  newOutput = multi.panda.fit(simID = s, extant.phy, scale = TRUE, append = TRUE, prevOutput)  
+  prevOutput = newOutput
+  
+}
+
+
