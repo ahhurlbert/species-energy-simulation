@@ -183,6 +183,7 @@ multi.panda.fit = function(simID, tree, scale = TRUE,
 
   aiccs = c(m1$aicc, m2$aicc, m3$aicc, m4a$aicc, m4b$aicc, m4c$aicc,
             m4d$aicc, m5$aicc, m6$aicc)
+  delta.aicc = aiccs - min(aiccs, na.rm = T)
 
   out = data.frame(sim.id = rep(simID, 9),
                    model = c('1', '2', '3', '4a', '4b', '4c', '4d', '5', '6'),
@@ -190,9 +191,9 @@ multi.panda.fit = function(simID, tree, scale = TRUE,
                             m4c$model, m4d$model, m5$model, m6$model),
                    LH = c(m1$LH, m2$LH, m3$LH, m4a$LH, m4b$LH, 
                             m4c$LH, m4d$LH, m5$LH, m6$LH),
-                   aicc = c(m1$aicc, m2$aicc, m3$aicc, m4a$aicc, m4b$aicc, 
+                   AICc = c(m1$aicc, m2$aicc, m3$aicc, m4a$aicc, m4b$aicc, 
                             m4c$aicc, m4d$aicc, m5$aicc, m6$aicc),
-                   delta.aicc = aiccs - min(aiccs, na.rm = T),
+                   deltaAICc = aiccs - min(aiccs, na.rm = T),
                    w = round(exp(-0.5*delta.aicc)/sum(exp(-0.5*delta.aicc)), 2),
                    tau0 = c(m1$tau0, m2$tau0, rep(NA, 7)),
                    gamma = c(NA, m2$gamma, rep(NA, 7)),
