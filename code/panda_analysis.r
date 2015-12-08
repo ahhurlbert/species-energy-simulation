@@ -7,8 +7,10 @@
 setwd('z:/git/species-energy-simulation')
 
 source('code/unzipping_files.r')
+source('code/time.slice.phylo.r')
 library(RPANDA)
 library(geiger)
+library(paleotree)
 
 # Function for rescaling the branch lengths, with a default setting
 # the maximum branch length to 100
@@ -21,7 +23,10 @@ rescaleBranchLengths = function(tree, maxLength = 100) {
 
 # If append = TRUE, then results will be appended to data.frame
 # called prevOutput which must have the same column names
-multi.panda.fit = function(simID, tree, scale = TRUE, append = FALSE, prevOutput) {
+multi.panda.fit = function(simID, tree, scale = TRUE, 
+                           append = FALSE, prevOutput, write = TRUE) {
+  
+  message(paste("Fitting PANDA on sim", simID))
   
   if(scale) {
     tree = rescaleBranchLengths(tree)
@@ -204,7 +209,26 @@ multi.panda.fit = function(simID, tree, scale = TRUE, append = FALSE, prevOutput
     out = rbind(prevOutput, out)
   }
   
+  if(write) {
+    write.csv(out, paste('analysis_output/RPANDA_analysis/panda_output_', 
+              Sys.Date(), '.csv', sep = ''), row.names = F)
+  }
+  
+  message(paste("Sim", simID, "completed at", Sys.time()))
+  
   return(out)                 
+}
+
+# This function only works 
+getExtantTree = function(simID) {
+  simoutput = output.unzip('archived_sim_output', simID)
+  phy = simoutput$phylo.out
+  all.pops = simoutput$all.populations
+  max.time = max(all.pops$time.of.origin)
+  extant.pops = subset(all.pops, extant==1)
+  extant.phy = drop.tip(phy, phy$tip.label[!phy$tip.label %in% extant.pops$spp.name])
+  output = list(tree = extant.phy, t = max.time, all.pops = all.pops)
+  return(output)
 }
 
 
@@ -261,18 +285,30 @@ sims = 4067:4084
 # Read in existing panda output
 prevOutput = read.csv('z:/species-energy-simulation/analysis_output/RPANDA_analysis/panda_output.csv', 
                       header=T, stringsAsFactors = FALSE)
+# Mid-simulation time point at which to conduct analyses
+time = 30000
 
 for (s in sims) {
-  simoutput = output.unzip('z:/sencoutput/', s)
+  simoutput = output.unzip('archived_sim_output', s)
   phy = simoutput$phylo.out
   all.pops = simoutput$all.populations
   max.time = max(all.pops$time.of.origin)
   extant.pops = subset(all.pops, extant==1)
   extant.phy = drop.tip(phy, phy$tip.label[!phy$tip.label %in% extant.pops$spp.name])
   
-  newOutput = multi.panda.fit(simID = s, extant.phy, scale = TRUE, append = TRUE, prevOutput)  
-  prevOutput = newOutput
+  newOutput = multi.panda.fit(simID = s, extant.phy, scale = TRUE, append = TRUE, 
+                              prevOutput, write = TRUE)  
   
+  if (max.time > time) {
+    timeSlice = time.slice.phylo(simoutput, time)
+    
+    newerOutput = multi.panda.fit(simID = paste(s, "-", time, sep = ""), 
+                                  timeSlice$slicedphylo,scale = TRUE, 
+                                  append = TRUE, newOutput, write = TRUE)
+    prevOutput = newerOutput
+  } else {
+    prevOutput = newOutput
+  }
 }
 
 
