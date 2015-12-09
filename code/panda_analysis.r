@@ -54,7 +54,19 @@ multi.panda.fit = function(simID, tree, scale = TRUE,
     }, 
     error = function(cond) {
       message(paste("Error in Model 2:", cond))
-      list(model = "Equilibrium variable rate", LH = NA, aicc = NA, tau0 = NA, gamma = NA)
+      message("Trying again with gamma = 1")
+      tryCatch(
+        {
+          fit_coal_cst(tree, tau0 = 1e-4, gamma = 1, cst.rate = FALSE)
+        },
+        error = function(cond) {
+          message(paste("Error in Model2:", cond))
+          list(model = "Equilibrium variable rate", LH = NA, aicc = NA, tau0 = NA, gamma = NA)
+        },
+        warning = function(cond) {
+          message(paste("Warning in Model 2:", cond))
+        }
+      )
     },
     warning = function(cond) {
       message(paste("Warning in Model 2:", cond))
@@ -281,7 +293,7 @@ write.csv(combined, 'analysis_output/RPANDA_analysis/panda_output.csv', row.name
 
 # Shell commands for unzipping sim output folders
 # for ((i=3565; i<=3574; i++)); do unzip senc.out.$i.zip; done
-sims = 4067:4084
+sims = c(3465:3474, 3565:3574, 3866:3874, 3965:3974)
 
 # Read in existing panda output
 prevOutput = read.csv('z:/species-energy-simulation/analysis_output/RPANDA_analysis/panda_output.csv', 
