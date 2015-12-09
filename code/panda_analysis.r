@@ -293,7 +293,8 @@ write.csv(combined, 'analysis_output/RPANDA_analysis/panda_output.csv', row.name
 
 # Shell commands for unzipping sim output folders
 # for ((i=3565; i<=3574; i++)); do unzip senc.out.$i.zip; done
-sims = c(3465:3474, 3565:3574, 3866:3874, 3965:3974)
+#sims = c(4065:4084, 3465:3474, 3565:3574, 3866:3874, 3965:3974)
+sims = 5525:5544
 
 # Read in existing panda output
 prevOutput = read.csv('z:/species-energy-simulation/analysis_output/RPANDA_analysis/panda_output.csv', 
