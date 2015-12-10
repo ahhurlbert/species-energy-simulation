@@ -303,9 +303,18 @@ prevOutput = read.csv('z:/species-energy-simulation/analysis_output/RPANDA_analy
 time = 30000
 
 for (s in sims) {
-  simoutput = output.unzip('archived_sim_output', s)
-  phy = simoutput$phylo.out
-  all.pops = simoutput$all.populations
+  # For most sims which are in archived_sim_output folder of github repo
+  #simoutput = output.unzip('archived_sim_output', s)
+  #phy = simoutput$phylo.out
+  #all.pops = simoutput$all.populations
+  
+  # For sims 5525:5544 which are in particular non-zipped folders
+  phy = read.tree(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
+                        s, '_out/SENC_phylo_sim', s, '.tre', sep = ''))
+  all.pops = read.csv(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
+                            s, '_out/SENC_all.pops_sim', s, '.csv', sep = ''), header=T)
+  
+  
   max.time = max(all.pops$time.of.origin)
   extant.pops = subset(all.pops, extant==1)
   extant.phy = drop.tip(phy, phy$tip.label[!phy$tip.label %in% extant.pops$spp.name])
