@@ -248,46 +248,11 @@ getExtantTree = function(simID) {
 
 # Important to set stringsAsFactors to FALSE or else new simID's will prevent
 # rbinding
-prevOutput = read.csv('z:/git/species-energy-simulation/analysis_output/RPANDA_analysis/panda_output.csv', 
+prevOutput = read.csv('z:/git/species-energy-simulation/analysis_output/RPANDA_analysis/panda_output_2015-12-17.csv', 
                       header=T, stringsAsFactors = FALSE)
 
 # Fit the 9 models from Morlon et al. 2010 to the 4 diversification scenarios
 # from Hurlbert & Stegen 2014, Frontiers in Genetics
-
-#Energy gradient
-t4065.30k = read.tree('z:/git/bamm-simulations/sim4065-30k/extant_phy4065_30k.tre')
-t4065 = read.tree('z:/git/bamm-simulations/sim4065/run6/extant_phy4065_scaled.tre')
-#Speciation gradient
-t5525 = read.tree('z:/git/bamm-simulations/sim5525/extant_phy5525.tre')
-t5525.30k = read.tree('z:/git/bamm-simulations/sim5525-30k/run7/extant_phy5525_30k.tre')
-#Disturbance gradient
-t3865 = read.tree('z:/git/bamm-simulations/sim3865/extant_phy3865.tre')
-#Niche conservatism
-t3465 = read.tree('z:/git/bamm-simulations/sim3465/run3/extant_phy3465.tre')
-
-# Scale trees to have max branch length of 100
-# (advice from Dan Rabosky to get BAMM to fit trees better without getting stuck
-# on local optima)
-t4065.30ksc = rescaleBranchLengths(t4065.30k)
-t5525sc = rescaleBranchLengths(t5525)
-t5525.30ksc = rescaleBranchLengths(t5525.30k)
-t3865sc = rescaleBranchLengths(t3865)
-
-panda4065.30k = multi.panda.fit('4065-30k', t4065.30ksc)
-panda5525sc = multi.panda.fit('5525', t5525sc)
-panda3865 = multi.panda.fit('3865', t3865sc)
-panda5525.30k = multi.panda.fit('5525-30k', t5525.30ksc)
-panda3465 = multi.panda.fit('3465', t3465)
-panda4065 = multi.panda.fit('4065', t4065)
-
-
-combined = rbind(panda4065.30k, panda5525sc, panda5525.30k, panda3865, panda3465)
-combined[,7:14] = signif(combined[, 7:14], 3)
-combined$w = round(combined$w, 2)
-
-write.csv(combined, 'analysis_output/RPANDA_analysis/panda_output.csv', row.names=F)
-
-
 
 # Workflow for many sims
 
@@ -304,25 +269,30 @@ time = 30000
 
 for (s in sims) {
   # For most sims which are in archived_sim_output folder of github repo
-  #simoutput = output.unzip('archived_sim_output', s)
-  #phy = simoutput$phylo.out
-  #all.pops = simoutput$all.populations
-  
-  # For sims 5525:5544 which are in particular non-zipped folders
-  phy = read.tree(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
-                        s, '_out/SENC_phylo_sim', s, '.tre', sep = ''))
-  all.pops = read.csv(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
-                            s, '_out/SENC_all.pops_sim', s, '.csv', sep = ''), header=T)
-  time.richness = read.csv(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
-                                 s, '_out/SENC_time.rich_sim', s, '.csv', sep = ''), header=T)
-  simoutput = list(all.populations = all.pops, phylo.out = phy, time.richness = time.richness)
-  
+  if (!s %in% c(5525:5544, 5625:5644)) {
+    simoutput = output.unzip('archived_sim_output', s)
+    phy = simoutput$phylo.out
+    all.pops = simoutput$all.populations
+  }
+  # For sims from Frontiers paper
+  if (s %in% c(5525:5544, 5625:5644)) {
+    phy = read.tree(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
+                          s, '_out/SENC_phylo_sim', s, '.tre', sep = ''))
+    all.pops = read.csv(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
+                              s, '_out/SENC_all.pops_sim', s, '.csv', sep = ''), header=T)
+    time.richness = read.csv(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
+                                   s, '_out/SENC_time.rich_sim', s, '.csv', sep = ''), header=T)
+    simoutput = list(all.populations = all.pops, phylo.out = phy, time.richness = time.richness)
+                          
+  }
+    
   max.time = max(all.pops$time.of.origin)
   extant.pops = subset(all.pops, extant==1)
   extant.phy = drop.tip(phy, phy$tip.label[!phy$tip.label %in% extant.pops$spp.name])
   
-  newOutput = multi.panda.fit(simID = s, extant.phy, scale = TRUE, append = TRUE, 
-                              prevOutput, write = TRUE)  
+  newOutput = prevOutput
+  #newOutput = multi.panda.fit(simID = s, extant.phy, scale = TRUE, append = TRUE, 
+  #                            prevOutput, write = TRUE)  
   
   if (max.time > time) {
     timeSlice = time.slice.phylo(simoutput, time)
@@ -337,36 +307,92 @@ for (s in sims) {
 }
 
 #-----------ANALYZE PANDA OUTPUT------------------------------------------------
-panda = read.csv('analysis_output/RPANDA_analysis/panda_output_2015-12-15.csv', header=T)
+panda = read.csv('analysis_output/RPANDA_analysis/panda_output_2015-12-17.csv', header=T)
 simkey = read.csv('analysis_output/RPANDA_analysis/simkey.csv', header=T)
+modelkey = read.csv('analysis_output/RPANDA_analysis/modelkey.csv', header=T)
 
 panda2 = merge(panda, simkey, by = 'sim.id', all.x = T)
+panda3 = merge(panda2, modelkey, by = 'model', all.x = T)
 
-mean.w = aggregate(panda2$w, by = list(panda2$scenario, panda2$origin, panda2$time, panda2$model), 
-                   function(x) mean(x, na.rm = T))
-names(mean.w) = c('scenario', 'origin', 'time', 'model', 'w')
+# Mean, SD, and SE of Akaike weights by original Morlon et al. 2010 model number
+w.summary = aggregate(panda2$w, by = list(panda2$scenario, panda2$origin, panda2$time, panda2$model), 
+                      function(x) c(mean = mean(x, na.rm = T),
+                                     sd = sd(x, na.rm = T),
+                                     n = length(x[!is.na(x)])))
+w.summary = do.call(data.frame, w.summary)
+names(w.summary) = c('scenario', 'origin', 'time', 'model', 'w.mean', 'w.sd', 'w.n')
+w.summary$w.se = w.summary$w.sd/sqrt(w.summary$w.n)
 
-mean.w = mean.w[order(mean.w$scenario, mean.w$origin, mean.w$time),]
+w.summary = w.summary[order(w.summary$scenario, w.summary$origin, w.summary$time),]
 
-mean.w$col = 'salmon'
-mean.w$col[mean.w$scenario == "energy gradient"] = 'limegreen'
-mean.w$col[mean.w$scenario == "speciation gradient"] = 'mediumslateblue'
-mean.w$col[mean.w$scenario == "pure niche conservatism"] = 'gray50'
+# Mean, SD, and SE of Akaike weights by model group
+# --a: saturated diversity (Models 1-2)
+# --b: expanding diversity with positive extinction (Models 3-4)
+# --c: expanding diversity with no extinction (Models 5+6)
+w.groups = aggregate(panda3$w, by = list(panda3$sim.id, panda3$scenario, panda3$origin, panda3$modelgrp, panda3$time), 
+                      function(x) sum(x, na.rm = T))
+names(w.groups) = c('sim.id', 'scenario', 'origin', 'modelgrp', 'time', 'w')
+w.groupsumm = aggregate(w.groups$w, by = list(w.groups$scenario, w.groups$origin, w.groups$time, w.groups$modelgrp), 
+                        function(x) c(mean = mean(x, na.rm = T),
+                                      sd = sd(x, na.rm = T),
+                                      n = length(x[!is.na(x)])))
+w.groupsumm = do.call(data.frame, w.groupsumm)
+names(w.groupsumm) = c('scenario', 'origin', 'time', 'model', 'w.mean', 'w.sd', 'w.n')
+w.groupsumm$w.se = w.groupsumm$w.sd/sqrt(w.groupsumm$w.n)
+
+w.groupsumm = w.groupsumm[order(w.groupsumm$scenario, w.groupsumm$origin, w.groupsumm$time),]
+
+
+
+
+
+w.summary$col = 'salmon'
+w.summary$col[w.summary$scenario == "energy gradient"] = 'limegreen'
+w.summary$col[w.summary$scenario == "speciation gradient"] = 'mediumslateblue'
+w.summary$col[w.summary$scenario == "pure niche conservatism"] = 'gray50'
 
 scenarios = c('disturbance gradient', 'energy gradient', 'speciation gradient', 
               'pure niche conservatism')
 
 # Plotting mean Akaike weights
-pdf('analysis_output/RPANDA_analysis/panda_model_weights.pdf', height = 8, width = 11)
-par(mfrow = c(3, 4), mar = c(3,3,3,1), oma = c(4, 4, 0, 0))
+pdf('analysis_output/RPANDA_analysis/panda_model_weights.pdf', height = 10, width = 11)
+par(mfrow = c(4, 4), mar = c(3,3,3,1), oma = c(4, 4, 0, 0))
 for (s in scenarios) {
   for (o in c('temperate', 'tropical')) {
-    temp = subset(mean.w, scenario == s & origin == o)
+    temp = subset(w.summary, scenario == s & origin == o)
     for (t in unique(temp$time)) {
       temp2 = subset(temp, time == t)
-      barplot(temp2$w, ylim = c(0, 1), names.arg = temp2$model, cex.main = 0.9,
+      barCenters = barplot(temp2$w.mean, ylim = c(0, 1.15), names.arg = temp2$model, 
               main = paste(s, ", ", o, " origin, \ntime = ", t, sep = ""),
-              col = temp2$col[1])
+              cex.main = 0.9, col = temp2$col[1], las = 1)
+      arrows(barCenters, temp2$w.mean - temp2$w.se*2, barCenters, 
+             temp2$w.mean + temp2$w.se*2, angle = 90, code = 3, length = 0.03)
+    }
+  }
+}
+mtext("Akaike weight", 2, outer=T, cex = 2, line = 1.75)
+mtext("Model", 1, outer = T, cex = 2, line = 2)
+dev.off()
+
+w.groupsumm$col = 'salmon'
+w.groupsumm$col[w.groupsumm$scenario == "energy gradient"] = 'limegreen'
+w.groupsumm$col[w.groupsumm$scenario == "speciation gradient"] = 'mediumslateblue'
+w.groupsumm$col[w.groupsumm$scenario == "pure niche conservatism"] = 'gray50'
+
+
+# Plotting mean Akaike weights by model group
+pdf('analysis_output/RPANDA_analysis/panda_modelgroup_weights.pdf', height = 10, width = 11)
+par(mfrow = c(4, 4), mar = c(3,3,3,1), oma = c(4, 4, 0, 0))
+for (s in scenarios) {
+  for (o in c('temperate', 'tropical')) {
+    temp = subset(w.groupsumm, scenario == s & origin == o)
+    for (t in unique(temp$time)) {
+      temp2 = subset(temp, time == t)
+      barCenters = barplot(temp2$w.mean, ylim = c(0, 1.15), names.arg = temp2$model, 
+                           main = paste(s, ", ", o, " origin, \ntime = ", t, sep = ""),
+                           cex.main = 0.9, col = temp2$col[1], las = 1)
+      arrows(barCenters, temp2$w.mean - temp2$w.se*2, barCenters, 
+             temp2$w.mean + temp2$w.se*2, angle = 90, code = 3, length = 0.03)
     }
   }
 }
