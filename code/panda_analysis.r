@@ -293,7 +293,7 @@ write.csv(combined, 'analysis_output/RPANDA_analysis/panda_output.csv', row.name
 
 # Shell commands for unzipping sim output folders
 # for ((i=3565; i<=3574; i++)); do unzip senc.out.$i.zip; done
-#sims = c(4065:4084, 3465:3474, 3565:3574, 3866:3874, 3965:3974)
+#sims = c(4065:4084, 3465:3474, 3565:3574, 3866:3874, 3965:3974, 5525:5544, 5625:5644)
 sims = 5525:5544
 
 # Read in existing panda output
@@ -313,7 +313,9 @@ for (s in sims) {
                         s, '_out/SENC_phylo_sim', s, '.tre', sep = ''))
   all.pops = read.csv(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
                             s, '_out/SENC_all.pops_sim', s, '.csv', sep = ''), header=T)
-  
+  time.richness = read.csv(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
+                                 s, '_out/SENC_time.rich_sim', s, '.csv', sep = ''), header=T)
+  simoutput = list(all.populations = all.pops, phylo.out = phy, time.richness = time.richness)
   
   max.time = max(all.pops$time.of.origin)
   extant.pops = subset(all.pops, extant==1)
@@ -334,4 +336,40 @@ for (s in sims) {
   }
 }
 
+#-----------ANALYZE PANDA OUTPUT------------------------------------------------
+panda = read.csv('analysis_output/RPANDA_analysis/panda_output_2015-12-15.csv', header=T)
+simkey = read.csv('analysis_output/RPANDA_analysis/simkey.csv', header=T)
 
+panda2 = merge(panda, simkey, by = 'sim.id', all.x = T)
+
+mean.w = aggregate(panda2$w, by = list(panda2$scenario, panda2$origin, panda2$time, panda2$model), 
+                   function(x) mean(x, na.rm = T))
+names(mean.w) = c('scenario', 'origin', 'time', 'model', 'w')
+
+mean.w = mean.w[order(mean.w$scenario, mean.w$origin, mean.w$time),]
+
+mean.w$col = 'salmon'
+mean.w$col[mean.w$scenario == "energy gradient"] = 'limegreen'
+mean.w$col[mean.w$scenario == "speciation gradient"] = 'mediumslateblue'
+mean.w$col[mean.w$scenario == "pure niche conservatism"] = 'gray50'
+
+scenarios = c('disturbance gradient', 'energy gradient', 'speciation gradient', 
+              'pure niche conservatism')
+
+# Plotting mean Akaike weights
+pdf('analysis_output/RPANDA_analysis/panda_model_weights.pdf', height = 8, width = 11)
+par(mfrow = c(3, 4), mar = c(3,3,3,1), oma = c(4, 4, 0, 0))
+for (s in scenarios) {
+  for (o in c('temperate', 'tropical')) {
+    temp = subset(mean.w, scenario == s & origin == o)
+    for (t in unique(temp$time)) {
+      temp2 = subset(temp, time == t)
+      barplot(temp2$w, ylim = c(0, 1), names.arg = temp2$model, cex.main = 0.9,
+              main = paste(s, ", ", o, " origin, \ntime = ", t, sep = ""),
+              col = temp2$col[1])
+    }
+  }
+}
+mtext("Akaike weight", 2, outer=T, cex = 2, line = 1.75)
+mtext("Model", 1, outer = T, cex = 2, line = 2)
+dev.off()
