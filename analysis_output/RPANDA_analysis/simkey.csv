@@ -1,0 +1,160 @@
+sim.id,scenario,origin,time
+4065-30k,energy gradient,tropical,30000
+5525,speciation gradient,tropical,100000
+5525-30k,speciation gradient,tropical,30000
+3865,disturbance gradient,tropical,30000
+3465,pure niche conservatism,tropical,200
+4067,energy gradient,tropical,100000
+4067-30000,energy gradient,tropical,30000
+4068,energy gradient,tropical,100000
+4068-30000,energy gradient,tropical,30000
+4069,energy gradient,tropical,100000
+4069-30000,energy gradient,tropical,30000
+4070,energy gradient,tropical,100000
+4070-30000,energy gradient,tropical,30000
+4071,energy gradient,tropical,100000
+4071-30000,energy gradient,tropical,30000
+4072,energy gradient,tropical,100000
+4072-30000,energy gradient,tropical,30000
+4073,energy gradient,tropical,100000
+4073-30000,energy gradient,tropical,30000
+4074,energy gradient,tropical,100000
+4074-30000,energy gradient,tropical,30000
+4075,energy gradient,temperate,100000
+4075-30000,energy gradient,temperate,30000
+4076,energy gradient,temperate,100000
+4076-30000,energy gradient,temperate,30000
+4077,energy gradient,temperate,100000
+4077-30000,energy gradient,temperate,30000
+4078,energy gradient,temperate,100000
+4078-30000,energy gradient,temperate,30000
+4079,energy gradient,temperate,100000
+4079-30000,energy gradient,temperate,30000
+4080,energy gradient,temperate,100000
+4080-30000,energy gradient,temperate,30000
+4081,energy gradient,temperate,100000
+4081-30000,energy gradient,temperate,30000
+4082,energy gradient,temperate,100000
+4082-30000,energy gradient,temperate,30000
+4083,energy gradient,temperate,100000
+4083-30000,energy gradient,temperate,30000
+4084,energy gradient,temperate,100000
+4084-30000,energy gradient,temperate,30000
+3466,pure niche conservatism,tropical,200
+3467,pure niche conservatism,tropical,200
+3468,pure niche conservatism,tropical,200
+3469,pure niche conservatism,tropical,200
+3470,pure niche conservatism,tropical,200
+3471,pure niche conservatism,tropical,200
+3472,pure niche conservatism,tropical,200
+3473,pure niche conservatism,tropical,200
+3474,pure niche conservatism,tropical,200
+3565,pure niche conservatism,temperate,200
+3566,pure niche conservatism,temperate,200
+3567,pure niche conservatism,temperate,200
+3568,pure niche conservatism,temperate,200
+3569,pure niche conservatism,temperate,200
+3570,pure niche conservatism,temperate,200
+3571,pure niche conservatism,temperate,200
+3572,pure niche conservatism,temperate,200
+3573,pure niche conservatism,temperate,200
+3574,pure niche conservatism,temperate,200
+3866,disturbance gradient,tropical,30000
+3867,disturbance gradient,tropical,30000
+3868,disturbance gradient,tropical,30000
+3869,disturbance gradient,tropical,30000
+3870,disturbance gradient,tropical,30000
+3871,disturbance gradient,tropical,30000
+3872,disturbance gradient,tropical,30000
+3873,disturbance gradient,tropical,30000
+3874,disturbance gradient,tropical,30000
+4066,energy gradient,tropical,100000
+3965,disturbance gradient,temperate,30000
+3966,disturbance gradient,temperate,30000
+3967,disturbance gradient,temperate,30000
+3968,disturbance gradient,temperate,30000
+3969,disturbance gradient,temperate,30000
+3970,disturbance gradient,temperate,30000
+3971,disturbance gradient,temperate,30000
+3972,disturbance gradient,temperate,30000
+3973,disturbance gradient,temperate,30000
+3974,disturbance gradient,temperate,30000
+5525-30000,speciation gradient,tropical,30000
+5526,speciation gradient,tropical,100000
+5526-30000,speciation gradient,tropical,30000
+5527,speciation gradient,tropical,100000
+5527-30000,speciation gradient,tropical,30000
+5528,speciation gradient,tropical,100000
+5528-30000,speciation gradient,tropical,30000
+5529,speciation gradient,tropical,100000
+5529-30000,speciation gradient,tropical,30000
+5530,speciation gradient,tropical,100000
+5530-30000,speciation gradient,tropical,30000
+5531,speciation gradient,tropical,100000
+5531-30000,speciation gradient,tropical,30000
+5532,speciation gradient,tropical,100000
+5532-30000,speciation gradient,tropical,30000
+5533,speciation gradient,tropical,100000
+5533-30000,speciation gradient,tropical,30000
+5534,speciation gradient,tropical,100000
+5534-30000,speciation gradient,tropical,30000
+5535,speciation gradient,temperate,100000
+5535-30000,speciation gradient,temperate,30000
+5536,speciation gradient,temperate,100000
+5536-30000,speciation gradient,temperate,30000
+5537,speciation gradient,temperate,100000
+5537-30000,speciation gradient,temperate,30000
+5538,speciation gradient,temperate,100000
+5538-30000,speciation gradient,temperate,30000
+5539,speciation gradient,temperate,100000
+5539-30000,speciation gradient,temperate,30000
+5540,speciation gradient,temperate,100000
+5540-30000,speciation gradient,temperate,30000
+5541,speciation gradient,temperate,100000
+5541-30000,speciation gradient,temperate,30000
+5542,speciation gradient,temperate,100000
+5542-30000,speciation gradient,temperate,30000
+5543,speciation gradient,temperate,100000
+5543-30000,speciation gradient,temperate,30000
+5544,speciation gradient,temperate,100000
+5544-30000,speciation gradient,temperate,30000
+5625,disturbance gradient,tropical,100000
+5625-30000,disturbance gradient,tropical,30000
+5626,disturbance gradient,tropical,100000
+5626-30000,disturbance gradient,tropical,30000
+5627,disturbance gradient,tropical,100000
+5627-30000,disturbance gradient,tropical,30000
+5628,disturbance gradient,tropical,100000
+5628-30000,disturbance gradient,tropical,30000
+5629,disturbance gradient,tropical,100000
+5629-30000,disturbance gradient,tropical,30000
+5630,disturbance gradient,tropical,100000
+5630-30000,disturbance gradient,tropical,30000
+5631,disturbance gradient,tropical,100000
+5631-30000,disturbance gradient,tropical,30000
+5632,disturbance gradient,tropical,100000
+5632-30000,disturbance gradient,tropical,30000
+5633,disturbance gradient,tropical,100000
+5633-30000,disturbance gradient,tropical,30000
+5634,disturbance gradient,tropical,100000
+5634-30000,disturbance gradient,tropical,30000
+5635,disturbance gradient,temperate,100000
+5635-30000,disturbance gradient,temperate,30000
+5636,disturbance gradient,temperate,100000
+5636-30000,disturbance gradient,temperate,30000
+5637,disturbance gradient,temperate,100000
+5637-30000,disturbance gradient,temperate,30000
+5638,disturbance gradient,temperate,100000
+5638-30000,disturbance gradient,temperate,30000
+5639,disturbance gradient,temperate,100000
+5639-30000,disturbance gradient,temperate,30000
+5640,disturbance gradient,temperate,100000
+5640-30000,disturbance gradient,temperate,30000
+5641,disturbance gradient,temperate,100000
+5641-30000,disturbance gradient,temperate,30000
+5642,disturbance gradient,temperate,100000
+5642-30000,disturbance gradient,temperate,30000
+5643,disturbance gradient,temperate,100000
+5643-30000,disturbance gradient,temperate,30000
+5644,disturbance gradient,temperate,100000
+5644-30000,disturbance gradient,temperate,30000

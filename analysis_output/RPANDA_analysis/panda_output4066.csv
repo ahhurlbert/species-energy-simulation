@@ -1,0 +1,10 @@
+"sim.id","model","name","LH","aicc","delta.aicc","w","tau0","gamma","lamb0","mu0","alpha","beta","eps"
+4066,"1","Equilibrium constant rate",84453.5157856437,-168905.031418037,40458.9403711049,0,0.01954,NA,NA,NA,NA,NA,NA
+4066,"2","Equilibrium variable rate",101813.106962481,-203622.213465192,5741.75832394979,0,0.491953257312779,0.0328262374416929,NA,NA,NA,NA,NA
+4066,"3","Birth-death constant rates (coalescent approx)",101813.108533483,-203622.216607195,5741.75518194606,0,NA,NA,0.49224654072001,0.459413267479603,NA,NA,NA
+4066,"4a","Birth-death varying speciation constant extinction (coalescent approx)",79710.5468740322,-159415.092828489,49948.8789606526,0,NA,NA,0.01,5.07296610707325e-19,-4.83703288038675e-19,NA,NA
+4066,"4b","Birth-death constant speciation varying extinction (coalescent approx)",104684.986354358,-209363.971789141,0,1,NA,NA,1.28404528179166,1.21781817519462,NA,-0.000341751769763593,NA
+4066,"4c","Birth-death constant extinction fraction (coalescent approx)",79710.5468740322,-159415.092828489,49948.8789606526,0,NA,NA,0.01,NA,5.54806580451567e-20,NA,0
+4066,"4d","Birth-death varying speciation and extinction (coalescent approx)",79710.5468740322,-159413.09221538,49950.8795737616,0,NA,NA,0.01,0,5.54806580451567e-20,0,NA
+4066,"5","Pure birth constant speciation (coalescent approx)",69308.3257869451,-138614.651420639,70749.3203685021,0,NA,NA,0.013609375,NA,NA,NA,NA
+4066,"6","Pure birth varying speciation (coalescent approx)",80316.2511743392,-160628.501888908,48735.4699002333,0,NA,NA,0.0105,NA,1.0842021724855e-19,NA,NA
