@@ -306,6 +306,93 @@ for (s in sims) {
   }
 }
 
+#######################################
+
+# Fit the Manceau et al. 2015 SGD model
+
+# (which in the future should be added to multi.panda.fit)
+
+# Mid-simulation time point at which to conduct analyses
+time = 30000
+
+for (s in sims) {
+  # For most sims which are in archived_sim_output folder of github repo
+  if (!s %in% c(5525:5544, 5625:5644)) {
+    simoutput = output.unzip('archived_sim_output', s)
+    phy = simoutput$phylo.out
+    all.pops = simoutput$all.populations
+  }
+  # For sims from Frontiers paper
+  if (s %in% c(5525:5544, 5625:5644)) {
+    phy = read.tree(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
+                          s, '_out/SENC_phylo_sim', s, '.tre', sep = ''))
+    all.pops = read.csv(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
+                              s, '_out/SENC_all.pops_sim', s, '.csv', sep = ''), header=T)
+    time.richness = read.csv(paste('z:/manuscripts/frontierstropicaldiversity/raw_sim_output/sim',
+                                   s, '_out/SENC_time.rich_sim', s, '.csv', sep = ''), header=T)
+    simoutput = list(all.populations = all.pops, phylo.out = phy, time.richness = time.richness)
+    
+  }
+  
+  max.time = max(all.pops$time.of.origin)
+  extant.pops = subset(all.pops, extant==1)
+  extant.phy = drop.tip(phy, phy$tip.label[!phy$tip.label %in% extant.pops$spp.name])
+  
+  tot_time = max(node.age(extant.phy)$ages)
+  par_init = c(1e7, 1e7-0.5, 1)  #initial parameters as used in documentation example
+  sgd_out = fit_sgd(extant.phy, tot_time, par_init, f = 1) 
+  
+  out = data.frame(sim.id = s,
+                   model = 'sgd',
+                   name = 'Speciation by Genetic Differentiation',
+                   LH = sgd_out$LH,
+                   aicc = sgd_out$aicc,
+                   delta.aicc = NA,
+                   w = NA,
+                   tau0 = NA,
+                   gamma = NA,
+                   lamb0 = NA,
+                   mu0 = NA,
+                   alpha = NA
+                   beta = NA,
+                   eps = NA, 
+                   birth = sgd_out$par$birth,
+                   growth = sgd_out$par$growth,
+                   mutation = sgd_out$par$mutation)
+  
+  prevOutput = rbind(prevOutput, out)
+  if (max.time > time) {
+    timeSlice = time.slice.phylo(simoutput, time)
+    
+    tot_time = max(node.age(timeSlice$slicedphylo)$ages)
+    par_init = c(1e7, 1e7-0.5, 1)
+    sgd_out2 = fit_sgd(timeSlice$slicedphylo, tot_time, par_init, f = 1) 
+    
+    out2 = data.frame(sim.id = paste(s, '-', time, sep = ''),
+                     model = 'sgd',
+                     name = 'Speciation by Genetic Differentiation',
+                     LH = sgd_out2$LH,
+                     aicc = sgd_out2$aicc,
+                     delta.aicc = NA,
+                     w = NA,
+                     tau0 = NA,
+                     gamma = NA,
+                     lamb0 = NA,
+                     mu0 = NA,
+                     alpha = NA
+                     beta = NA,
+                     eps = NA, 
+                     birth = sgd_out2$par$birth,
+                     growth = sgd_out2$par$growth,
+                     mutation = sgd_out2$par$mutation)
+    
+    prevOutput = rbind(prevOutput, out2)
+  }
+  message(paste("Sim", s, "completed at", Sys.time()))
+}
+
+
+
 #-----------ANALYZE PANDA OUTPUT------------------------------------------------
 panda = read.csv('analysis_output/RPANDA_analysis/panda_output_2015-12-17.csv', header=T)
 simkey = read.csv('analysis_output/RPANDA_analysis/simkey.csv', header=T)
@@ -315,12 +402,13 @@ panda2 = merge(panda, simkey, by = 'sim.id', all.x = T)
 panda3 = merge(panda2, modelkey, by = 'model', all.x = T)
 
 # Mean, SD, and SE of Akaike weights by original Morlon et al. 2010 model number
-w.summary = aggregate(panda2$w, by = list(panda2$scenario, panda2$origin, panda2$time, panda2$model), 
+w.summary = aggregate(panda3$w, by = list(panda3$scenario, panda3$origin, panda3$time, 
+                                          panda3$model, panda3$modelgrp), 
                       function(x) c(mean = mean(x, na.rm = T),
                                      sd = sd(x, na.rm = T),
                                      n = length(x[!is.na(x)])))
 w.summary = do.call(data.frame, w.summary)
-names(w.summary) = c('scenario', 'origin', 'time', 'model', 'w.mean', 'w.sd', 'w.n')
+names(w.summary) = c('scenario', 'origin', 'time', 'model', 'modelgrp', 'w.mean', 'w.sd', 'w.n')
 w.summary$w.se = w.summary$w.sd/sqrt(w.summary$w.n)
 
 w.summary = w.summary[order(w.summary$scenario, w.summary$origin, w.summary$time),]
@@ -351,7 +439,14 @@ w.summary$col[w.summary$scenario == "energy gradient"] = 'limegreen'
 w.summary$col[w.summary$scenario == "speciation gradient"] = 'mediumslateblue'
 w.summary$col[w.summary$scenario == "pure niche conservatism"] = 'gray50'
 
-scenarios = c('disturbance gradient', 'energy gradient', 'speciation gradient', 
+w.summary$col2 = 'salmon'
+w.summary$col2[w.summary$modelgrp == "b"] = 'limegreen'
+w.summary$col2[w.summary$modelgrp == "c"] = 'mediumslateblue'
+
+
+
+
+scenarios = c('energy gradient', 'speciation gradient', 'disturbance gradient',
               'pure niche conservatism')
 
 # Plotting mean Akaike weights
@@ -374,28 +469,38 @@ mtext("Akaike weight", 2, outer=T, cex = 2, line = 1.75)
 mtext("Model", 1, outer = T, cex = 2, line = 2)
 dev.off()
 
-w.groupsumm$col = 'salmon'
-w.groupsumm$col[w.groupsumm$scenario == "energy gradient"] = 'limegreen'
-w.groupsumm$col[w.groupsumm$scenario == "speciation gradient"] = 'mediumslateblue'
-w.groupsumm$col[w.groupsumm$scenario == "pure niche conservatism"] = 'gray50'
+# Plot of tropical origin sims at 2 time points
+salmonbg = c(254, 230, 226)
+greenbg = c(214, 245, 214)
+bluebg = c(229, 225, 252)
 
-
-# Plotting mean Akaike weights by model group
-pdf('analysis_output/RPANDA_analysis/panda_modelgroup_weights.pdf', height = 10, width = 11)
-par(mfrow = c(4, 4), mar = c(3,3,3,1), oma = c(4, 4, 0, 0))
+pdf('analysis_output/RPANDA_analysis/panda_model_weights_tropical.pdf', 
+    height = 6, width = 11)
+par(mfcol = c(2, 4), mar = c(3,3,2,1), oma = c(4, 4, 4, 0))
 for (s in scenarios) {
-  for (o in c('temperate', 'tropical')) {
-    temp = subset(w.groupsumm, scenario == s & origin == o)
-    for (t in unique(temp$time)) {
-      temp2 = subset(temp, time == t)
-      barCenters = barplot(temp2$w.mean, ylim = c(0, 1.15), names.arg = temp2$model, 
-                           main = paste(s, ", ", o, " origin, \ntime = ", t, sep = ""),
-                           cex.main = 0.9, col = temp2$col[1], las = 1)
-      arrows(barCenters, temp2$w.mean - temp2$w.se*2, barCenters, 
-             temp2$w.mean + temp2$w.se*2, angle = 90, code = 3, length = 0.03)
-    }
+  temp = subset(w.summary, scenario == s & origin == 'tropical')
+  for (t in unique(temp$time)) {
+    temp2 = subset(temp, time == t)
+    barCenters = barplot(rep(0,9), ylim = c(0, 1.15), las = 1, cex.axis = 1.25)
+    width = barCenters[2] - barCenters[1]
+    rect(0,0, barCenters[2] + width/2, 1.1, border = NA, 
+         col = rgb(salmonbg[1], salmonbg[2], salmonbg[3], maxColorValue = 255))
+    rect(barCenters[2] + width/2, 0, barCenters[7] + width/2, 1.1, border = NA,
+         col = rgb(greenbg[1], greenbg[2], greenbg[3], maxColorValue = 255))
+    rect(barCenters[7] + width/2, 0, barCenters[9] + width/2, 1.1, border = NA,
+         col = rgb(bluebg[1], bluebg[2], bluebg[3], maxColorValue = 255))
+    barCenters = barplot(temp2$w.mean, ylim = c(0, 1.15), xaxt = "n", yaxt = "n",
+                         col = temp2$col2, add = T)
+    arrows(barCenters, temp2$w.mean - temp2$w.se*2, barCenters, 
+           temp2$w.mean + temp2$w.se*2, angle = 90, code = 3, length = 0.03)
+    axis(1, temp2$model[seq(1,9,2)], at = barCenters[seq(1,9,2)], cex.axis = 1.2)
+    axis(1, temp2$model[seq(2,9,2)], at = barCenters[seq(2,9,2)], cex.axis = 1.2)
   }
 }
 mtext("Akaike weight", 2, outer=T, cex = 2, line = 1.75)
 mtext("Model", 1, outer = T, cex = 2, line = 2)
+mtext(c("Energy\ngradient", "Speciation\ngradient", "Disturbance\ngradient", 
+        "Pure niche\nconservatism"), 3, at = c(1/8, 3/8, 5/8, 7/8), outer = T, cex = 1.75, 
+      line = -1)
 dev.off()
+
