@@ -312,6 +312,15 @@ for (s in sims) {
 
 # (which in the future should be added to multi.panda.fit)
 
+# Currently doesn't work (at least on sims 4065, 4066), gives this error:
+
+# DLSODA-  TOUT(=R1) too close to T(=R2) to start integration.
+# In above message, R1 = 100.281, R2 = 100.281
+
+#Error in lsoda(y, times, func, parms, ...) : 
+#  illegal input detected before taking any integration steps - see written message 
+
+
 # Mid-simulation time point at which to conduct analyses
 time = 30000
 
@@ -337,10 +346,11 @@ for (s in sims) {
   max.time = max(all.pops$time.of.origin)
   extant.pops = subset(all.pops, extant==1)
   extant.phy = drop.tip(phy, phy$tip.label[!phy$tip.label %in% extant.pops$spp.name])
+  tree = rescaleBranchLengths(extant.phy)
   
-  tot_time = max(node.age(extant.phy)$ages)
+  tot_time = max(node.age(tree)$ages)
   par_init = c(1e7, 1e7-0.5, 1)  #initial parameters as used in documentation example
-  sgd_out = fit_sgd(extant.phy, tot_time, par_init, f = 1) 
+  sgd_out = fit_sgd(tree, tot_time, par_init, f = 1) 
   
   out = data.frame(sim.id = s,
                    model = 'sgd',
@@ -353,7 +363,7 @@ for (s in sims) {
                    gamma = NA,
                    lamb0 = NA,
                    mu0 = NA,
-                   alpha = NA
+                   alpha = NA,
                    beta = NA,
                    eps = NA, 
                    birth = sgd_out$par$birth,
@@ -363,10 +373,10 @@ for (s in sims) {
   prevOutput = rbind(prevOutput, out)
   if (max.time > time) {
     timeSlice = time.slice.phylo(simoutput, time)
-    
-    tot_time = max(node.age(timeSlice$slicedphylo)$ages)
-    par_init = c(1e7, 1e7-0.5, 1)
-    sgd_out2 = fit_sgd(timeSlice$slicedphylo, tot_time, par_init, f = 1) 
+    tree2 = rescaleBranchLengths(timeSlice$slicedphylo)
+    tot_time2 = max(node.age(tree2)$ages)
+    par_init2 = c(1e7, 1e7-0.5, 1)
+    sgd_out2 = fit_sgd(tree2, tot_time2, par_init2, f = 1) 
     
     out2 = data.frame(sim.id = paste(s, '-', time, sep = ''),
                      model = 'sgd',
@@ -379,7 +389,7 @@ for (s in sims) {
                      gamma = NA,
                      lamb0 = NA,
                      mu0 = NA,
-                     alpha = NA
+                     alpha = NA,
                      beta = NA,
                      eps = NA, 
                      birth = sgd_out2$par$birth,
