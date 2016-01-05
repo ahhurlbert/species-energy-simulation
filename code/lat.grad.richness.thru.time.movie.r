@@ -8,8 +8,9 @@ sim.matrix = read.csv('SENC_Master_Simulation_Matrix.csv', header = T)
 # Arguments include the simID, sim.matrix, directory in which simulation files are stored, 
 # temporal resolution and duration of the movie, and whether the sim files need to be unzipped or not.
 
-lat.time.movie = function(sims,         #simIDs to run
+lat.time.movie = function(sim,          #simIDs to run
                           sim_dir,      #directory where sim output is
+                          movie_dir,    #directory to save movie if plot.pdf=T
                           sim.matrix,   #sim matrix with sim parameters
                           time.step,    #frequency of time lapse
                           time.max,     #final time point
@@ -19,13 +20,13 @@ lat.time.movie = function(sims,         #simIDs to run
   
                                
   if(unzip) {
-    sim.out = output.unzip(sim_dir, sims[1])
+    sim.out = output.unzip(sim_dir, sim[1])
     all.populations = sim.out$all.populations
   } else { 
-    all.populations = read.csv(paste('raw_sim_output/sim', sims, '_out/SENC_all.pops_sim',sims,'.csv',sep=''), header=T)
+    all.populations = read.csv(paste(sim_dir, '/sim', sim, '_out/SENC_all.pops_sim',sim,'.csv',sep=''), header=T)
   }
   
-  params = sim.matrix[sim.matrix$sim.id==sims,]
+  params = sim.matrix[sim.matrix$sim.id==sim,]
 
   timeslices = seq(time.step, time.max, by=time.step)
 
@@ -34,9 +35,9 @@ lat.time.movie = function(sims,         #simIDs to run
                 length(unique(ap$spp.name[ap$time.of.sp.origin<x & ap$time.of.sp.extinction >= x])))
 
   if(plot.pdf) {
-    pdf(paste(sim_dir,'/movies/movie_sim',sim,'_timestep',time.step,'.pdf',sep=''), height=8, width=8, bg='white')
+    pdf(paste(movie_dir, '/movie_sim',sim,'_timestep',time.step,'.pdf',sep=''), height=8, width=6, bg='white')
   }
-  par(mfrow = c(2,1), mar = c(4,4,2,1), mgp = c(2.5,1,0), las = 1)
+  par(mfrow = c(2,1), mar = c(4,4,2,1), mgp = c(2.5,1,0), las = 1, cex.lab = 1.5)
   for (t in timeslices) {
     
     all.pops1 = subset(all.populations, time.of.origin < t & time.of.extinction > t)
@@ -53,14 +54,17 @@ lat.time.movie = function(sims,         #simIDs to run
     }
     
     plot(11 - all.reg.rich1$region, log10(all.reg.rich1$total.rich), type='b', lwd = 4, cex = .5, col = 'red',
-         xlim = c(0,11), ylim=c(0, log10(max(rich))), xlab="Latitude",ylab = "log10 Species richness",
-         main=plot.title)
+         xlim = c(0,11), ylim=c(0, log10(max(rich))), ylab = "log10 Species richness", xlab = "", xaxt = "n",
+         main=plot.title, cex.lab = 1.5)
     axis(4, at = seq(0, ceiling(2*(log10(max(rich))))/2, by = 0.5), tck = .03)
     text(10, log10(max(rich)), paste("t =", t))
+    mtext("Latitude", 1, line = 1, cex = 1.5)
+    mtext(c("Tropics","Temperate"), 1, at = c(1, 10))
     
     # Panel 2: richness through time
     plot(1:t, log10(rich[1:t]), type="l", xlim=c(0,time.max), ylim = c(0, log10(max(rich))), 
-         xlab="Time", ylab = "log10 Total Species Richness")
+         xlab="", ylab = "log10 Species Richness", cex.lab = 1.5, xaxt = "n")
+    mtext("Time", 1, line = 1, cex = 1.5)
     
     
     #reg.rich.thru.time = rbind(reg.rich.thru.time, cbind(time=rep(t,nrow(all.reg.rich)), all.reg.rich))
@@ -72,7 +76,7 @@ lat.time.movie = function(sims,         #simIDs to run
 #This creates a multipage pdf when plot.pdf=T. To convert this to a gif animation, install ImageMagick and GhostScript,
 #both freely available. After they are installed, the following command will work.
 
-shell("convert -delay 50 -density 150 movie_sim3345_timestep500.pdf movie_sim3345_timestep500.gif")
+#shell("convert -delay 50 -density 150 movie_sim3345_timestep500.pdf movie_sim3345_timestep500.gif")
 
 # -delay specifies the delay between frames in 1/100 s
 # -density specifies the dpi
