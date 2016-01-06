@@ -4,12 +4,6 @@
 
 setwd('z:/Manuscripts/FrontiersTropicalDiversity/analysis_output')
 
-files = read.csv('Stats_sim3465_rootclade_only_100_times.csv')
-for (i in 3466:3474) {
-  temp = read.csv(paste('Stats_sim', i, '_rootclade_only_100_times.csv', sep =''))
-  files
-}
-
 metric.abind.new = function(sims, num.cols = 45, num.rows = 100) {
   require(abind)
   metrics = matrix(NA, nrow = num.rows, ncol = num.cols)
@@ -31,17 +25,22 @@ metric.abind.new = function(sims, num.cols = 45, num.rows = 100) {
 
 # Function to plot origination and extinction rates over time for a set of scenarios
 orig.ext.thru.time = function(simresults, max.time) {
+  spec.color = rgb(255, 192, 0, maxColorValue = 255)
+  ext.color = rgb(0, 176, 240, maxColorValue = 255)
   max.rate = max(c(simresults[, 'glob.orig.rate',], simresults[, 'glob.ext.rate',]), na.rm = T)
   min.rate = min(c(simresults[, 'glob.orig.rate',], simresults[, 'glob.ext.rate',]), na.rm = T)
   
   if (min.rate == 0) { min.rate = 1e-6 }
   plot(simresults[, 'time', 1], log10(simresults[, 'glob.orig.rate', 1]), type = 'l',
-       xlab = 'Time', ylab = 'Rate', ylim = log10(c(min.rate, max.rate)), xlim = c(0, max.time))
+       xlab = '', ylab = '', ylim = log10(c(min.rate, max.rate)), xlim = c(0, max.time),
+       col = spec.color, lwd = 2, cex.axis = 1.5)
   for (i in 2:10) {
-    points(simresults[, 'time', i], log10(simresults[, 'glob.orig.rate', i]), type = 'l')
+    points(simresults[, 'time', i], log10(simresults[, 'glob.orig.rate', i]), type = 'l',
+           col = spec.color, lwd = 2)
   }
   for (i in 1:10) {
-    points(simresults[, 'time', i], log10(simresults[, 'glob.ext.rate', i]), type = 'l', col = 'red')
+    points(simresults[, 'time', i], log10(simresults[, 'glob.ext.rate', i]), type = 'l', 
+           col = ext.color, lwd = 2)
   }
 }
 
@@ -54,9 +53,14 @@ sgsims = metric.abind.new(5525:5534, num.cols = 42)
 #Disturbance gradient sims
 dgsims = metric.abind.new(5625:5634, num.cols = 42)
 
-
-orig.ext.thru.time(ncsims, max.time = 200)
+pdf('z:/git/species-energy-simulation/analysis_output/4scenarios_rates_thru_time.pdf',
+    height = 4, width = 12)
+par(mfrow = c(1, 4), oma = c(4, 4, 0, 0), mar = c(3, 3, 1, 1), las = 1)
 orig.ext.thru.time(egsims, max.time = 25000)
 orig.ext.thru.time(sgsims, max.time = 25000)
 orig.ext.thru.time(dgsims, max.time = 25000)
+orig.ext.thru.time(ncsims, max.time = 200)
+mtext("Time", 1, outer = T, cex = 2, line = 2)
+mtext("log10 Rate", 2, outer = T, cex = 2, line = 1, las = 0)
+dev.off()
 
