@@ -259,13 +259,10 @@ prevOutput = read.csv('z:/git/species-energy-simulation/analysis_output/RPANDA_a
 # Shell commands for unzipping sim output folders
 # for ((i=3565; i<=3574; i++)); do unzip senc.out.$i.zip; done
 #sims = c(4065:4084, 3465:3474, 3565:3574, 3866:3874, 3965:3974, 5525:5544, 5625:5644)
-sims = 5525:5544
+sims = c(4065:4074, 5525:5534, 5625:5634)
 
-# Read in existing panda output
-prevOutput = read.csv('z:/species-energy-simulation/analysis_output/RPANDA_analysis/panda_output.csv', 
-                      header=T, stringsAsFactors = FALSE)
 # Mid-simulation time point at which to conduct analyses
-time = 30000
+time = 7000
 
 for (s in sims) {
   # For most sims which are in archived_sim_output folder of github repo
@@ -404,7 +401,7 @@ for (s in sims) {
 
 
 #-----------ANALYZE PANDA OUTPUT------------------------------------------------
-panda = read.csv('analysis_output/RPANDA_analysis/panda_output_2015-12-17.csv', header=T)
+panda = read.csv('analysis_output/RPANDA_analysis/panda_output_2016-01-08.csv', header=T)
 simkey = read.csv('analysis_output/RPANDA_analysis/simkey.csv', header=T)
 modelkey = read.csv('analysis_output/RPANDA_analysis/modelkey.csv', header=T)
 
@@ -479,19 +476,22 @@ mtext("Akaike weight", 2, outer=T, cex = 2, line = 1.75)
 mtext("Model", 1, outer = T, cex = 2, line = 2)
 dev.off()
 
-# Plot of tropical origin sims at 2 time points
+# Plot of tropical origin sims at 3 time points
 salmonbg = c(254, 230, 226)
 greenbg = c(214, 245, 214)
 bluebg = c(229, 225, 252)
 
-pdf('analysis_output/RPANDA_analysis/panda_model_weights_tropical.pdf', 
-    height = 6, width = 11)
-par(mfcol = c(2, 4), mar = c(3,3,2,1), oma = c(4, 4, 4, 0))
+pdf('analysis_output/RPANDA_analysis/panda_model_weights_tropical_3_timeslices.pdf', 
+    height = 9, width = 11)
+par(mfcol = c(3, 4), mar = c(3,3,2,1), oma = c(4, 4, 5, 0))
 for (s in scenarios) {
   temp = subset(w.summary, scenario == s & origin == 'tropical')
   for (t in unique(temp$time)) {
     temp2 = subset(temp, time == t)
     barCenters = barplot(rep(0,9), ylim = c(0, 1.15), las = 1, cex.axis = 1.25)
+    if (s == 'energy gradient') {
+      mtext(paste("t =", t), 3, adj = 0, line = -0.5)
+    }
     width = barCenters[2] - barCenters[1]
     rect(0,0, barCenters[2] + width/2, 1.1, border = NA, 
          col = rgb(salmonbg[1], salmonbg[2], salmonbg[3], maxColorValue = 255))
@@ -511,6 +511,6 @@ mtext("Akaike weight", 2, outer=T, cex = 2, line = 1.75)
 mtext("Model", 1, outer = T, cex = 2, line = 2)
 mtext(c("Energy\ngradient", "Speciation\ngradient", "Disturbance\ngradient", 
         "Pure niche\nconservatism"), 3, at = c(1/8, 3/8, 5/8, 7/8), outer = T, cex = 1.75, 
-      line = -1)
+      line = 0)
 dev.off()
 
