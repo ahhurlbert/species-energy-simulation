@@ -27,6 +27,7 @@ temp.metrics = readAnalysisOutput(3395)
 
 metric.names = c('global.richness',
                  'r.lat.rich', 
+                 'r.time.rich',
                  'gamma.stat',
                  'r.env.PSV', 
                  'r.env.MRD', 
@@ -42,10 +43,12 @@ metric.names = c('global.richness',
                  'PSV.mean',
                  'tree.beta',
                  'scaled.MRD.range',
-                 'scaled.MRD.rich.slope')
+                 'scaled.MRD.rich.slope',
+                 'gamma.stat')
 
 metric.labels = c('Global richness', 
                   expression(italic(r)[latitude-richness]), 
+                  expression(italic(r)[time-richness]), 
                   expression(gamma), 
                   expression(italic(r)[env-PSV]),
                   expression(italic(r)[env-MRD]), 
@@ -61,14 +64,15 @@ metric.labels = c('Global richness',
                   'Mean PSV',
                   expression(beta),
                   'scaled MRD range',
-                  'MRD-richness slope')
+                  'MRD-richness slope',
+                  'Gamma')
 
 
 # Plotting metrics over the course of the simulation: EXPLORATORY PLOTS
 par(mfrow = c(2, 2), mar = c(5, 6, 1, 1), oma = c(5, 0, 0, 0), cex.lab = 2, las = 1, cex.axis = 1.3, mgp = c(4,1,0))
 
 # Specify variables to plot here, and width of error bars
-names4plotting = c('global.richness','r.lat.rich', 'scaled.MRD.rich.slope', 'tree.beta')
+names4plotting = c('global.richness','PSV.rich.slope', 'scaled.MRD.rich.slope', 'gamma.stat')
 #names4plotting = c('r.env.PSV', 'r.env.MRD', 'r.MRD.rich','r.PSV.rich')
 #names4plotting = c('MRD.rich.slope', 'scaled.MRD.rich.slope','scaled.MRD.range','tree.beta')
 for (j in 1:4) {
