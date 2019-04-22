@@ -11,3 +11,4 @@ Stats_sim*
 sim*_out/
 senc.out.*
 sim.*.out
+.Rproj.user
