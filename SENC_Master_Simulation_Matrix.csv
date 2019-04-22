@@ -6061,3 +6061,5 @@ sim.id,status,reg.of.origin,w,alpha,beta,sigma_E,carry.cap,energy.gradient,max.K
 6062,completed,temperate,3,1.00E-06,1.00E-04,1,on,off,22000,11,100000,10000,98,100,0.99,0.75,off,NA,0.1
 6063,completed,temperate,3,1.00E-06,1.00E-04,1,on,off,22000,11,100000,10000,99,100,0.99,0.75,off,NA,0.1
 6064,completed,temperate,3,1.00E-06,1.00E-04,1,on,off,22000,11,100000,10000,100,100,0.99,0.75,off,NA,0.1
+6065,completed,tropical,3,1.00E-06,1.00E-04,1,on,on,40000,11,30000,10000,1,0,0,0,on,100,0.1
+6066,completed,temperate,3,1.00E-06,1.00E-04,1,on,on,40000,11,30000,10000,1,0,0,0,on,100,0.1
