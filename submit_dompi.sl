@@ -8,6 +8,6 @@
 #SBATCH --mail-type=begin,end
 #SBATCH --mail-user=Hurlbert@bio.unc.edu
 
-module add r/4.0.1
+module add r/3.6.0
 
 mpirun R CMD BATCH run_sim_on_cluster.r 6501 6510
