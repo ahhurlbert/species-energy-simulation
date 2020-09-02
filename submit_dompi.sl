@@ -10,4 +10,4 @@
 
 module add r/3.6.0
 
-mpirun R CMD BATCH run_sim_on_cluster.r 6501 6510
+mpirun Rscript run_sim_on_cluster.r 6501 6510
