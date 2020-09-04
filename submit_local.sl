@@ -10,4 +10,4 @@
 
 module add r/3.6.0
 
-mpirun Rscript run_sim_on_cluster_nonparallel.r 6501 6502
+openmpi mpirun Rscript run_sim_on_cluster_nonparallel.r 6501 6502
