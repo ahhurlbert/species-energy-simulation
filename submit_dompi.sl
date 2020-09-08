@@ -2,7 +2,7 @@
 
 #SBATCH -p debug_queue
 #SBATCH -N 1
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks-per-node=2
 #SBATCH --cpus-per-task=1
 #SBATCH -t 02:00:00
 #SBATCH --mail-type=begin,end
