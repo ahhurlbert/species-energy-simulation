@@ -10,4 +10,4 @@
 
 module add r/3.6.0
 
-mpirun Rscript run_sim_on_cluster.r 6701 7700
+mpirun Rscript run_sim_on_cluster.r 7701 8500
